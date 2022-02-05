@@ -1,28 +1,43 @@
 const {Pool, Client} = require("pg");
 import * as XLSX from 'xlsx';
 
-const credentials = {
-    user: "read_write_user",
-    host: "localhost",
-    database: "dashboard",
-    password: "password_1",
-    port: 5432
-};
+interface Credentials {
+    user: string;
+    host: string;
+    database: string;
+    password: string;
+    port: number;
+}
 
-function XLS2JSON(pathname: string) {
-    let workbook = XLSX.readFile(pathname, {type: "binary"});
+interface CorrespondencesDict {
+    [Key: string]: string;
+}
 
-    let first_sheet_name = workbook.SheetNames[0];
+/**
+ * Convert an XLS file to JSON
+ * @param pathname Pathname of the XLS file
+ */
+function XLS2JSON(pathname: string): any[] {
+    let workbook: XLSX.WorkBook = XLSX.readFile(pathname, {type: "binary"});
 
-    let worksheet = workbook.Sheets[first_sheet_name];
+    let first_sheet_name: string = workbook.SheetNames[0];
+
+    let worksheet: XLSX.WorkSheet = workbook.Sheets[first_sheet_name];
 
     return XLSX.utils.sheet_to_json(worksheet, {raw: true});
 }
 
+
+/**
+ * Add a record to a database
+ * @param pool Connection to a PostgreSQL database
+ * @param tableName Name of the table where the record should be added within the database
+ * @param record Data to be added. Keys are the table column's name and values the data to insert
+ */
 async function addRecordToDb(pool: any, tableName: string, record: any) {
     const tableColumns: string[] = Object.keys(record);
 
-    let query = `insert into ${tableName} (`;
+    let query: string = `insert into ${tableName} (`;
     for (const column of tableColumns)
         query += column + ', ';
     query = query.substring(0, query.length - 2);
@@ -32,34 +47,46 @@ async function addRecordToDb(pool: any, tableName: string, record: any) {
     query = query.substring(0, query.length - 2);
     query += ');'
 
-    console.log(query);
     return pool.query(query);
 }
 
-async function addXLSToDb(pathname: string, tableName: string, correspondances: any) {
+/**
+ * Add the content of an XLS file in a specified PostgreSQL database
+ * @param credentials Authentication & Database information
+ * @param pathname Path of the XLS file
+ * @param tableName Target table where the XLS's content should be inserted
+ * @param correspondences Correspondences between the XLS file's columns and the datable table's ones
+ * @param displayAddedRecord Set to true to keep track of added record
+ */
+async function addXLSToDb(credentials: Credentials, pathname: string, tableName: string, correspondences: CorrespondencesDict, displayAddedRecord: boolean = false): Promise<void> {
     let data = XLS2JSON(pathname);
 
     const pool = new Pool(credentials);
 
     for (const rawRecord of data) {
         let dbRecord: any = {};
-        for (const [key, value] of Object.entries(correspondances)) {
-            // @ts-ignore
+        for (const [key, value] of Object.entries(correspondences)) {
             if (rawRecord[value] != undefined) {
-                // @ts-ignore
                 dbRecord[key] = rawRecord[value]
             } else {
                 break;
             }
         }
-        console.log(dbRecord);
+        if (displayAddedRecord)
+            console.log(dbRecord);
         await addRecordToDb(pool, tableName, dbRecord);
-
     }
 }
 
-addXLSToDb("../data/conso-inf36-region_2021_T3.xls",
-    "conso_inf36_region",
+const credentials: Credentials = {
+    user: "read_write_user",
+    host: "localhost",
+    database: "dashboard",
+    password: "password_1",
+    port: 5432
+};
+
+addXLSToDb(credentials, "../data/conso-inf36-region_2021_T3.xls", "conso_inf36_region",
     {
         "horodatage": "Horodate",
         "profil": "Profil",
