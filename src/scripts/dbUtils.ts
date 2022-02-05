@@ -134,7 +134,9 @@ export function getDistrictSelfConsumption(t1: string, t2?: number): number {
     return 0;
 }
 
+/*
 console.log(getUrbanZoneNumberOfBuildings("quartier historique sud avenue thiers", Building.Producer));
 console.log(getUrbanZoneArea("quartier historique sud avenue thiers"));
 console.log(getDistrictNumberOfBuildings(Building.Residential));
 console.log(getDistrictArea());
+*/
