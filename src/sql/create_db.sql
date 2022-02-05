@@ -8,7 +8,7 @@ create database DASHBOARD;
 create table PROD_REGION
 (
     ID_PROD                serial primary key,
-    HORODATAGE             date,
+    HORODATAGE             timestamp,
     NB_POINT_INJECTION     int,
     TOTAL_ENERGIE_INJECTEE int
 );
@@ -19,7 +19,7 @@ create table PROD_REGION
 create table CONSO_INF36_REGION
 (
     ID_CONSO_INF36         serial primary key,
-    HORODATAGE             date,
+    HORODATAGE             timestamp,
     PROFIL                 varchar,
     NB_POINT_SOUTIRAGE     int,
     TOTAL_ENERGIE_SOUTIREE int,
@@ -32,7 +32,7 @@ create table CONSO_INF36_REGION
 create table CONSO_SUP36_REGION
 (
     ID_CONSO_SUP36         serial primary key,
-    HORODATAGE             date,
+    HORODATAGE             timestamp,
     PROFIL                 varchar,
     NB_POINT_SOUTIRAGE     int,
     TOTAL_ENERGIE_SOUTIREE int,
