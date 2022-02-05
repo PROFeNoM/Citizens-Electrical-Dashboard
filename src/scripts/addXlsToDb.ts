@@ -1,6 +1,7 @@
 const {Pool, Client} = require("pg");
 import * as XLSX from 'xlsx';
 
+// TODO: move to dbUtils ?
 interface Credentials {
     user: string;
     host: string;
@@ -78,6 +79,7 @@ async function addXLSToDb(credentials: Credentials, pathname: string, tableName:
     }
 }
 
+// TODO: move to dbUtils ?
 const credentials: Credentials = {
     user: "read_write_user",
     host: "localhost",
