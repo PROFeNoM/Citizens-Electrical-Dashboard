@@ -17,7 +17,11 @@ export enum Building {
     Tertiary,
     Lighting,
     Producer,
-    All
+    All,
+    Residential1,
+    Residential2,
+    Professional1,
+    Professional2
 }
 
 const credentials: Credentials = {
@@ -27,6 +31,8 @@ const credentials: Credentials = {
     password: "password_1",
     port: 5432
 };
+
+const pool = new Pool(credentials);
 
 interface UrbanZoneFeature {
     type: string;
@@ -68,8 +74,16 @@ export function getUrbanZoneNumberOfBuildings(urbanZone: string, buildingType: B
         switch (buildingType) {
             case Building.Residential:
                 return dataProperties.RES1 + dataProperties.RES2;
+            case Building.Residential1:
+                return dataProperties.RES1;
+            case Building.Residential2:
+                return dataProperties.RES2;
             case Building.Professional:
                 return dataProperties.PRO1 + dataProperties.PRO2;
+            case Building.Professional1:
+                return dataProperties.PRO1;
+            case Building.Professional2:
+                return dataProperties.PRO2;
             case Building.Tertiary:
                 return dataProperties.ENT;
             case Building.Lighting:
@@ -110,33 +124,96 @@ export function getDistrictArea(): number {
     return json_Decoupage_urbain.features.reduce((prev: number, curr: UrbanZoneFeature) => prev + getUrbanZoneArea(curr.properties.libelle), 0);
 }
 
-export function getUrbanZoneElectricityConsumption(t1: string, buildingType: Building, urbanZone: string, t2?: number): number {
+async function runQuery(query: string) {
+    try {
+        const res = await pool.query(query);
+        return res.rows;
+    } catch (err: any) {
+        return err.stack;
+    }
+}
+
+export async function getUrbanZoneElectricityConsumption(t1: string, buildingType: Building, urbanZone: string, t2?: string): Promise<number> {
+    let queries: string[] = [];
+    let weights: any[] = [];
+
+    if (!t2) {
+        switch (buildingType) {
+            case Building.Residential:
+                queries.push(`select avg(COURBE_MOYENNE) as COURBE_MOYENNE
+                              from CONSO_INF36_REGION
+                              where PROFIL like \'RES1\%\'
+                                and HORODATAGE = \'${t1}\'
+                              group by HORODATAGE`);
+
+                queries.push(`
+                    select avg(COURBE_MOYENNE) as COURBE_MOYENNE
+                    from CONSO_INF36_REGION
+                    where PROFIL like \'RES2\%\'
+                      and HORODATAGE = \'${t1}\'
+                    group by HORODATAGE`);
+
+                weights.push(() => getUrbanZoneNumberOfBuildings(urbanZone, Building.Residential1));
+                weights.push(() => getUrbanZoneNumberOfBuildings(urbanZone, Building.Residential2));
+
+                break;
+            case Building.Professional:
+                queries.push(`select avg(COURBE_MOYENNE) as COURBE_MOYENNE
+                              from CONSO_INF36_REGION
+                              where PROFIL like \'PRO1\%\'
+                                and HORODATAGE = \'${t1}\'
+                              group by HORODATAGE`);
+
+                queries.push(`
+                    select avg(COURBE_MOYENNE) as COURBE_MOYENNE
+                    from CONSO_INF36_REGION
+                    where PROFIL like \'PRO2\%\'
+                      and HORODATAGE = \'${t1}\'
+                    group by HORODATAGE`);
+
+                weights.push(() => getUrbanZoneNumberOfBuildings(urbanZone, Building.Professional1));
+                weights.push(() => getUrbanZoneNumberOfBuildings(urbanZone, Building.Professional2));
+                break;
+            case Building.Tertiary:
+                // TODO
+                break;
+            case Building.Lighting:
+                // TODO
+                break;
+            case Building.All:
+                // TODO
+                break;
+        }
+    } else {
+        // TODO
+    }
+
+    let resultWh: number = 0;
+
+    for (let i: number = 0; i < queries.length; i++) {
+        let res = await runQuery(queries[i]);
+        resultWh += res[0].courbe_moyenne * weights[i]();
+    }
+
+    return resultWh;
+}
+
+export async function getDistrictElectricityConsumption(t1: string, buildingType: Building, t2?: string): Promise<number> {
     return 0;
 }
 
-export function getDistrictElectricityConsumption(t1: string, buildingType: Building, t2?: number): number {
+export async function getUrbanZoneElectricityProduction(t1: string, urbanZone: string, t2?: string): Promise<number> {
     return 0;
 }
 
-export function getUrbanZoneElectricityProduction(t1: string, urbanZone: string, t2?: number): number {
+export async function getDistrictElectricityProduction(t1: string, t2?: string): Promise<number> {
     return 0;
 }
 
-export function getDistrictElectricityProduction(t1: string, t2?: number): number {
+export async function getUrbanZoneSelfConsumptionRatio(t1: string, urbanZone: string, t2?: string): Promise<number> {
     return 0;
 }
 
-export function getUrbanZoneSelfConsumptionRatio(t1: string, urbanZone: string, t2?: number): number {
+export async function getDistrictSelfConsumption(t1: string, t2?: string): Promise<number> {
     return 0;
 }
-
-export function getDistrictSelfConsumption(t1: string, t2?: number): number {
-    return 0;
-}
-
-/*
-console.log(getUrbanZoneNumberOfBuildings("quartier historique sud avenue thiers", Building.Producer));
-console.log(getUrbanZoneArea("quartier historique sud avenue thiers"));
-console.log(getDistrictNumberOfBuildings(Building.Residential));
-console.log(getDistrictArea());
-*/

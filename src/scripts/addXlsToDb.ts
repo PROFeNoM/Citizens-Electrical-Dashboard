@@ -88,6 +88,7 @@ const credentials: Credentials = {
     port: 5432
 };
 
+/*
 addXLSToDb(credentials, "../data/conso-inf36-region_2021_T3.xls", "conso_inf36_region",
     {
         "horodatage": "Horodate",
@@ -96,4 +97,4 @@ addXLSToDb(credentials, "../data/conso-inf36-region_2021_T3.xls", "conso_inf36_r
         "total_energie_soutiree": "Total énergie soutirée (Wh)",
         "courbe_moyenne": "Courbe Moyenne n°1 + n°2 (Wh)"
     });
-
+*/
