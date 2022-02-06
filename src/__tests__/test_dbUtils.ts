@@ -1,4 +1,16 @@
-import {Building, getDistrictArea, getUrbanZoneElectricityConsumption} from "../scripts/dbUtils"
+import {
+    Building,
+    getDistrictArea,
+    getUrbanZoneArea,
+    getUrbanZoneElectricityConsumption,
+    getUrbanZoneNumberOfBuildings
+} from "../scripts/dbUtils"
+
+describe('getUrbanZoneNumberOfBuildings test suite', () => {
+   test('Test with lighting', () => {
+       expect(getUrbanZoneNumberOfBuildings("sieges sociaux", Building.Lighting)).toStrictEqual(26);
+   })
+});
 
 describe('getDistrictArea test suite', () => {
     test('Area of La Bastide', () => {

@@ -2,6 +2,7 @@ import * as turf from '@turf/turf'
 
 const {Pool, Client} = require("pg");
 const {json_Decoupage_urbain} = require("../map/layers/Decoupage_urbain");
+const {json_eclairage_public_features} = require("../map/bor_ptlum");
 
 interface Credentials {
     user: string;
@@ -52,6 +53,28 @@ interface UrbanZoneFeature {
     }
 }
 
+interface LightingFeature {
+    dataset: string;
+    recordid: string;
+    fields: {
+        x_long: string;
+        rowkey: string;
+        geometrie: [number, number];
+        partitionKey: string;
+        timestamp: string;
+        y_lat: string;
+        code_pl: string;
+        entityid: string;
+        categorie: string;
+        domaine: string;
+    };
+    geometry: {
+        type: string;
+        coordinates: [number, number];
+    };
+    record_timestamp: string;
+}
+
 /**
  * Return the features section of an urban zone
  * @param urbanZone Urban Zone for which the feature section shall be returned
@@ -87,7 +110,9 @@ export function getUrbanZoneNumberOfBuildings(urbanZone: string, buildingType: B
             case Building.Tertiary:
                 return dataProperties.ENT;
             case Building.Lighting:
-                return 0; // TODO: find out where the value is
+                const searchWithin = turf.polygon(data.geometry.coordinates[0]);
+                const ptsWithin: LightingFeature[] = json_eclairage_public_features.filter((feature: LightingFeature) => turf.booleanWithin(turf.point(feature.geometry.coordinates), searchWithin));
+                return ptsWithin.length;
             case Building.Producer:
                 return dataProperties.PROD_F5;
         }
