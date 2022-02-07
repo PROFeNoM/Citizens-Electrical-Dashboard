@@ -272,7 +272,10 @@ export async function getDistrictElectricityProduction(t1: string, t2?: string):
 }
 
 export async function getUrbanZoneSelfConsumptionRatio(t1: string, urbanZone: string, t2?: string): Promise<number> {
-    return 0;
+    const prod = await getUrbanZoneElectricityProduction(t1, urbanZone, t2);
+    const cons = await getUrbanZoneElectricityConsumption(t1, Building.All, urbanZone, t2);
+
+    return prod / cons;
 }
 
 export async function getDistrictSelfConsumption(t1: string, t2?: string): Promise<number> {
