@@ -241,7 +241,14 @@ export async function getUrbanZoneElectricityConsumption(t1: string, buildingTyp
 }
 
 export async function getDistrictElectricityConsumption(t1: string, buildingType: Building, t2?: string): Promise<number> {
-    return 0;
+    const consumptions = await Promise.all(json_Decoupage_urbain.features
+        .map((feature: UrbanZoneFeature) => feature.properties.libelle)
+        .map(async (urbanZone: string) => {
+            const r = await getUrbanZoneElectricityConsumption(t1, buildingType, urbanZone, t2);
+            return r;
+        }));
+
+    return consumptions.reduce((prev: number, curr: number) => prev + curr, 0);
 }
 
 export async function getUrbanZoneElectricityProduction(t1: string, urbanZone: string, t2?: string): Promise<number> {

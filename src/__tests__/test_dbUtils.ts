@@ -2,7 +2,8 @@ import {
     Building,
     getDistrictArea,
     getUrbanZoneElectricityConsumption,
-    getUrbanZoneNumberOfBuildings
+    getUrbanZoneNumberOfBuildings,
+    getDistrictElectricityConsumption
 } from "../scripts/dbUtils"
 
 describe('getUrbanZoneNumberOfBuildings test suite', () => {
@@ -72,5 +73,17 @@ describe('getUrbanZoneElectricityConsumption test suite', () => {
         const r = await getUrbanZoneElectricityConsumption('2021-09-30 23:00:00+02:00', Building.All, "quartier historique sud avenue thiers", '2021-09-30 23:30:00+02:00');
         expect(r).toBeCloseTo(829366);
     })
+});
+
+describe('getDistrictElectricityConsumption test suite',() => {
+    test('Test with Residential buildings at a single timestamp', async ()  => {
+        const r = await getDistrictElectricityConsumption('2021-09-30 23:30:00+02:00', Building.Residential);
+        expect(r).toBeCloseTo(1020600);
+    });
+
+    test('Test with All buildings between two timestamps', async ()  => {
+        const r = await getDistrictElectricityConsumption('2021-09-30 23:00:00+02:00', Building.All, '2021-09-30 23:30:00+02:00');
+        expect(r).toBeCloseTo(2663956.7072691554);
+    });
 
 });
