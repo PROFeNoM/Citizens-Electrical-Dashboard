@@ -252,7 +252,14 @@ export async function getDistrictElectricityConsumption(t1: string, buildingType
 }
 
 export async function getUrbanZoneElectricityProduction(t1: string, urbanZone: string, t2?: string): Promise<number> {
-    return 0;
+    const horodatageCond: string = !t2 ? `= \'${t1}\'` : `between \'${t1}\' and \'${t2}\'`;
+
+    let res = await runQuery(
+        `select avg(TOTAL_ENERGIE_INJECTEE / NB_POINT_INJECTION) as MOYENNE
+         from PROD_REGION
+         where HORODATAGE ${horodatageCond}`);
+
+    return res[0].moyenne * getUrbanZoneNumberOfBuildings(urbanZone, Building.Producer);
 }
 
 export async function getDistrictElectricityProduction(t1: string, t2?: string): Promise<number> {

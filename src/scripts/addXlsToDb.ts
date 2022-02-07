@@ -57,14 +57,17 @@ async function addRecordToDb(pool: any, tableName: string, record: any) {
  * @param pathname Path of the XLS file
  * @param tableName Target table where the XLS's content should be inserted
  * @param correspondences Correspondences between the XLS file's columns and the datable table's ones
+ * @param conditionOnRawRecord
  * @param displayAddedRecord Set to true to keep track of added record
  */
-async function addXLSToDb(credentials: Credentials, pathname: string, tableName: string, correspondences: CorrespondencesDict, displayAddedRecord: boolean = false): Promise<void> {
+async function addXLSToDb(credentials: Credentials, pathname: string, tableName: string, correspondences: CorrespondencesDict, conditionOnRawRecord: (rawRecord: any) => boolean = (rawRecord: any) => true, displayAddedRecord: boolean = false): Promise<void> {
     let data = XLS2JSON(pathname);
 
     const pool = new Pool(credentials);
 
     for (const rawRecord of data) {
+        if (!conditionOnRawRecord(rawRecord))
+            continue;
         let dbRecord: any = {};
         for (const [key, value] of Object.entries(correspondences)) {
             if (rawRecord[value] != undefined) {
@@ -97,4 +100,16 @@ addXLSToDb(credentials, "../data/conso-inf36-region_2021_T3.xls", "conso_inf36_r
         "total_energie_soutiree": "Total énergie soutirée (Wh)",
         "courbe_moyenne": "Courbe Moyenne n°1 + n°2 (Wh)"
     });
+*/
+/*
+function conditionOnRawRecorsdF5(rawRecord: any): boolean {
+    return rawRecord['Filière de production'] == 'F5 : Solaire';
+}
+
+addXLSToDb(credentials, "../data/prod-region_2021_T3.xls", "prod_region",
+    {
+        "horodatage": "Horodate",
+        "nb_point_injection": "Nb points injection",
+        "total_energie_injectee": "Total énergie injectée (Wh)"
+    }, conditionOnRawRecorsdF5, true);
 */

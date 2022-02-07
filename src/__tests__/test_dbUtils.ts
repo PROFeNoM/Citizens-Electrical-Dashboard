@@ -3,7 +3,8 @@ import {
     getDistrictArea,
     getUrbanZoneElectricityConsumption,
     getUrbanZoneNumberOfBuildings,
-    getDistrictElectricityConsumption
+    getDistrictElectricityConsumption,
+    getUrbanZoneElectricityProduction
 } from "../scripts/dbUtils"
 
 describe('getUrbanZoneNumberOfBuildings test suite', () => {
@@ -85,5 +86,36 @@ describe('getDistrictElectricityConsumption test suite',() => {
         const r = await getDistrictElectricityConsumption('2021-09-30 23:00:00+02:00', Building.All, '2021-09-30 23:30:00+02:00');
         expect(r).toBeCloseTo(2663956.7072691554);
     });
-
 });
+
+describe('getUrbanZoneElectricityProduction test suite', () => {
+    test('Test in an urban zone with producers during the night at a single timestamp', async () => {
+        const r = await getUrbanZoneElectricityProduction('2021-09-30 23:30:00+02:00',  'Coeur de Bastide');
+        expect(r).toStrictEqual(0);
+    });
+
+    test('Test in an urban zone with producers during the day at a single timestamp', async () => {
+        const r = await getUrbanZoneElectricityProduction('2021-09-30 13:30:00+02:00',  'Coeur de Bastide');
+        expect(r).toBeCloseTo(173147);
+    });
+
+    test('Test in an urban zone without producers during the day at a single timestamp', async () => {
+        const r = await getUrbanZoneElectricityProduction('2021-09-30 13:30:00+02:00',  'sieges sociaux');
+        expect(r).toStrictEqual(0);
+    });
+
+    test('Test in an urban zone with producers during the night between two timestamps', async () => {
+        const r = await getUrbanZoneElectricityProduction('2021-09-30 23:00:00+02:00',  'Coeur de Bastide', '2021-09-30 23:30:00+02:00');
+        expect(r).toStrictEqual(0);
+    });
+
+    test('Test in an urban zone with producers during the day between two timestamps', async () => {
+        const r = await getUrbanZoneElectricityProduction('2021-09-30 13:00:00+02:00',  'Coeur de Bastide', '2021-09-30 23:30:00+02:00');
+        expect(r).toBeCloseTo(69418.22727272726);
+    });
+
+    test('Test in an urban zone without producers during the day between two timestamps', async () => {
+        const r = await getUrbanZoneElectricityProduction('2021-09-30 13:00:00+02:00',  'sieges sociaux', '2021-09-30 23:30:00+02:00');
+        expect(r).toStrictEqual(0);
+    });
+})
