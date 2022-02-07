@@ -165,11 +165,12 @@ export async function getUrbanZoneElectricityConsumption(t1: string, buildingTyp
     if (!t2) {
         switch (buildingType) {
             case Building.Residential:
-                queries.push(`select avg(COURBE_MOYENNE) as COURBE_MOYENNE
-                              from CONSO_INF36_REGION
-                              where PROFIL like \'RES1\%\'
-                                and HORODATAGE = \'${t1}\'
-                              group by HORODATAGE`);
+                queries.push(`
+                    select avg(COURBE_MOYENNE) as COURBE_MOYENNE
+                    from CONSO_INF36_REGION
+                    where PROFIL like \'RES1\%\'
+                      and HORODATAGE = \'${t1}\'
+                    group by HORODATAGE`);
 
                 queries.push(`
                     select avg(COURBE_MOYENNE) as COURBE_MOYENNE
@@ -183,11 +184,12 @@ export async function getUrbanZoneElectricityConsumption(t1: string, buildingTyp
 
                 break;
             case Building.Professional:
-                queries.push(`select avg(COURBE_MOYENNE) as COURBE_MOYENNE
-                              from CONSO_INF36_REGION
-                              where PROFIL like \'PRO1\%\'
-                                and HORODATAGE = \'${t1}\'
-                              group by HORODATAGE`);
+                queries.push(`
+                    select avg(COURBE_MOYENNE) as COURBE_MOYENNE
+                    from CONSO_INF36_REGION
+                    where PROFIL like \'PRO1\%\'
+                      and HORODATAGE = \'${t1}\'
+                    group by HORODATAGE`);
 
                 queries.push(`
                     select avg(COURBE_MOYENNE) as COURBE_MOYENNE
@@ -203,7 +205,13 @@ export async function getUrbanZoneElectricityConsumption(t1: string, buildingTyp
                 // TODO
                 break;
             case Building.Lighting:
-                // TODO
+                queries.push(`
+                    select COURBE_MOYENNE as COURBE_MOYENNE
+                    from CONSO_INF36_REGION
+                    where PROFIL = \'PRO5\'
+                      and HORODATAGE = \'${t1}\'`);
+
+                weights.push(() => getUrbanZoneNumberOfBuildings(urbanZone, Building.Lighting));
                 break;
             case Building.All:
                 // TODO

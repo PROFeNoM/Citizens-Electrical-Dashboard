@@ -1,7 +1,6 @@
 import {
     Building,
     getDistrictArea,
-    getUrbanZoneArea,
     getUrbanZoneElectricityConsumption,
     getUrbanZoneNumberOfBuildings
 } from "../scripts/dbUtils"
@@ -37,5 +36,15 @@ describe('getUrbanZoneElectricityConsumption test suite', () => {
     test('Test with professional buildings in an urban zone without those at a single timestamp', async () => {
         const r = await getUrbanZoneElectricityConsumption('2021-09-30 23:30:00+02:00', Building.Professional, "sieges sociaux");
         expect(r).toStrictEqual(0);
+    });
+
+    test('Test with public lighting buildings during the night', async () => {
+       const r = await getUrbanZoneElectricityConsumption('2021-09-30 23:30:00+02:00', Building.Lighting, "sieges sociaux");
+       expect(r).toStrictEqual(22464);
+    });
+
+    test('Test with public lighting buildings during the day', async () => {
+        const r = await getUrbanZoneElectricityConsumption('2021-09-30 12:30:00+02:00', Building.Lighting, "sieges sociaux");
+        expect(r).toStrictEqual(286);
     });
 });
