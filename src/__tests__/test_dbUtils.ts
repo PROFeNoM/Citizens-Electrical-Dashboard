@@ -4,7 +4,8 @@ import {
     getUrbanZoneElectricityConsumption,
     getUrbanZoneNumberOfBuildings,
     getDistrictElectricityConsumption,
-    getUrbanZoneElectricityProduction
+    getUrbanZoneElectricityProduction,
+    getDistrictElectricityProduction
 } from "../scripts/dbUtils"
 
 describe('getUrbanZoneNumberOfBuildings test suite', () => {
@@ -117,5 +118,17 @@ describe('getUrbanZoneElectricityProduction test suite', () => {
     test('Test in an urban zone without producers during the day between two timestamps', async () => {
         const r = await getUrbanZoneElectricityProduction('2021-09-30 13:00:00+02:00',  'sieges sociaux', '2021-09-30 23:30:00+02:00');
         expect(r).toStrictEqual(0);
+    });
+});
+
+describe('getDistrictElectricityProduction test suite', () => {
+    test('Test during the night at a single timestamp', async () => {
+        const r = await getDistrictElectricityProduction('2021-09-30 23:30:00+02:00');
+        expect(r).toStrictEqual(0);
+    });
+
+    test('Test between two timestamps', async () => {
+        const r = await getDistrictElectricityProduction('2021-09-30 13:30:00+02:00', '2021-09-30 23:30:00+02:00');
+        expect(r).toBeCloseTo(89430.85714285713);
     });
 })
