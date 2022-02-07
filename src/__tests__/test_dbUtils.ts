@@ -38,13 +38,23 @@ describe('getUrbanZoneElectricityConsumption test suite', () => {
         expect(r).toStrictEqual(0);
     });
 
-    test('Test with public lighting buildings during the night', async () => {
+    test('Test with public lighting buildings during the night at a single timestamp', async () => {
        const r = await getUrbanZoneElectricityConsumption('2021-09-30 23:30:00+02:00', Building.Lighting, "sieges sociaux");
        expect(r).toStrictEqual(22464);
     });
 
-    test('Test with public lighting buildings during the day', async () => {
+    test('Test with public lighting buildings during the day at a single timestamp', async () => {
         const r = await getUrbanZoneElectricityConsumption('2021-09-30 12:30:00+02:00', Building.Lighting, "sieges sociaux");
         expect(r).toStrictEqual(286);
+    });
+
+    test('Test with professional buildings in an urban zone without those at a single timestamp', async () => {
+        const r = await getUrbanZoneElectricityConsumption('2021-09-30 23:30:00+02:00', Building.Tertiary, "Bastide Niel");
+        expect(r).toStrictEqual(0);
+    });
+
+    test('Test with professional buildings in an urban zone with those at a single timestamp', async () => {
+        const r = await getUrbanZoneElectricityConsumption('2021-09-30 23:30:00+02:00', Building.Tertiary, "sieges sociaux");
+        expect(r).toBeCloseTo(856283.5029469548);
     });
 });

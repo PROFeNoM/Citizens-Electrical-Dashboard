@@ -202,7 +202,13 @@ export async function getUrbanZoneElectricityConsumption(t1: string, buildingTyp
                 weights.push(() => getUrbanZoneNumberOfBuildings(urbanZone, Building.Professional2));
                 break;
             case Building.Tertiary:
-                // TODO
+                queries.push(`
+                    select sum(NB_POINT_SOUTIRAGE * COURBE_MOYENNE) / sum(NB_POINT_SOUTIRAGE) as COURBE_MOYENNE
+                    from CONSO_SUP36_REGION
+                    where HORODATAGE = \'${t1}\'
+                    group by HORODATAGE;`);
+                console.log(getUrbanZoneNumberOfBuildings(urbanZone, Building.Tertiary))
+                weights.push(() => getUrbanZoneNumberOfBuildings(urbanZone, Building.Tertiary));
                 break;
             case Building.Lighting:
                 queries.push(`
