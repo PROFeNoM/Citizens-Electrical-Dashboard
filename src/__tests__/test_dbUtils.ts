@@ -6,7 +6,8 @@ import {
     getDistrictElectricityConsumption,
     getUrbanZoneElectricityProduction,
     getDistrictElectricityProduction,
-    getUrbanZoneSelfConsumptionRatio
+    getUrbanZoneSelfConsumptionRatio,
+    getDistrictSelfConsumption
 } from "../scripts/dbUtils"
 
 describe('getUrbanZoneNumberOfBuildings test suite', () => {
@@ -143,5 +144,17 @@ describe('getUrbanZoneSelfConsumptionRatio test suite', () => {
     test('Test of self consumption during a whole day with producers', async () => {
         const r = await getUrbanZoneSelfConsumptionRatio('2021-09-30 00:30:00+02:00', 'Coeur de Bastide', '2021-09-30 23:30:00+02:00');
         expect(r).toBeCloseTo(0.3706920617102514);
+    });
+});
+
+describe('getUrbanZoneSelfConsumptionRatio test suite', () => {
+   test('Test of self consumption during the night a single timestamp', async () => {
+       const r = await getDistrictSelfConsumption('2021-09-30 23:30:00+02:00');
+       expect(r).toStrictEqual(0);
+   });
+
+    test('Test of self consumption during a whole day with producers', async () => {
+        const r = await getDistrictSelfConsumption('2021-09-30 00:30:00+02:00', '2021-09-30 23:30:00+02:00');
+        expect(r).toBeCloseTo(0.026351960023466667);
     });
 });
