@@ -158,73 +158,76 @@ async function runQuery(query: string) {
     }
 }
 
+/**
+ * Return the consumption of electricity for a given urban zone in Wh
+ * @param t1 Timestamp of the beginning of the time period
+ * @param buildingType Building type to get the consumption from
+ * @param urbanZone Urban zone of the buildings
+ * @param t2 Timestamp of the end of the time period
+ */
 export async function getUrbanZoneElectricityConsumption(t1: string, buildingType: Building, urbanZone: string, t2?: string): Promise<number> {
     let queries: string[] = [];
     let weights: any[] = [];
 
-    if (!t2) {
-        switch (buildingType) {
-            case Building.Residential:
-                queries.push(`
-                    select avg(COURBE_MOYENNE) as COURBE_MOYENNE
-                    from CONSO_INF36_REGION
-                    where PROFIL like \'RES1\%\'
-                      and HORODATAGE = \'${t1}\'
-                    group by HORODATAGE`);
+    const horodatageCond: string = !t2 ? `= \'${t1}\'` : `between \'${t1}\' and \'${t2}\'`;
 
-                queries.push(`
-                    select avg(COURBE_MOYENNE) as COURBE_MOYENNE
-                    from CONSO_INF36_REGION
-                    where PROFIL like \'RES2\%\'
-                      and HORODATAGE = \'${t1}\'
-                    group by HORODATAGE`);
+    function _addQuery(profile: string, t1: string, t2?: string) {
+        queries.push(`
+            select avg(COURBE_MOYENNE) as COURBE_MOYENNE
+            from CONSO_INF36_REGION
+            where PROFIL like \'${profile}\%\'
+              and HORODATAGE ${horodatageCond}
+            group by HORODATAGE`);
+    };
 
-                weights.push(() => getUrbanZoneNumberOfBuildings(urbanZone, Building.Residential1));
-                weights.push(() => getUrbanZoneNumberOfBuildings(urbanZone, Building.Residential2));
+    switch (buildingType) {
+        case Building.Residential:
+            _addQuery("RES1", t1, t2);
+            _addQuery("RES2", t1, t2);
 
-                break;
-            case Building.Professional:
-                queries.push(`
-                    select avg(COURBE_MOYENNE) as COURBE_MOYENNE
-                    from CONSO_INF36_REGION
-                    where PROFIL like \'PRO1\%\'
-                      and HORODATAGE = \'${t1}\'
-                    group by HORODATAGE`);
+            weights.push(() => getUrbanZoneNumberOfBuildings(urbanZone, Building.Residential1));
+            weights.push(() => getUrbanZoneNumberOfBuildings(urbanZone, Building.Residential2));
+            break;
+        case Building.Professional:
+            _addQuery("PRO1", t1, t2);
+            _addQuery("PRO2", t1, t2);
 
-                queries.push(`
-                    select avg(COURBE_MOYENNE) as COURBE_MOYENNE
-                    from CONSO_INF36_REGION
-                    where PROFIL like \'PRO2\%\'
-                      and HORODATAGE = \'${t1}\'
-                    group by HORODATAGE`);
+            weights.push(() => getUrbanZoneNumberOfBuildings(urbanZone, Building.Professional1));
+            weights.push(() => getUrbanZoneNumberOfBuildings(urbanZone, Building.Professional2));
+            break;
+        case Building.Tertiary:
+            queries.push(`
+                select sum(NB_POINT_SOUTIRAGE * COURBE_MOYENNE) / sum(NB_POINT_SOUTIRAGE) as COURBE_MOYENNE
+                from CONSO_SUP36_REGION
+                where HORODATAGE ${horodatageCond}
+                group by HORODATAGE;`);
 
-                weights.push(() => getUrbanZoneNumberOfBuildings(urbanZone, Building.Professional1));
-                weights.push(() => getUrbanZoneNumberOfBuildings(urbanZone, Building.Professional2));
-                break;
-            case Building.Tertiary:
-                queries.push(`
-                    select sum(NB_POINT_SOUTIRAGE * COURBE_MOYENNE) / sum(NB_POINT_SOUTIRAGE) as COURBE_MOYENNE
-                    from CONSO_SUP36_REGION
-                    where HORODATAGE = \'${t1}\'
-                    group by HORODATAGE;`);
-                console.log(getUrbanZoneNumberOfBuildings(urbanZone, Building.Tertiary))
-                weights.push(() => getUrbanZoneNumberOfBuildings(urbanZone, Building.Tertiary));
-                break;
-            case Building.Lighting:
-                queries.push(`
-                    select COURBE_MOYENNE as COURBE_MOYENNE
-                    from CONSO_INF36_REGION
-                    where PROFIL = \'PRO5\'
-                      and HORODATAGE = \'${t1}\'`);
+            weights.push(() => getUrbanZoneNumberOfBuildings(urbanZone, Building.Tertiary));
+            break;
+        case Building.Lighting:
+            _addQuery("PRO5", t1, t2);
 
-                weights.push(() => getUrbanZoneNumberOfBuildings(urbanZone, Building.Lighting));
-                break;
-            case Building.All:
-                // TODO
-                break;
-        }
-    } else {
-        // TODO
+            weights.push(() => getUrbanZoneNumberOfBuildings(urbanZone, Building.Lighting));
+            break;
+        case Building.All:
+            _addQuery("RES1", t1, t2);
+            _addQuery("RES2", t1, t2);
+            _addQuery("PRO1", t1, t2);
+            _addQuery("PRO2", t1, t2);
+            queries.push(`
+                select sum(NB_POINT_SOUTIRAGE * COURBE_MOYENNE) / sum(NB_POINT_SOUTIRAGE) as COURBE_MOYENNE
+                from CONSO_SUP36_REGION
+                where HORODATAGE ${horodatageCond}
+                group by HORODATAGE;`);
+            _addQuery("PRO5", t1, t2);
+
+            weights.push(() => getUrbanZoneNumberOfBuildings(urbanZone, Building.Residential1));
+            weights.push(() => getUrbanZoneNumberOfBuildings(urbanZone, Building.Residential2));
+            weights.push(() => getUrbanZoneNumberOfBuildings(urbanZone, Building.Professional1));
+            weights.push(() => getUrbanZoneNumberOfBuildings(urbanZone, Building.Professional2));
+            weights.push(() => getUrbanZoneNumberOfBuildings(urbanZone, Building.Tertiary));
+            weights.push(() => getUrbanZoneNumberOfBuildings(urbanZone, Building.Lighting));
+            break;
     }
 
     let resultWh: number = 0;

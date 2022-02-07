@@ -57,4 +57,20 @@ describe('getUrbanZoneElectricityConsumption test suite', () => {
         const r = await getUrbanZoneElectricityConsumption('2021-09-30 23:30:00+02:00', Building.Tertiary, "sieges sociaux");
         expect(r).toBeCloseTo(856283.5029469548);
     });
+
+    test('Test with all buildings at a single timestamp', async() => {
+       const r = await getUrbanZoneElectricityConsumption('2021-09-30 23:30:00+02:00', Building.All, "quartier historique sud avenue thiers");
+       expect(r).toBeCloseTo(789792);
+    });
+
+    test('Test with residential buildings between two timestamps', async() => {
+        const r = await getUrbanZoneElectricityConsumption('2021-09-30 23:00:00+02:00', Building.Residential, "quartier historique sud avenue thiers", '2021-09-30 23:30:00+02:00');
+        expect(r).toBeCloseTo(483200);
+    });
+
+    test('Test with all buildings between two timestamps', async() => {
+        const r = await getUrbanZoneElectricityConsumption('2021-09-30 23:00:00+02:00', Building.All, "quartier historique sud avenue thiers", '2021-09-30 23:30:00+02:00');
+        expect(r).toBeCloseTo(829366);
+    })
+
 });
