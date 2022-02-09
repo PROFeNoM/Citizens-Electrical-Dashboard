@@ -1,19 +1,23 @@
+@import url('https://fonts.googleapis.com/css?family=Ubuntu');
+@import url('https://fonts.googleapis.com/css?family=Roboto');
+@import url('https://fonts.googleapis.com/css?family=Roboto');
+
 * {
-  box-sizing: border-box;
-  padding: 0;
-  margin: 0;
-  font-family: 'Ubuntu', 'Roboto', 'San F', 'Arial', sans-serif;
-  scroll-behavior: smooth;
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+    font-family: 'Ubuntu', 'Roboto', -apple-system, BlinkMacSystemFont, 'Arial', sans-serif;
+    scroll-behavior: smooth;
 }
 
 .home, .about, .connection, .legal, .error {
-  display: flex;
-  height: 90vh;
-  align-items: center;
-  justify-content: center;
-  font-size: 3rem;
+    display: flex;
+    height: 90vh;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
 }
 
 body {
-  background: var(--color-bg);
+    background: var(--color-bg);
 }
