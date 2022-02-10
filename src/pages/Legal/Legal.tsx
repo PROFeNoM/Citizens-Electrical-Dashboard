@@ -1,11 +1,10 @@
 import React from 'react';
 import './Legal.css';
+import {Header} from "../../containers";
 
 function Legal() {
     return (
-        <div className='legal'>
-            <h1>Legal</h1>
-        </div>
+        <Header title={'LEGAL'} />
     );
 }
 

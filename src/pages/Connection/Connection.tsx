@@ -1,11 +1,10 @@
 import React from 'react';
 import './Connection.css';
+import {Header} from "../../containers";
 
 function Connection() {
     return (
-        <div className='connection'>
-            <h1>Connection</h1>
-        </div>
+        <Header title={'CONNECTION'} />
     );
 }
 

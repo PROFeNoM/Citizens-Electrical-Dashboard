@@ -1,0 +1,36 @@
+@media (max-width: 575px) {
+    .Logo {
+        display: none;
+    }
+}
+
+.Logo {
+    filter: brightness(0) invert(1);
+    position: absolute;
+    top: 7px;
+    right: 3%;
+    height: 2rem;
+}
+
+
+@media (max-width: 325px) {
+    .header-title {
+        color: #fff;
+        font-size: 1rem;
+        position: absolute;
+        top: 15px;
+        right: 0;
+        transform: translate(-50%);
+    }
+}
+
+@media (min-width: 325px) {
+    .header-title {
+        color: #fff;
+        font-size: 2rem;
+        position: absolute;
+        top: 5px;
+        left: 50%;
+        transform: translate(-50%);
+    }
+}

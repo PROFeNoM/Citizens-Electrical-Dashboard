@@ -178,7 +178,7 @@ export async function getUrbanZoneElectricityConsumption(t1: string, buildingTyp
             where PROFIL like \'${profile}\%\'
               and HORODATAGE ${horodatageCond}
             group by HORODATAGE`);
-    };
+    }
 
     switch (buildingType) {
         case Building.Residential:

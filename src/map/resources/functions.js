@@ -53,4 +53,4 @@ function stripe(stripeWidth, gapWidth, angle, color) {
     outerContext.fillRect(0,0,screen.width,screen.height);
 
     return outerContext.createPattern(outerCanvas, 'no-repeat');
-};
+}
