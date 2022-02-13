@@ -15,11 +15,8 @@ function Home() {
                         <h2 className='district-name'>QUARTIER DE LA BASTIDE</h2>
                         <DistrictEnergyBalance/>
                     </Col>
-                    <Col sm={4}>
-                        One of three columns
-                    </Col>
-                    <Col sm={4}>
-                        One of three columns
+                    <Col sm={8}>
+                        Map
                     </Col>
                 </Row>
             </Container>
