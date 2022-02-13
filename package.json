@@ -11,18 +11,33 @@
     "@types/node": "^16.11.22",
     "@types/react": "^17.0.38",
     "@types/react-dom": "^17.0.11",
+    "crypto": "^1.0.1",
+    "crypto-browserify": "^3.12.0",
+    "crypto-js": "^4.1.1",
     "excel-to-postgres": "^1.5.2",
+    "fs": "0.0.1-security",
     "js-xlsx": "^0.8.22",
     "leaflet": "^1.7.1",
-    "pg": "^8.7.1",
+    "net": "^1.0.2",
     "react": "^17.0.2",
+    "react-art": "^17.0.2",
     "react-dom": "^17.0.2",
+    "react-grid-system": "^8.0.1",
     "react-icons": "^4.3.1",
+    "react-native": "^0.67.2",
+    "react-native-web": "^0.17.5",
     "react-router-dom": "^6.2.1",
-    "react-scripts": "5.0.0",
+    "react-router-native": "^6.2.1",
+    "react-scripts": "4.0.3",
     "typescript": "^4.5.5",
+    "url": "^0.11.0",
     "web-vitals": "^2.1.4",
     "xlsx": "^0.18.0"
+  },
+  "browser": {
+    "fs": false,
+    "path": false,
+    "os": false
   },
   "scripts": {
     "start": "react-scripts start",
@@ -50,6 +65,7 @@
   },
   "devDependencies": {
     "@types/leaflet": "^1.7.9",
+    "@types/react-native": "^0.66.15",
     "jest-watch-typeahead": "^0.6.5"
   }
 }

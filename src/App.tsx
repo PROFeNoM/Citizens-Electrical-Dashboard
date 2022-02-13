@@ -1,8 +1,7 @@
 import React from 'react';
 import './App.css';
 
-import {Header} from './containers';
-import {HamburgerMenu, DistrictEnergyBalance} from './components';
+import {HamburgerMenu} from './components';
 import {BrowserRouter as Router, Routes, Route} from "react-router-dom";
 import {Home, Connection, About, Legal, Error} from "./pages";
 

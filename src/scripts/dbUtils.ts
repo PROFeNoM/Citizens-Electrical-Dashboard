@@ -1,6 +1,6 @@
 import * as turf from '@turf/turf'
 
-const {Pool, Client} = require("pg");
+const {Pool} = require("pg");
 const {json_Decoupage_urbain} = require("../map/layers/Decoupage_urbain");
 const {json_eclairage_public_features} = require("../map/bor_ptlum");
 

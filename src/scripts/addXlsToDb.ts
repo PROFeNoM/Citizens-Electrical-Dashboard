@@ -1,4 +1,4 @@
-const {Pool, Client} = require("pg");
+const {Pool} = require("pg");
 import * as XLSX from 'xlsx';
 
 // TODO: move to dbUtils ?
