@@ -1,4 +1,3 @@
-import React, {useEffect, useState} from 'react';
 import './Home.css';
 import {Header} from "../../containers";
 import {Col, Container, Row} from "react-grid-system";

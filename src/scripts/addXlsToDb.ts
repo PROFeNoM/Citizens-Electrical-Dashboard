@@ -1,5 +1,5 @@
-const {Pool} = require("pg");
 import * as XLSX from 'xlsx';
+const {Pool} = require("pg");
 
 // TODO: move to dbUtils ?
 interface Credentials {
@@ -70,7 +70,7 @@ async function addXLSToDb(credentials: Credentials, pathname: string, tableName:
             continue;
         let dbRecord: any = {};
         for (const [key, value] of Object.entries(correspondences)) {
-            if (rawRecord[value] != undefined) {
+            if (rawRecord[value] !== undefined) {
                 dbRecord[key] = rawRecord[value]
             } else {
                 break;
@@ -91,7 +91,7 @@ const credentials: Credentials = {
     port: 5432
 };
 
-/*
+
 addXLSToDb(credentials, "../data/conso-inf36-region_2021_T3.xls", "conso_inf36_region",
     {
         "horodatage": "Horodate",
@@ -100,7 +100,25 @@ addXLSToDb(credentials, "../data/conso-inf36-region_2021_T3.xls", "conso_inf36_r
         "total_energie_soutiree": "Total énergie soutirée (Wh)",
         "courbe_moyenne": "Courbe Moyenne n°1 + n°2 (Wh)"
     });
-*/
+
+addXLSToDb(credentials, "../data/conso-inf36-region_2021_T3.xls", "conso_inf36_region",
+    {
+        "horodatage": "Horodate",
+        "profil": "Profil",
+        "nb_point_soutirage": "Nb points soutirage",
+        "total_energie_soutiree": "Total énergie soutirée (Wh)",
+        "courbe_moyenne": "Courbe Moyenne n°1 + n°2 (Wh)"
+    }, (rawRecord: any) => true, true);
+
+addXLSToDb(credentials, "../data/conso-inf36-region_2021_T4.xls", "conso_inf36_region",
+    {
+        "horodatage": "Horodate",
+        "profil": "Profil",
+        "nb_point_soutirage": "Nb points soutirage",
+        "total_energie_soutiree": "Total énergie soutirée (Wh)",
+        "courbe_moyenne": "Courbe Moyenne n°1 + n°2 (Wh)"
+    }, (rawRecord: any) => new Date(rawRecord['Horodate']) > new Date('2021-09-30 23:30:00+02:00'), true);
+
 /*
 function conditionOnRawRecorsdF5(rawRecord: any): boolean {
     return rawRecord['Filière de production'] == 'F5 : Solaire';

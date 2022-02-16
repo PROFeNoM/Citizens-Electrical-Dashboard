@@ -81,7 +81,7 @@ interface LightingFeature {
  * @param json JSON to search from
  */
 function getUrbanZoneFeatures(urbanZone: string, json: { features: [] }): UrbanZoneFeature {
-    return json.features.filter((data: UrbanZoneFeature) => data.properties.libelle == urbanZone)[0];
+    return json.features.filter((data: UrbanZoneFeature) => data.properties.libelle === urbanZone)[0];
 }
 
 /**
@@ -169,28 +169,28 @@ export async function getUrbanZoneElectricityConsumption(t1: string, buildingTyp
     let queries: string[] = [];
     let weights: any[] = [];
 
-    const horodatageCond: string = !t2 ? `= \'${t1}\'` : `between \'${t1}\' and \'${t2}\'`;
+    const horodatageCond: string = !t2 ? `= '${t1}'` : `between '${t1}' and '${t2}'`;
 
-    function _addQuery(profile: string, t1: string, t2?: string) {
+    function _addQuery(profile: string) {
         queries.push(`
             select avg(COURBE_MOYENNE) as COURBE_MOYENNE
             from CONSO_INF36_REGION
-            where PROFIL like \'${profile}\%\'
+            where PROFIL like '${profile}%'
               and HORODATAGE ${horodatageCond}
             group by HORODATAGE`);
     }
 
     switch (buildingType) {
         case Building.Residential:
-            _addQuery("RES1", t1, t2);
-            _addQuery("RES2", t1, t2);
+            _addQuery("RES1");
+            _addQuery("RES2");
 
             weights.push(() => getUrbanZoneNumberOfBuildings(urbanZone, Building.Residential1));
             weights.push(() => getUrbanZoneNumberOfBuildings(urbanZone, Building.Residential2));
             break;
         case Building.Professional:
-            _addQuery("PRO1", t1, t2);
-            _addQuery("PRO2", t1, t2);
+            _addQuery("PRO1");
+            _addQuery("PRO2");
 
             weights.push(() => getUrbanZoneNumberOfBuildings(urbanZone, Building.Professional1));
             weights.push(() => getUrbanZoneNumberOfBuildings(urbanZone, Building.Professional2));
@@ -205,21 +205,21 @@ export async function getUrbanZoneElectricityConsumption(t1: string, buildingTyp
             weights.push(() => getUrbanZoneNumberOfBuildings(urbanZone, Building.Tertiary));
             break;
         case Building.Lighting:
-            _addQuery("PRO5", t1, t2);
+            _addQuery("PRO5");
 
             weights.push(() => getUrbanZoneNumberOfBuildings(urbanZone, Building.Lighting));
             break;
         case Building.All:
-            _addQuery("RES1", t1, t2);
-            _addQuery("RES2", t1, t2);
-            _addQuery("PRO1", t1, t2);
-            _addQuery("PRO2", t1, t2);
+            _addQuery("RES1");
+            _addQuery("RES2");
+            _addQuery("PRO1");
+            _addQuery("PRO2");
             queries.push(`
                 select sum(NB_POINT_SOUTIRAGE * COURBE_MOYENNE) / sum(NB_POINT_SOUTIRAGE) as COURBE_MOYENNE
                 from CONSO_SUP36_REGION
                 where HORODATAGE ${horodatageCond}
                 group by HORODATAGE;`);
-            _addQuery("PRO5", t1, t2);
+            _addQuery("PRO5");
 
             weights.push(() => getUrbanZoneNumberOfBuildings(urbanZone, Building.Residential1));
             weights.push(() => getUrbanZoneNumberOfBuildings(urbanZone, Building.Residential2));
@@ -251,7 +251,7 @@ export async function getDistrictElectricityConsumption(t1: string, buildingType
 }
 
 export async function getUrbanZoneElectricityProduction(t1: string, urbanZone: string, t2?: string): Promise<number> {
-    const horodatageCond: string = !t2 ? `= \'${t1}\'` : `between \'${t1}\' and \'${t2}\'`;
+    const horodatageCond: string = !t2 ? `= '${t1}'` : `between '${t1}' and '${t2}'`;
 
     let res = await runQuery(
         `select avg(TOTAL_ENERGIE_INJECTEE / NB_POINT_INJECTION) as MOYENNE

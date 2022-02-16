@@ -19,6 +19,8 @@
     "js-xlsx": "^0.8.22",
     "leaflet": "^1.7.1",
     "net": "^1.0.2",
+    "pg": "^7.4.1",
+    "pg-native": "^3.0.0",
     "react": "^17.0.2",
     "react-art": "^17.0.2",
     "react-dom": "^17.0.2",
@@ -37,13 +39,15 @@
   "browser": {
     "fs": false,
     "path": false,
-    "os": false
+    "os": false,
+    "http": "false"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "postinstall": "rm -rf node_modules/@types/react-native"
   },
   "eslintConfig": {
     "extends": [
@@ -65,7 +69,7 @@
   },
   "devDependencies": {
     "@types/leaflet": "^1.7.9",
-    "@types/react-native": "^0.66.15",
+    "@types/pg": "^8.6.4",
     "jest-watch-typeahead": "^0.6.5"
   }
 }
