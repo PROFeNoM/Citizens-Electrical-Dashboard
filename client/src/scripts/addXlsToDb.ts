@@ -91,7 +91,7 @@ const credentials: Credentials = {
     port: 5432
 };
 
-
+/*
 addXLSToDb(credentials, "../data/conso-inf36-region_2021_T3.xls", "conso_inf36_region",
     {
         "horodatage": "Horodate",
@@ -100,8 +100,9 @@ addXLSToDb(credentials, "../data/conso-inf36-region_2021_T3.xls", "conso_inf36_r
         "total_energie_soutiree": "Total énergie soutirée (Wh)",
         "courbe_moyenne": "Courbe Moyenne n°1 + n°2 (Wh)"
     });
-
-addXLSToDb(credentials, "../data/conso-inf36-region_2021_T3.xls", "conso_inf36_region",
+*/
+/*
+addXLSToDb(credentials, "../data/conso-sup36-region_2021_T3.xls", "conso_sup36_region",
     {
         "horodatage": "Horodate",
         "profil": "Profil",
@@ -109,8 +110,9 @@ addXLSToDb(credentials, "../data/conso-inf36-region_2021_T3.xls", "conso_inf36_r
         "total_energie_soutiree": "Total énergie soutirée (Wh)",
         "courbe_moyenne": "Courbe Moyenne n°1 + n°2 (Wh)"
     }, (rawRecord: any) => true, true);
-
-addXLSToDb(credentials, "../data/conso-inf36-region_2021_T4.xls", "conso_inf36_region",
+*/
+/*
+addXLSToDb(credentials, "../data/conso-sup36-region_2021_T4.xls", "conso_sup36_region",
     {
         "horodatage": "Horodate",
         "profil": "Profil",
@@ -118,10 +120,10 @@ addXLSToDb(credentials, "../data/conso-inf36-region_2021_T4.xls", "conso_inf36_r
         "total_energie_soutiree": "Total énergie soutirée (Wh)",
         "courbe_moyenne": "Courbe Moyenne n°1 + n°2 (Wh)"
     }, (rawRecord: any) => new Date(rawRecord['Horodate']) > new Date('2021-09-30 23:30:00+02:00'), true);
-
+*/
 /*
 function conditionOnRawRecorsdF5(rawRecord: any): boolean {
-    return rawRecord['Filière de production'] == 'F5 : Solaire';
+    return rawRecord['Filière de production'] === 'F5 : Solaire';
 }
 
 addXLSToDb(credentials, "../data/prod-region_2021_T3.xls", "prod_region",
@@ -131,3 +133,14 @@ addXLSToDb(credentials, "../data/prod-region_2021_T3.xls", "prod_region",
         "total_energie_injectee": "Total énergie injectée (Wh)"
     }, conditionOnRawRecorsdF5, true);
 */
+
+function conditionOnRawRecorsdF5b(rawRecord: any): boolean {
+    return rawRecord['Filière de production'] === 'F5 : Solaire' && new Date(rawRecord['Horodate']) > new Date('2021-09-30 23:30:00+02:00');
+}
+
+addXLSToDb(credentials, "../data/prod-region_2021_T4.xls", "prod_region",
+    {
+        "horodatage": "Horodate",
+        "nb_point_injection": "Nb points injection",
+        "total_energie_injectee": "Total énergie injectée (Wh)"
+    }, conditionOnRawRecorsdF5b, true);

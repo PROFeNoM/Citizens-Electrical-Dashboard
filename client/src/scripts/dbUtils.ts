@@ -1,16 +1,7 @@
 import * as turf from '@turf/turf'
 
-const {Pool} = require("pg");
 const {json_Decoupage_urbain} = require("../map/layers/Decoupage_urbain");
 const {json_eclairage_public_features} = require("../map/bor_ptlum");
-
-interface Credentials {
-    user: string;
-    host: string;
-    database: string;
-    password: string;
-    port: number;
-}
 
 export enum Building {
     Residential,
@@ -24,16 +15,6 @@ export enum Building {
     Professional1,
     Professional2
 }
-
-const credentials: Credentials = {
-    user: "read_write_user",
-    host: "localhost",
-    database: "dashboard",
-    password: "password_1",
-    port: 5432
-};
-
-const pool = new Pool(credentials);
 
 interface UrbanZoneFeature {
     type: string;
@@ -149,12 +130,14 @@ export function getDistrictArea(): number {
     return json_Decoupage_urbain.features.reduce((prev: number, curr: UrbanZoneFeature) => prev + getUrbanZoneArea(curr.properties.libelle), 0);
 }
 
-async function runQuery(query: string) {
+async function runQuery(queryLink: string) {
+    //console.log("http://localhost:5000/" + queryLink);
     try {
-        const res = await pool.query(query);
-        return res.rows;
-    } catch (err: any) {
-        return err.stack;
+        const response = await fetch("http://localhost:5000/" + queryLink);
+        return await response.json()
+    } catch (err) {
+        const error = err as Error;
+        console.error(error.message);
     }
 }
 
@@ -169,57 +152,43 @@ export async function getUrbanZoneElectricityConsumption(t1: string, buildingTyp
     let queries: string[] = [];
     let weights: any[] = [];
 
-    const horodatageCond: string = !t2 ? `= '${t1}'` : `between '${t1}' and '${t2}'`;
 
-    function _addQuery(profile: string) {
-        queries.push(`
-            select avg(COURBE_MOYENNE) as COURBE_MOYENNE
-            from CONSO_INF36_REGION
-            where PROFIL like '${profile}%'
-              and HORODATAGE ${horodatageCond}
-            group by HORODATAGE`);
+    function _addQuery(profile: string, t1: string, t2?: string) {
+        queries.push(`urbanZoneElectricityConsumption?profile=RES1&t1='${t1}'` + (t2 ? `&t2='${t2}'` : ''));
     }
 
     switch (buildingType) {
         case Building.Residential:
-            _addQuery("RES1");
-            _addQuery("RES2");
+            _addQuery("RES1", t1, t2);
+            _addQuery("RES2", t1, t2);
 
             weights.push(() => getUrbanZoneNumberOfBuildings(urbanZone, Building.Residential1));
             weights.push(() => getUrbanZoneNumberOfBuildings(urbanZone, Building.Residential2));
             break;
         case Building.Professional:
-            _addQuery("PRO1");
-            _addQuery("PRO2");
+            _addQuery("PRO1", t1, t2);
+            _addQuery("PRO2", t1, t2);
 
             weights.push(() => getUrbanZoneNumberOfBuildings(urbanZone, Building.Professional1));
             weights.push(() => getUrbanZoneNumberOfBuildings(urbanZone, Building.Professional2));
             break;
         case Building.Tertiary:
-            queries.push(`
-                select sum(NB_POINT_SOUTIRAGE * COURBE_MOYENNE) / sum(NB_POINT_SOUTIRAGE) as COURBE_MOYENNE
-                from CONSO_SUP36_REGION
-                where HORODATAGE ${horodatageCond}
-                group by HORODATAGE;`);
+            queries.push(`urbanZoneElectricityConsumptionTertiary?t1='${t1}'` + (t2 ? `&t2='${t2}'` : ''))
 
             weights.push(() => getUrbanZoneNumberOfBuildings(urbanZone, Building.Tertiary));
             break;
         case Building.Lighting:
-            _addQuery("PRO5");
+            _addQuery("PRO5", t1, t2);
 
             weights.push(() => getUrbanZoneNumberOfBuildings(urbanZone, Building.Lighting));
             break;
         case Building.All:
-            _addQuery("RES1");
-            _addQuery("RES2");
-            _addQuery("PRO1");
-            _addQuery("PRO2");
-            queries.push(`
-                select sum(NB_POINT_SOUTIRAGE * COURBE_MOYENNE) / sum(NB_POINT_SOUTIRAGE) as COURBE_MOYENNE
-                from CONSO_SUP36_REGION
-                where HORODATAGE ${horodatageCond}
-                group by HORODATAGE;`);
-            _addQuery("PRO5");
+            _addQuery("RES1", t1, t2);
+            _addQuery("RES2", t1, t2);
+            _addQuery("PRO1", t1, t2);
+            _addQuery("PRO2", t1, t2);
+            queries.push(`urbanZoneElectricityConsumptionTertiary?t1='${t1}'` + (t2 ? `&t2='${t2}'` : ''))
+            _addQuery("PRO5", t1, t2);
 
             weights.push(() => getUrbanZoneNumberOfBuildings(urbanZone, Building.Residential1));
             weights.push(() => getUrbanZoneNumberOfBuildings(urbanZone, Building.Residential2));
@@ -241,7 +210,7 @@ export async function getUrbanZoneElectricityConsumption(t1: string, buildingTyp
 }
 
 export async function getDistrictElectricityConsumption(t1: string, buildingType: Building, t2?: string): Promise<number> {
-    const consumptions = await Promise.all(json_Decoupage_urbain.features
+    const consumptions: number[] = await Promise.all(json_Decoupage_urbain.features
         .map((feature: UrbanZoneFeature) => feature.properties.libelle)
         .map(async (urbanZone: string) => {
             return await getUrbanZoneElectricityConsumption(t1, buildingType, urbanZone, t2);
@@ -251,18 +220,13 @@ export async function getDistrictElectricityConsumption(t1: string, buildingType
 }
 
 export async function getUrbanZoneElectricityProduction(t1: string, urbanZone: string, t2?: string): Promise<number> {
-    const horodatageCond: string = !t2 ? `= '${t1}'` : `between '${t1}' and '${t2}'`;
-
-    let res = await runQuery(
-        `select avg(TOTAL_ENERGIE_INJECTEE / NB_POINT_INJECTION) as MOYENNE
-         from PROD_REGION
-         where HORODATAGE ${horodatageCond}`);
+    const res = await runQuery(`urbanZoneElectricityProduction?t1='${t1}'` + (t2 ? `&t2='${t2}'` : ''));
 
     return res[0].moyenne * getUrbanZoneNumberOfBuildings(urbanZone, Building.Producer);
 }
 
 export async function getDistrictElectricityProduction(t1: string, t2?: string): Promise<number> {
-    const consumptions = await Promise.all(json_Decoupage_urbain.features
+    const consumptions: number[] = await Promise.all(json_Decoupage_urbain.features
         .map((feature: UrbanZoneFeature) => feature.properties.libelle)
         .map(async (urbanZone: string) => {
             return await getUrbanZoneElectricityProduction(t1, urbanZone, t2);
