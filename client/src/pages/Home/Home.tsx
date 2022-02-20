@@ -1,7 +1,6 @@
 import './Home.css';
 import {Header} from "../../containers";
 import {Col, Container, Row} from "react-grid-system";
-import {DistrictEnergyBalance} from "../../components";
 
 function Home() {
     return (
@@ -12,7 +11,6 @@ function Home() {
                 <Row>
                     <Col sm={4}>
                         <h2 className='district-name'>QUARTIER DE LA BASTIDE</h2>
-                        <DistrictEnergyBalance/>
                     </Col>
                     <Col sm={8}>
                         Map
