@@ -8,9 +8,12 @@ export class Production {
 	@Column({ type: 'timestamp with time zone', nullable: false })
 	public timestamp: Date;
 
-	@Column({ name: 'injection_points', type: 'int', nullable: false })
+	@Column({ name: 'injection_points', type: 'float', nullable: false })
 	public injectionPoints: number;
 
-	@Column({ name: 'injected_energy', type: 'int', nullable: false })
+	@Column({ name: 'injected_energy', type: 'float', nullable: false })
 	public injectedEnergy: number;
+
+	@Column({ name: 'mean_curve', type: 'float', nullable: false })
+	public meanCurve: number;
 }

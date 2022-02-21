@@ -2,8 +2,13 @@ import { createConnection } from 'typeorm';
 import 'reflect-metadata';
 import { Consumption } from './entities/Consumption';
 import { Production } from './entities/Production';
+import { logger } from '../logger';
 
-export async function connectToDB(): Promise<void> {
+export async function connectToDB(synchronize: boolean): Promise<void> {
+	if (synchronize) {
+		logger.info('initializing database');
+	}
+
 	await createConnection({
 		type: 'postgres',
 		host: 'localhost',
@@ -15,7 +20,7 @@ export async function connectToDB(): Promise<void> {
 			Consumption,
 			Production,
 		],
-		synchronize: true,
-		logging: true,
+		synchronize: synchronize,
+		logging: false,
 	});
 }

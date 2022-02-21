@@ -8,10 +8,10 @@ export class Consumption {
 	@Column({ type: 'timestamp with time zone', nullable: false })
 	public timestamp: Date;
 
-	@Column({ name: 'drain_points', type: 'int', nullable: false })
+	@Column({ name: 'drain_points', type: 'float', nullable: false })
 	public drainPoints: number;
 
-	@Column({ name: 'drained_energy', type: 'int', nullable: false })
+	@Column({ name: 'drained_energy', type: 'float', nullable: false })
 	public drainedEnergy: number;
 
 	@Column({ name: 'mean_curve', type: 'float', nullable: false })
