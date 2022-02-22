@@ -3,9 +3,9 @@ import * as download from 'download';
 import { logger } from '../logger';
 import { connectToDB } from './connection';
 import { parseFile } from '@fast-csv/parse';
-import { Consumption } from './entities/Consumption';
+import { ConsumerProfile, Consumption } from './entities/Consumption';
 import { EntityManager, getConnection } from 'typeorm';
-import { Production } from './entities/Production';
+import { ProducerProfile, Production } from './entities/Production';
 
 const dataDir = 'raw-data';
 
@@ -52,13 +52,29 @@ async function loadConsumptionData(tx: EntityManager) {
 	for (let i = 1; i <= 2; ++i) {
 		for await (const line of readCsv(`consumption-part${i}`)) {
 			const consumption = new Consumption();
-			consumption.timestamp = new Date(line['Horodate']);
-			consumption.drainPoints = parseInt(line['Nb points soutirage'], 10);
 			consumption.drainedEnergy = parseInt(line['Total énergie soutirée (Wh)'], 10);
-			consumption.meanCurve = parseFloat(line['Courbe Moyenne n°1 + n°2 (Wh)']);
 
 			if (!consumption.drainedEnergy) {
-				continue
+				continue;
+			}
+
+			consumption.timestamp = new Date(line['Horodate']);
+			consumption.drainPoints = parseInt(line['Nb points soutirage'], 10);
+			consumption.meanCurve = parseFloat(line['Courbe Moyenne n°1 + n°2 (Wh)']);
+
+			const profile = line['Profil'];
+
+			if (profile === 'PRO5') {
+				consumption.profile = ConsumerProfile.PUBLIC_LIGHTING;
+			} else if (profile.startsWith('PRO')) {
+				consumption.profile = ConsumerProfile.PROFESSIONAL;
+			} else if (profile.startsWith('RES')) {
+				consumption.profile = ConsumerProfile.RESIDENTIAL;
+			} else if (profile.startsWith('ENT')) {
+				consumption.profile = ConsumerProfile.TERTIARY;
+			} else {
+				logger.error('failed to map consumer profile: ' + line['Profil']);
+				continue;
 			}
 
 			await tx.save(consumption);
@@ -69,13 +85,35 @@ async function loadConsumptionData(tx: EntityManager) {
 async function loadProductionData(tx: EntityManager) {
 	for await (const line of readCsv('production')) {
 		const production = new Production();
-		production.timestamp = new Date(line['Horodate']);
-		production.injectionPoints = parseInt(line['Nb points injection'], 10);
 		production.injectedEnergy = parseInt(line['Total énergie injectée (Wh)'], 10);
-		production.meanCurve = parseFloat(line['Courbe Moyenne n°1 + n°2 (Wh)']);
 
 		if (!production.injectedEnergy) {
-			continue
+			continue;
+		}
+
+		production.injectionPoints = parseInt(line['Nb points injection'], 10);
+		production.timestamp = new Date(line['Horodate']);
+		production.meanCurve = parseFloat(line['Courbe Moyenne n°1 + n°2 (Wh)']);
+
+		const profile = line['Filière de production'];
+
+		if (profile.endsWith('Bioénergies')) {
+			production.profile = ProducerProfile.BIOENERGY;
+		} else if (profile.endsWith('Eolien')) {
+			production.profile = ProducerProfile.EOLIAN;
+		} else if (profile.endsWith('Hydraulique')) {
+			production.profile = ProducerProfile.HYDRAULIC;
+		} else if (profile.endsWith('Thermique non renouvelable')) {
+			production.profile = ProducerProfile.NON_RENEWABLE_THERMAL;
+		} else if (profile.endsWith('Autres')) {
+			production.profile = ProducerProfile.OTHER;
+		} else if (profile.endsWith('Solaire')) {
+			production.profile = ProducerProfile.SOLAR;
+		} else if (profile.endsWith('Total toutes filières')) {
+			production.profile = ProducerProfile.TOTAL;
+		} else {
+			logger.error('failed to map producer profile: ' + line['Profil']);
+			continue;
 		}
 
 		await tx.save(production);

@@ -1,5 +1,12 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
+export enum ConsumerProfile {
+	PUBLIC_LIGHTING = 'PUBLIC_LIGHTING',
+	PROFESSIONAL = 'PROFESSIONAL',
+	RESIDENTIAL = 'RESIDENTIAL',
+	TERTIARY = 'TERTIARY',
+}
+
 @Entity('consumption')
 export class Consumption {
 	@PrimaryGeneratedColumn({ type: 'int' })
@@ -7,6 +14,9 @@ export class Consumption {
 
 	@Column({ type: 'timestamp with time zone', nullable: false })
 	public timestamp: Date;
+
+	@Column({ type: 'enum', enum: ConsumerProfile, nullable: false })
+	public profile: ConsumerProfile;
 
 	@Column({ name: 'drain_points', type: 'float', nullable: false })
 	public drainPoints: number;
