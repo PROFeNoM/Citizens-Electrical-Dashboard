@@ -1,4 +1,4 @@
-import * as turf from '@turf/turf'
+import * as turf from '@turf/turf';
 
 const {json_Decoupage_urbain} = require("../map/layers/Decoupage_urbain");
 const {json_eclairage_public_features} = require("../map/bor_ptlum");
@@ -16,7 +16,7 @@ export enum Building {
 	Professional2,
 }
 
-interface UrbanZoneFeature {
+export interface UrbanZoneFeature {
 	type: string;
 	properties: {
 		gid: number;
@@ -65,6 +65,37 @@ function getUrbanZoneFeatures(urbanZone: string, json: { features: [] }): UrbanZ
 	return json.features.filter((data: UrbanZoneFeature) => data.properties.libelle === urbanZone)[0];
 }
 
+
+/**
+ * Returns all urban zone features in La Bastide
+ * 
+ */
+export function getAllUrbanZone(): Array<UrbanZoneFeature> {
+	var UrbanZones = json_Decoupage_urbain.features;
+	//Reorder coordinates
+	UrbanZones.map((item: UrbanZoneFeature) => {
+		item.geometry.coordinates[0][0].map((item: [number, number]) => {
+			var tmp = item[0];
+			item[0] = item[1];
+			item[1] = tmp;
+		  })
+	  })
+
+	return UrbanZones;
+}
+
+/**
+ * Returns the coordinates of each vertex bounding an urban area
+ * @param zone Zone for which we want the coordinates
+ */
+export function getUrbanZoneCoordinates(zone: UrbanZoneFeature): [number, number][] {
+	return zone.geometry.coordinates[0][0];
+}
+
+
+export function getUrbanZoneLibelle(zone: UrbanZoneFeature): string {
+	return zone.properties.libelle;
+}
 /**
  * Return the number of buildings in an urban zone
  * @param urbanZone Urban zone to search into

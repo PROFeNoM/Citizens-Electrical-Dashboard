@@ -5,6 +5,19 @@ h1, p {
 }
 
 .leaflet-container {
-  height: 300px;
+  height: 100%;
   width: 100%;
+}
+
+
+
+.leaflet-area {
+  stroke-width: 1px;
+  fill-opacity: 0.2;
+  transition: stroke-width .3s fill-opacity .3s;
+}
+
+.leaflet-area:hover {
+  stroke-width: 5px;
+  fill-opacity: 0.4;
 }

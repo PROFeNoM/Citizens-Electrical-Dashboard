@@ -2,16 +2,30 @@ import './HomeMap.css';
 import {Link} from "react-router-dom";
 import React, { Component } from 'react';
 import { render } from 'react-dom';
-import { MapContainer as LMap, TileLayer, Marker, Polyline } from 'react-leaflet';
-const decoup = require('./../../map/layers/Decoupage_urbain');
+import { MapContainer as LMap, TileLayer, Marker, Polygon, Popup } from 'react-leaflet';
+
+import { 
+  Building,
+  UrbanZoneFeature,
+  getAllUrbanZone,
+  getUrbanZoneCoordinates,
+  getUrbanZoneLibelle,
+  getUrbanZoneNumberOfBuildings,
+  getUrbanZoneArea,
+} from '../../scripts/dbUtils';
+
+import DistrictEnergyBalance from '../DistrictEnergyBalance/DistrictEnergyBalance';
+
 
 
 function HomeMap() {
   
+    const UrbanZones = getAllUrbanZone();
+    
     const center = { lat: 44.845615, lng: -0.554897};
     const zoom = 14;
     
-    console.log(decoup.json_Decoupage_urbain.features[0].geometry.coordinates[0][0]);
+    console.log(UrbanZones[0].geometry.coordinates[0][0]);
 
     return (
       <LMap center={center} zoom={zoom}>
@@ -19,15 +33,23 @@ function HomeMap() {
         attribution='&copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
-      {decoup.json_Decoupage_urbain.features.map((item: any) => {
-          console.log(item);
-          item.geometry.coordinates[0][0].map((item: Float32Array) => {
-            var tmp = item[0];
-            item[0] = item[1];
-            item[1] = tmp;
-          })
+      {UrbanZones.map((item: UrbanZoneFeature) => {
+
+        const libelle: string = getUrbanZoneLibelle(item);
+        const nbBuilding: number = getUrbanZoneNumberOfBuildings(libelle, Building.Residential)
+		            + getUrbanZoneNumberOfBuildings(libelle, Building.Professional)
+		            + getUrbanZoneNumberOfBuildings(libelle, Building.Tertiary);
+        const area: string = new Intl.NumberFormat().format(Math.round(getUrbanZoneArea(libelle)));
         return (
-            <Polyline positions={item.geometry.coordinates[0][0]} />
+            <Polygon className="leaflet-area" positions={getUrbanZoneCoordinates(item)}>
+              <Popup>
+                    <h3>{libelle}</h3>
+                    <p>{nbBuilding} bâtiments</p>
+                    <p>{area} m²</p>
+
+
+              </Popup>
+            </Polygon>
             );
 
       })}

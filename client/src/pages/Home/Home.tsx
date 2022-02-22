@@ -16,7 +16,7 @@ function Home() {
                         <h2 className='district-name'>QUARTIER DE LA BASTIDE</h2>
                         <DistrictEnergyBalance/>
                     </Col>
-                    <Col sm={4}>
+                    <Col sm={8}>
                         <HomeMap />
                     </Col>
                 </Row>
