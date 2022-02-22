@@ -10,6 +10,10 @@ export enum Building {
 	Lighting,
 	Producer,
 	All,
+	Residential1,
+	Residential2,
+	Professional1,
+	Professional2,
 }
 
 interface UrbanZoneFeature {
