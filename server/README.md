@@ -1,18 +1,34 @@
 # Citizen Electrical Dashboard — Server
 
-## Init database
+## Install the dependencies
 
-### 1.
-
-Make sure that you have a PostgreSQL database running on the default port (5432), with the default user (postgres) and the default password (postgres).
-
-**TODO: config file**
-
-### 2.
-
-Build and run the script:
+Install PNPM if needed:
 
 ```bash
-npm run build
-npm run init-db
+npm i -g pnpm
+```
+
+Then install the project dependencies:
+
+```bash
+pnpm i
+```
+
+## Start the database
+
+```bash
+docker-compose up
+```
+
+## Init database
+
+```bash
+pnpm build
+pnpm init-db
+```
+
+## Run the server in watch mode
+
+```bash
+pnpm watch
 ```
