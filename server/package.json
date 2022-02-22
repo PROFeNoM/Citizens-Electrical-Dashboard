@@ -15,6 +15,7 @@
 		"express-validator": "^6.14.0",
 		"log4js": "^6.4.1",
 		"pg": "^8.7.3",
+		"pnpm": "^6.32.0",
 		"reflect-metadata": "^0.1.13",
 		"typeorm": "^0.2.43"
 	},
