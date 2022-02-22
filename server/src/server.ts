@@ -1,6 +1,12 @@
 import * as express from 'express';
+import { NextFunction, Request, Response } from 'express';
 import { getConnection } from 'typeorm';
-import { Consumption } from './db/entities/Consumption';
+import { ConsumerProfile, Consumption } from './db/entities/Consumption';
+import { query, validationResult } from 'express-validator';
+import { ProducerProfile, Production } from './db/entities/Production';
+import { logger } from './logger';
+
+const port = 5000;
 
 const app = express();
 const cors = require('cors');
@@ -9,75 +15,83 @@ const cors = require('cors');
 app.use(cors());
 app.use(express.json());
 
-// ROUTES //
+// examples: http://localhost:5000/consumption?minDate=1609455600000&maxDate=1609459200000
 
-// get all consumption data
-app.get('/consumption', async (_req, res) => {
-	const data = await getConnection().createQueryBuilder()
-		.select('*')
-		.from(Consumption, 'c')
-		.getRawMany()
-
-	res.json(data);
-});
-/*
-// use example: http://localhost:5000/urbanZoneElectricityConsumption?profile=RES1&t1='2021-09-30 23:30:00'
-app.get('/urbanZoneElectricityConsumption', async (req: any, res: { json: (arg0: any) => void; }) => {
-	try {
-		const profile: string = req.query.profile;
-		const t1: string = req.query.t1;
-		const t2: string = req.query.t2;
-		const horodatageCond: string = !t2 ? `= ${t1}` : `between ${t1} and ${t2}`;
-		const allConso = await pool.query(
-			`select avg(COURBE_MOYENNE) as COURBE_MOYENNE
-             from CONSO_INF36_REGION
-             where PROFIL like '${profile}%'
-               and HORODATAGE ${horodatageCond}
-             group by HORODATAGE`);
-		res.json(allConso.rows);
-	} catch (e: any) {
-		console.error(e.message);
+const routes = [
+	{
+		endpoint: '/consumption',
+		entity: Consumption,
+		profileEnum: ConsumerProfile,
+		fields: 'timestamp, profile, drain_points, drained_energy, mean_curve',
+	},
+	{
+		endpoint: '/production',
+		entity: Production,
+		profileEnum: ProducerProfile,
+		fields: 'timestamp, profile, injection_points, injected_energy, mean_curve',
 	}
-});
+]
 
-// use example: http://localhost:5000/urbanZoneElectricityConsumptionTertiary?t1='2021-09-30 23:30:00'
-app.get('/urbanZoneElectricityConsumptionTertiary', async (req: any, res: { json: (arg0: any) => void; }) => {
-	try {
-		const t1: string = req.query.t1;
-		const t2: string = req.query.t2;
-		const horodatageCond: string = !t2 ? `= ${t1}` : `between ${t1} and ${t2}`;
-		const allConso = await pool.query(
-			`select sum(NB_POINT_SOUTIRAGE * COURBE_MOYENNE) / sum(NB_POINT_SOUTIRAGE) as COURBE_MOYENNE
-             from CONSO_SUP36_REGION
-             where HORODATAGE ${horodatageCond}
-             group by HORODATAGE;`);
-		res.json(allConso.rows);
-	} catch (e: any) {
-		console.error(e.message);
+for (const route of routes) {
+	app.get(route.endpoint,
+		query('minDate').matches(/\d+/),
+		query('maxDate').matches(/\d+/),
+		query('profiles').optional().isArray().custom(input => isEnumArray(input, route.profileEnum)),
+		checkRequest,
+		async (req, res) => {
+			const minDate = new Date(parseInt(req.query.minDate as string, 10));
+			const maxDate = new Date(parseInt(req.query.maxDate as string, 10));
+			const profiles = req.query.profiles;
+
+			let query = await getConnection().createQueryBuilder()
+				.select(route.fields)
+				.from(route.entity, 'x')
+				.where('x.timestamp between :minDate and :maxDate', { minDate, maxDate });
+
+			if (profiles) {
+				query = query.andWhere('x.profile IN (:...profiles)', { profiles });
+			}
+
+			res.send(await query.getRawMany());
+		});
+}
+
+function isEnumArray(input: string[], enumDef: object) {
+	const accepted = Object.keys(enumDef);
+
+	// shortcut
+	if (input.length > accepted.length) {
+		return false;
 	}
-});
 
-
-// use example: http://localhost:5000/urbanZoneElectricityProduction?t1='2021-09-30 13:00:00'&t2='2021-09-30 23:30:00'
-app.get('/urbanZoneElectricityProduction', async (req: any, res: { json: (arg0: any) => void; }) => {
-	try {
-		const t1: string = req.query.t1;
-		const t2: string = req.query.t2;
-		const horodatageCond: string = !t2 ? `= ${t1}` : `between ${t1} and ${t2}`;
-		const allConso = await pool.query(
-			`select avg(TOTAL_ENERGIE_INJECTEE / NB_POINT_INJECTION) as MOYENNE
-             from PROD_REGION
-             where HORODATAGE ${horodatageCond}`);
-		res.json(allConso.rows);
-	} catch (e: any) {
-		console.error(e.message);
+	// check that there is no duplicate
+	if (new Set(input).size !== input.length) {
+		return false;
 	}
-});
-*/
+
+	// check that there is only valid values
+	for (const elem of input) {
+		if (!accepted.includes(elem)) {
+			return false;
+		}
+	}
+
+	return true;
+}
+
+function checkRequest(req: Request, res: Response, next: NextFunction) {
+	const errors = validationResult(req);
+	if (errors.isEmpty()) {
+		next();
+	} else {
+		res.status(400).json({ errors: errors.array() });
+	}
+}
+
 export async function startServer() {
 	await new Promise<void>(resolve => {
-		app.listen(5000, () => {
-			console.log('server has started on port 5000');
+		app.listen(port, () => {
+			logger.info(`server has started on port ${port}`);
 			resolve();
 		});
 	});

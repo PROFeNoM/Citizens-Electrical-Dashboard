@@ -1,4 +1,4 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, Index, PrimaryGeneratedColumn } from 'typeorm';
 
 export enum ProducerProfile {
 	BIOENERGY = 'BIOENERGY',
@@ -16,6 +16,7 @@ export class Production {
 	public id: number;
 
 	@Column({ type: 'timestamp with time zone', nullable: false })
+	@Index()
 	public timestamp: Date;
 
 	@Column({ type: 'enum', enum: ProducerProfile })

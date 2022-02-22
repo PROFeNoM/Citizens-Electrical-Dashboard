@@ -1,4 +1,4 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, Index, PrimaryGeneratedColumn } from 'typeorm';
 
 export enum ConsumerProfile {
 	PUBLIC_LIGHTING = 'PUBLIC_LIGHTING',
@@ -13,6 +13,7 @@ export class Consumption {
 	public id: number;
 
 	@Column({ type: 'timestamp with time zone', nullable: false })
+	@Index()
 	public timestamp: Date;
 
 	@Column({ type: 'enum', enum: ConsumerProfile, nullable: false })
