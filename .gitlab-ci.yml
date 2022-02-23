@@ -1,0 +1,55 @@
+variables:
+  CI_BUILD_ARCHS: linux/arm64,linux/amd64
+  DOCKER_HOST: tcp://docker:2375/
+
+stages:
+- build_files
+- build_images
+
+build_files_job:
+  only:
+  - ci-test
+  image: cl00e9ment/node.js-builder:light
+  stage: build_files
+  before-script:
+  - pnpm config set store-dir .pnpm-store
+  script:
+  # client
+  - cd client
+  - pnpm install --frozen-lockfile
+  - pnpm build
+  - cd ..
+  # server
+  - cd server
+  - pnpm install --frozen-lockfile
+  - pnpm build
+  - pnpm install --frozen-lockfile --prod
+  - cd ..
+  # create the artifact
+  - mkdir app
+  - mv client/build app/www
+  - mv server/build server/package.json server/pnpm-lock.yaml app
+  cache:
+    key: "pnpm-store-cache"
+    paths:
+    - .pnpm-store
+  artifacts:
+    paths:
+    - app
+    expire_in: 1 hour
+
+build_images_job:
+  only:
+  - ci-test
+  image: jonoh/docker-buildx-qemu
+  stage: build_images
+  services:
+  - docker:dind
+  before_script:
+  - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" --password-stdin $CI_REGISTRY
+  # Use docker-container driver to allow useful features (push/multi-platform)
+  - docker buildx create --driver docker-container --use
+  - docker buildx inspect --bootstrap
+  script:
+  - update-binfmts --enable # Important: Ensures execution of other binary formats is enabled in the kernel
+  - docker buildx build --platform $CI_BUILD_ARCHS --progress plain --pull -t "$CI_REGISTRY_IMAGE" --push .
