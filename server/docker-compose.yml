@@ -1,5 +1,6 @@
 services:
   dashboard-db:
+    container_name: dashboard-db
     image: postgres:14-alpine
     environment:
       POSTGRES_PASSWORD: postgres
