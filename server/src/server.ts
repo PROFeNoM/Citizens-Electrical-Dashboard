@@ -89,10 +89,6 @@ function checkRequest(req: Request, res: Response, next: NextFunction) {
 }
 
 export async function startServer() {
-	await new Promise<void>(resolve => {
-		app.listen(port, () => {
-			logger.info(`server has started on port ${port}`);
-			resolve();
-		});
-	});
+	await new Promise<void>(resolve => app.listen(port, resolve));
+	logger.info(`server has started on port ${port}`);
 }
