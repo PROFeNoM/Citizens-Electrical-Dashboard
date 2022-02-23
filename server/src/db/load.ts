@@ -17,7 +17,7 @@ main().catch(console.error);
 
 async function main() {
 	await downloadRawData();
-	await connectToDB(true);
+	await connectToDB();
 	await getConnection().transaction(async tx => {
 		await loadConsumptionData(tx);
 		await loadProductionData(tx);
