@@ -244,7 +244,7 @@ export async function getDistrictElectricityConsumption(t1: number, buildingType
 }
 
 export async function getUrbanZoneElectricityProduction(t1: number, urbanZone: string, t2: number): Promise<number> {
-	const rawRes = await runQuery(`production?t1='${t1}'&t2='${t2}'&profiles[0]=SOLAR`);
+	const rawRes = await runQuery(`production?minDate=${t1}&maxDate=${t2}&profiles[0]=SOLAR`);
 	const res = rawRes.filter((rawRecord: { mean_curve: null | number; }) => rawRecord.mean_curve != null);
 	return (res.reduce((total: number, next: { mean_curve: number; }) => total + next.mean_curve, 0) / res.length) * getUrbanZoneNumberOfBuildings(urbanZone, Building.Producer);
 }
