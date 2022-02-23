@@ -88,7 +88,7 @@ function HomeMap() {
 				</Col>
 				<Col sm={12} md={12} xl={6}>
 					<div className='urban-info'>
-						<h3 id="urbanZone"></h3>
+						<h3 id="urbanZone">Choisissez une zone urbaine</h3>
 						<p id="nbBuilding"></p>
 						<p id="area"></p>
 						<p id="elecCons"></p>

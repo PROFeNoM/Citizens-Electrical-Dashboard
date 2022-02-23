@@ -26,9 +26,11 @@ function DistrictEnergyBalance() {
 
 	return (
 		<>
-			<span className='district-info'>{nbBuilding} bâtiments</span>
-			<span className='district-info'>{area} m2</span>
-			<span className='district-info'>{elecCons} conso mois dec</span>
+			<div className='district-info-container'>
+				<p className='district-info'>{nbBuilding} bâtiments</p>
+				<p className='district-info'>{area} m2</p>
+				<p className='district-info'>{elecCons} conso mois dec</p>
+			</div>
 		</>
 	);
 }

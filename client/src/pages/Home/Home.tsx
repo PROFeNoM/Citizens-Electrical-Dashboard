@@ -10,13 +10,13 @@ function Home() {
             <Header title={'ACCUEIL'}/>
             <h1 className="app-title">TABLEAU ELECTRIQUE CITOYEN</h1>
             
-            <Container>
+            <Container fluid>
                 <Row>
-                    <Col sm={4}>
+                    <Col sm={12} md={12} lg={12} xl={4}>
                         <h2 className='district-name'>QUARTIER DE LA BASTIDE</h2>
                         <DistrictEnergyBalance/>
                     </Col>
-                    <Col sm={8}>
+                    <Col sm={12} md={12} lg={12} xl={8}>
                         <HomeMap />
                     </Col>
                 </Row>
