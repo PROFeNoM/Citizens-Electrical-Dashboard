@@ -5,8 +5,7 @@ import { ConsumerProfile, Consumption } from './db/entities/Consumption';
 import { query, validationResult } from 'express-validator';
 import { ProducerProfile, Production } from './db/entities/Production';
 import { logger } from './logger';
-
-const port = 5000;
+import { config } from './config';
 
 const app = express();
 const cors = require('cors');
@@ -90,6 +89,6 @@ function checkRequest(req: Request, res: Response, next: NextFunction) {
 }
 
 export async function startServer() {
-	await new Promise<void>(resolve => app.listen(port, resolve));
-	logger.info(`server has started on port ${port}`);
+	await new Promise<void>(resolve => app.listen(config.webServer.port, resolve));
+	logger.info(`server has started on port ${config.webServer.port}`);
 }
