@@ -1,7 +1,7 @@
 import './HomeMap.css';
 import React, {useEffect, useState} from 'react';
-import {MapContainer as LMap, Polygon, Popup, TileLayer} from 'react-leaflet';
-
+import {MapContainer as LMap, Marker, Polygon, Popup, TileLayer} from 'react-leaflet';
+import {Col, Container, Row} from "react-grid-system";
 import {
 	Building,
 	getAllUrbanZone,
@@ -14,6 +14,19 @@ import {
 	UrbanZoneFeature
 } from '../../scripts/dbUtils';
 
+
+function change_text(urbanZone: string, nbBuilding: number, area: string, elecCons: string, elecProd: string) {
+	// @ts-ignore
+	document.getElementById("urbanZone").innerText = urbanZone;
+	// @ts-ignore
+	document.getElementById("nbBuilding").innerText = `${nbBuilding} bâtiments`;
+	// @ts-ignore
+	document.getElementById("area").innerText = `${area} m²`;
+	// @ts-ignore
+	document.getElementById("elecCons").innerText = `${elecCons} kWh/mois d'électricité consommée`;
+	// @ts-ignore
+	document.getElementById("elecProd").innerText = `${elecProd} kWh/mois d'électricité produite`;
+}
 
 // @ts-ignore
 const UrbanZoneEnergyBalance = ({item}) => {
@@ -44,14 +57,12 @@ const UrbanZoneEnergyBalance = ({item}) => {
 	});
 
 	return (
-		<Polygon className="leaflet-area" positions={getUrbanZoneCoordinates(item)}>
-			<Popup>
-				<h3>{urbanZone}</h3>
-				<p>{nbBuilding} bâtiments</p>
-				<p>{area} m²</p>
-				<p>{elecCons} kWh/mois d'électricité consommée</p>
-				<p>{elecProd} kWh/mois d'électricité produite</p>
-			</Popup>
+		<Polygon className="leaflet-area" positions={getUrbanZoneCoordinates(item)}
+				 eventHandlers={{
+					 mouseover: () => {
+						 change_text(urbanZone, nbBuilding, area, elecCons, elecProd);
+					 }
+				 }}>
 		</Polygon>
 	);
 }
@@ -64,13 +75,28 @@ function HomeMap() {
 	const zoom = 14;
 
 	return (
-		<LMap center={center} zoom={zoom}>
-			<TileLayer
-				attribution='&copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-				url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-			/>
-			{UrbanZones.map((item: UrbanZoneFeature) => <UrbanZoneEnergyBalance item={item} />)}
-		</LMap>
+		<Container>
+			<Row >
+				<Col sm={12} md={12} xl={6}>
+					<LMap center={center} zoom={zoom}>
+						<TileLayer
+							attribution='&copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+							url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+						/>
+						{UrbanZones.map((item: UrbanZoneFeature) => <UrbanZoneEnergyBalance item={item}/>)}
+					</LMap>
+				</Col>
+				<Col sm={12} md={12} xl={6}>
+					<div className='urban-info'>
+						<h3 id="urbanZone"></h3>
+						<p id="nbBuilding"></p>
+						<p id="area"></p>
+						<p id="elecCons"></p>
+						<p id="elecProd"></p>
+					</div>
+				</Col>
+			</Row>
+		</Container>
 	);
 }
 
