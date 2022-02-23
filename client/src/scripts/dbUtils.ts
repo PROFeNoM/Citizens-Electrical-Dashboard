@@ -163,9 +163,10 @@ export function getDistrictArea(): number {
 }
 
 async function runQuery(queryLink: string) {
-	//console.log("http://localhost:5000/" + queryLink);
+	const host = window.location.hostname === 'localhost' ? 'http://localhost:5000' : 'https://pfa.c-saccoccio.fr'
+
 	try {
-		const response = await fetch("http://localhost:5000/" + queryLink);
+		const response = await fetch(`${host}/${queryLink}`);
 		return await response.json()
 	} catch (err) {
 		const error = err as Error;
