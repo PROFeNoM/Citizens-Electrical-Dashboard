@@ -41,7 +41,7 @@ build_files_job:
   # create the artifact
   - mkdir app
   - mv client/build app/www
-  - mv server/build server/package.json server/pnpm-lock.yaml app
+  - mv server/node_modules server/build server/package.json server/pnpm-lock.yaml app
   cache:
     key: "pnpm-store-cache"
     paths:
