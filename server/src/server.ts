@@ -14,6 +14,7 @@ const cors = require('cors');
 // middleware
 app.use(cors());
 app.use(express.json());
+app.use(express.static('www'))
 
 // examples: http://localhost:5000/consumption?minDate=1609455600000&maxDate=1609459200000
 
