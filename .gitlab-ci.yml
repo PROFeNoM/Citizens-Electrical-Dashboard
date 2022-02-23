@@ -17,7 +17,7 @@ build_files_job:
   # client
   - cd client
   - pnpm install --frozen-lockfile
-  - pnpm build
+  - CI=false pnpm build
   - cd ..
   # server
   - cd server
