@@ -68,7 +68,7 @@ function getUrbanZoneFeatures(urbanZone: string, json: { features: [] }): UrbanZ
 
 /**
  * Returns all urban zone features in La Bastide
- * 
+ *
  */
 export function getAllUrbanZone(): Array<UrbanZoneFeature> {
 	var UrbanZones = json_Decoupage_urbain.features;
@@ -78,8 +78,8 @@ export function getAllUrbanZone(): Array<UrbanZoneFeature> {
 			var tmp = item[0];
 			item[0] = item[1];
 			item[1] = tmp;
-		  })
-	  })
+		})
+	})
 
 	return UrbanZones;
 }
@@ -93,9 +93,10 @@ export function getUrbanZoneCoordinates(zone: UrbanZoneFeature): [number, number
 }
 
 
-export function getUrbanZoneLibelle(zone: UrbanZoneFeature): string {
+export function getUrbanZoneLibelle(zone: UrbanZoneFeature): string {
 	return zone.properties.libelle;
 }
+
 /**
  * Return the number of buildings in an urban zone
  * @param urbanZone Urban zone to search into
@@ -107,26 +108,26 @@ export function getUrbanZoneNumberOfBuildings(urbanZone: string, buildingType: B
 	if (data) {
 		const dataProperties: UrbanZoneFeature["properties"] = data.properties;
 		switch (buildingType) {
-		case Building.Residential:
-			return dataProperties.RES1 + dataProperties.RES2;
-		case Building.Residential1:
-			return dataProperties.RES1;
-		case Building.Residential2:
-			return dataProperties.RES2;
-		case Building.Professional:
-			return dataProperties.PRO1 + dataProperties.PRO2;
-		case Building.Professional1:
-			return dataProperties.PRO1;
-		case Building.Professional2:
-			return dataProperties.PRO2;
-		case Building.Tertiary:
-			return dataProperties.ENT;
-		case Building.Lighting:
-			const searchWithin = turf.polygon(data.geometry.coordinates[0]);
-			const ptsWithin: LightingFeature[] = json_eclairage_public_features.filter((feature: LightingFeature) => turf.booleanWithin(turf.point(feature.geometry.coordinates), searchWithin));
-			return ptsWithin.length;
-		case Building.Producer:
-			return dataProperties.PROD_F5;
+			case Building.Residential:
+				return dataProperties.RES1 + dataProperties.RES2;
+			case Building.Residential1:
+				return dataProperties.RES1;
+			case Building.Residential2:
+				return dataProperties.RES2;
+			case Building.Professional:
+				return dataProperties.PRO1 + dataProperties.PRO2;
+			case Building.Professional1:
+				return dataProperties.PRO1;
+			case Building.Professional2:
+				return dataProperties.PRO2;
+			case Building.Tertiary:
+				return dataProperties.ENT;
+			case Building.Lighting:
+				const searchWithin = turf.polygon(data.geometry.coordinates[0]);
+				const ptsWithin: LightingFeature[] = json_eclairage_public_features.filter((feature: LightingFeature) => turf.booleanWithin(turf.point(feature.geometry.coordinates), searchWithin));
+				return ptsWithin.length;
+			case Building.Producer:
+				return dataProperties.PROD_F5;
 		}
 	}
 
@@ -179,68 +180,60 @@ async function runQuery(queryLink: string) {
  * @param urbanZone Urban zone of the buildings
  * @param t2 Timestamp of the end of the time period
  */
-export async function getUrbanZoneElectricityConsumption(t1: string, buildingType: Building, urbanZone: string, t2?: string): Promise<number> {
+export async function getUrbanZoneElectricityConsumption(t1: number, buildingType: Building, urbanZone: string, t2: number): Promise<number> {
 	let queries: string[] = [];
 	let weights: any[] = [];
 
 
-	function _addQuery(profile: string, t1: string, t2?: string) {
-		queries.push(`urbanZoneElectricityConsumption?profile=RES1&t1='${t1}'` + (t2 ? `&t2='${t2}'` : ''));
+	function _addQuery(t1: number, t2: number, profiles?: string[]) {
+		queries.push(`consumption?minDate=${t1}&maxDate=${t2}`
+			+ (profiles ? profiles.reduce((prev: string, curr: string, i: number) => prev + `&profiles[${i}]=${curr}`, "") : ""));
 	}
 
 	switch (buildingType) {
-	case Building.Residential:
-		_addQuery("RES1", t1, t2);
-		_addQuery("RES2", t1, t2);
+		case Building.Residential:
+			_addQuery(t1, t2, ["RESIDENTIAL"]);
 
-		weights.push(() => getUrbanZoneNumberOfBuildings(urbanZone, Building.Residential1));
-		weights.push(() => getUrbanZoneNumberOfBuildings(urbanZone, Building.Residential2));
-		break;
-	case Building.Professional:
-		_addQuery("PRO1", t1, t2);
-		_addQuery("PRO2", t1, t2);
+			weights.push(() => getUrbanZoneNumberOfBuildings(urbanZone, Building.Residential));
+			break;
+		case Building.Professional:
+			_addQuery(t1, t2, ["PROFESSIONAL"]);
 
-		weights.push(() => getUrbanZoneNumberOfBuildings(urbanZone, Building.Professional1));
-		weights.push(() => getUrbanZoneNumberOfBuildings(urbanZone, Building.Professional2));
-		break;
-	case Building.Tertiary:
-		queries.push(`urbanZoneElectricityConsumptionTertiary?t1='${t1}'` + (t2 ? `&t2='${t2}'` : ''))
+			weights.push(() => getUrbanZoneNumberOfBuildings(urbanZone, Building.Professional));
+			break;
+		case Building.Tertiary:
+			_addQuery(t1, t2, ["TERTIARY"]);
 
-		weights.push(() => getUrbanZoneNumberOfBuildings(urbanZone, Building.Tertiary));
-		break;
-	case Building.Lighting:
-		_addQuery("PRO5", t1, t2);
+			weights.push(() => getUrbanZoneNumberOfBuildings(urbanZone, Building.Tertiary));
+			break;
+		case Building.Lighting:
+			_addQuery(t1, t2, ["PUBLIC_LIGHTING"]);
 
-		weights.push(() => getUrbanZoneNumberOfBuildings(urbanZone, Building.Lighting));
-		break;
-	case Building.All:
-		_addQuery("RES1", t1, t2);
-		_addQuery("RES2", t1, t2);
-		_addQuery("PRO1", t1, t2);
-		_addQuery("PRO2", t1, t2);
-		queries.push(`urbanZoneElectricityConsumptionTertiary?t1='${t1}'` + (t2 ? `&t2='${t2}'` : ''))
-		_addQuery("PRO5", t1, t2);
+			weights.push(() => getUrbanZoneNumberOfBuildings(urbanZone, Building.Lighting));
+			break;
+		case Building.All:
+			_addQuery(t1, t2, ["RESIDENTIAL", "PROFESSIONAL", "TERTIARY", "PUBLIC_LIGHTING"]);
 
-		weights.push(() => getUrbanZoneNumberOfBuildings(urbanZone, Building.Residential1));
-		weights.push(() => getUrbanZoneNumberOfBuildings(urbanZone, Building.Residential2));
-		weights.push(() => getUrbanZoneNumberOfBuildings(urbanZone, Building.Professional1));
-		weights.push(() => getUrbanZoneNumberOfBuildings(urbanZone, Building.Professional2));
-		weights.push(() => getUrbanZoneNumberOfBuildings(urbanZone, Building.Tertiary));
-		weights.push(() => getUrbanZoneNumberOfBuildings(urbanZone, Building.Lighting));
-		break;
+			weights.push(() => getUrbanZoneNumberOfBuildings(urbanZone, Building.Residential)
+				+ getUrbanZoneNumberOfBuildings(urbanZone, Building.Professional)
+				+ getUrbanZoneNumberOfBuildings(urbanZone, Building.Tertiary)
+				+ getUrbanZoneNumberOfBuildings(urbanZone, Building.Lighting));
+			break;
 	}
 
 	let resultWh: number = 0;
 
 	for (let i: number = 0; i < queries.length; i++) {
-		let res = await runQuery(queries[i]);
-		resultWh += res[0].courbe_moyenne * weights[i]();
+		const rawRes = await runQuery(queries[i]);
+		const res = rawRes.filter((rawRecord: { mean_curve: null | number; }) => rawRecord.mean_curve != null);
+
+		resultWh += res.reduce((total: number, next: { mean_curve: number; }) => total + next.mean_curve, 0) / res.length;
 	}
 
 	return resultWh;
 }
 
-export async function getDistrictElectricityConsumption(t1: string, buildingType: Building, t2?: string): Promise<number> {
+export async function getDistrictElectricityConsumption(t1: number, buildingType: Building, t2: number): Promise<number> {
 	const consumptions: number[] = await Promise.all(json_Decoupage_urbain.features
 		.map((feature: UrbanZoneFeature) => feature.properties.libelle)
 		.map(async (urbanZone: string) => {
@@ -250,13 +243,13 @@ export async function getDistrictElectricityConsumption(t1: string, buildingType
 	return consumptions.reduce((prev: number, curr: number) => prev + curr, 0);
 }
 
-export async function getUrbanZoneElectricityProduction(t1: string, urbanZone: string, t2?: string): Promise<number> {
-	const res = await runQuery(`urbanZoneElectricityProduction?t1='${t1}'` + (t2 ? `&t2='${t2}'` : ''));
-
-	return res[0].moyenne * getUrbanZoneNumberOfBuildings(urbanZone, Building.Producer);
+export async function getUrbanZoneElectricityProduction(t1: number, urbanZone: string, t2: number): Promise<number> {
+	const rawRes = await runQuery(`production?t1='${t1}'&t2='${t2}'&profiles[0]=SOLAR`);
+	const res = rawRes.filter((rawRecord: { mean_curve: null | number; }) => rawRecord.mean_curve != null);
+	return (res.reduce((total: number, next: { mean_curve: number; }) => total + next.mean_curve, 0) / res.length) * getUrbanZoneNumberOfBuildings(urbanZone, Building.Producer);
 }
 
-export async function getDistrictElectricityProduction(t1: string, t2?: string): Promise<number> {
+export async function getDistrictElectricityProduction(t1: number, t2: number): Promise<number> {
 	const consumptions: number[] = await Promise.all(json_Decoupage_urbain.features
 		.map((feature: UrbanZoneFeature) => feature.properties.libelle)
 		.map(async (urbanZone: string) => {
@@ -266,14 +259,14 @@ export async function getDistrictElectricityProduction(t1: string, t2?: string):
 	return consumptions.reduce((prev: number, curr: number) => prev + curr, 0);
 }
 
-export async function getUrbanZoneSelfConsumptionRatio(t1: string, urbanZone: string, t2?: string): Promise<number> {
+export async function getUrbanZoneSelfConsumptionRatio(t1: number, urbanZone: string, t2: number): Promise<number> {
 	const prod = await getUrbanZoneElectricityProduction(t1, urbanZone, t2);
 	const cons = await getUrbanZoneElectricityConsumption(t1, Building.All, urbanZone, t2);
 
 	return prod / cons;
 }
 
-export async function getDistrictSelfConsumption(t1: string, t2?: string): Promise<number> {
+export async function getDistrictSelfConsumption(t1: number, t2: number): Promise<number> {
 	const prod = await getDistrictElectricityProduction(t1, t2);
 	const cons = await getDistrictElectricityConsumption(t1, Building.All, t2);
 

@@ -14,10 +14,10 @@ h1, p {
 .leaflet-area {
   stroke-width: 1px;
   fill-opacity: 0.2;
-  transition: stroke-width .3s fill-opacity .3s;
+  transition: stroke-width .3s, fill-opacity .3s;
 }
 
-.leaflet-area:hover {
+.leaflet-area:hover {
   stroke-width: 5px;
   fill-opacity: 0.4;
 }

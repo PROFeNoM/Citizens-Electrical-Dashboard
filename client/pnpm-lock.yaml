@@ -10,6 +10,7 @@ specifiers:
   '@types/node': ^17.0.18
   '@types/react': ^17.0.39
   '@types/react-dom': ^17.0.11
+  leaflet: ^1.7.1
   react: ^17.0.2
   react-dom: ^17.0.2
   react-grid-system: ^8.0.1
@@ -22,11 +23,12 @@ specifiers:
 
 dependencies:
   '@turf/turf': 6.5.0
+  leaflet: 1.7.1
   react: 17.0.2
   react-dom: 17.0.2_react@17.0.2
   react-grid-system: 8.0.1_react@17.0.2
   react-icons: 4.3.1_react@17.0.2
-  react-leaflet: 3.2.5_react-dom@17.0.2+react@17.0.2
+  react-leaflet: 3.2.5_91fa1427a3331e02931dfea77720a290
   react-router-dom: 6.2.1_react-dom@17.0.2+react@17.0.2
   react-scripts: 5.0.0_react@17.0.2+typescript@4.5.5
   typescript: 4.5.5
@@ -1813,13 +1815,14 @@ packages:
       webpack-dev-server: 4.7.4_webpack@5.69.1
     dev: false
 
-  /@react-leaflet/core/1.1.1_react-dom@17.0.2+react@17.0.2:
+  /@react-leaflet/core/1.1.1_91fa1427a3331e02931dfea77720a290:
     resolution: {integrity: sha512-7PGLWa9MZ5x/cWy8EH2VzI4T8q5WpuHbixzCDXqixP/WyqwIrg5NDUPgYuFnB4IEIZF+6nA265mYzswFo/h1Pw==}
     peerDependencies:
       leaflet: ^1.7.1
       react: ^17.0.1
       react-dom: ^17.0.1
     dependencies:
+      leaflet: 1.7.1
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
     dev: false
@@ -7241,6 +7244,10 @@ packages:
       language-subtag-registry: 0.3.21
     dev: false
 
+  /leaflet/1.7.1:
+    resolution: {integrity: sha512-/xwPEBidtg69Q3HlqPdU3DnrXQOvQU/CCHA1tcDQVzOwm91YMYaILjNp7L4Eaw5Z4sOYdbBz6koWyibppd8Zqw==}
+    dev: false
+
   /leven/3.1.0:
     resolution: {integrity: sha512-qsda+H8jTaUaN/x5vzW2rzc+8Rw4TAQ/4KjB46IwK5VH+IlVeeeje/EoZRpiXvIqjFgK84QffqPztGI3VBLG1A==}
     engines: {node: '>=6'}
@@ -8926,14 +8933,15 @@ packages:
   /react-is/17.0.2:
     resolution: {integrity: sha512-w2GsyukL62IJnlaff/nRegPQR94C/XXamvMWmSHRJ4y7Ts/4ocGRmTHvOs8PSE6pB3dWOrD/nueuU5sduBsQ4w==}
 
-  /react-leaflet/3.2.5_react-dom@17.0.2+react@17.0.2:
+  /react-leaflet/3.2.5_91fa1427a3331e02931dfea77720a290:
     resolution: {integrity: sha512-Z3KZ+4SijsRbbrt2I1a3ZDY6+V6Pm91eYTdxTN18G6IOkFRsJo1BuSPLFnyFrlF3WDjQFPEcTPkEgD1VEeAoBg==}
     peerDependencies:
       leaflet: ^1.7.1
       react: ^17.0.1
       react-dom: ^17.0.1
     dependencies:
-      '@react-leaflet/core': 1.1.1_react-dom@17.0.2+react@17.0.2
+      '@react-leaflet/core': 1.1.1_91fa1427a3331e02931dfea77720a290
+      leaflet: 1.7.1
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
     dev: false

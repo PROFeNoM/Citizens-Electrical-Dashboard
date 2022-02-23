@@ -1,8 +1,6 @@
 import './HomeMap.css';
-import {Link} from "react-router-dom";
-import React, { Component } from 'react';
-import { render } from 'react-dom';
-import { MapContainer as LMap, TileLayer, Marker, Polygon, Popup } from 'react-leaflet';
+import React from 'react';
+import { MapContainer as LMap, TileLayer, Polygon, Popup } from 'react-leaflet';
 
 import { 
   Building,
@@ -14,11 +12,8 @@ import {
   getUrbanZoneArea,
 } from '../../scripts/dbUtils';
 
-import DistrictEnergyBalance from '../DistrictEnergyBalance/DistrictEnergyBalance';
 
-
-
-function HomeMap() {
+function HomeMap() {
   
     const UrbanZones = getAllUrbanZone();
     

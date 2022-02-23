@@ -10,8 +10,8 @@ import { ProducerProfile, Production } from './entities/Production';
 const dataDir = 'raw-data';
 
 // 2021-01-01, from 00:00:00 to 23:59:59, at UTC+1, converted to UTC
-const timestampStart = '2020-12-31T23:00:00Z';
-const timestampEnd = '2021-01-02T22:59:59Z';
+const timestampStart = '2021-06-01T00:00:00Z';
+const timestampEnd = '2021-12-31T23:30:00Z';
 
 main().catch(console.error);
 
