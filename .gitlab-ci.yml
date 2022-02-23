@@ -11,7 +11,7 @@ build_files_job:
   - ci-test
   image: cl00e9ment/node.js-builder:light
   stage: build_files
-  before-script:
+  before_script:
   - pnpm config set store-dir .pnpm-store
   script:
   # client
