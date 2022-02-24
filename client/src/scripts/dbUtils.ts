@@ -1,7 +1,7 @@
 import * as turf from '@turf/turf';
 
-const { json_Decoupage_urbain } = require("../map/layers/Decoupage_urbain");
-const { json_eclairage_public_features } = require("../map/bor_ptlum");
+const {json_Decoupage_urbain} = require("../map/layers/Decoupage_urbain");
+const {json_eclairage_public_features} = require("../map/bor_ptlum");
 
 export enum Building {
 	Residential,
@@ -171,50 +171,45 @@ async function runQuery(queryLink: string) {
 	}
 }
 
-/**
- * Return the consumption of electricity for a given urban zone in Wh
- * @param t1 Timestamp of the beginning of the time period
- * @param buildingType Building type to get the consumption from
- * @param urbanZone Urban zone of the buildings
- * @param t2 Timestamp of the end of the time period
- */
-export async function getUrbanZoneElectricityConsumption(t1: number, buildingType: Building, urbanZone: string, t2: number): Promise<number> {
+async function getZoneElectricityConsumption(t1: number, buildingType: Building, zoneName: string, t2: number): Promise<number> {
 	let queries: string[] = [];
 	let weights: any[] = [];
 
-	function _addQuery(t1: number, t2: number, profiles?: string[]) {
+	const getFn = zoneName === 'La Bastide' ? getDistrictNumberOfBuildings : (bType: Building) => getUrbanZoneNumberOfBuildings(zoneName, bType);
+
+	async function _addQuery(t1: number, t2: number, profiles: string[]) {
 		queries.push(`consumption?minDate=${t1}&maxDate=${t2}`
-			+ (profiles ? profiles.reduce((prev: string, curr: string, i: number) => prev + `&profiles[${i}]=${curr}`, "") : ""));
+			+ profiles.reduce((prev: string, curr: string, i: number) => prev + `&profiles[${i}]=${curr}`, ""));
 	}
 
 	switch (buildingType) {
 		case Building.Residential:
-			_addQuery(t1, t2, ["RESIDENTIAL"]);
+			await _addQuery(t1, t2, ["RESIDENTIAL"]);
 
-			weights.push(getUrbanZoneNumberOfBuildings(urbanZone, Building.Residential));
+			weights.push(getFn(Building.Residential));
 			break;
 		case Building.Professional:
-			_addQuery(t1, t2, ["PROFESSIONAL"]);
+			await _addQuery(t1, t2, ["PROFESSIONAL"]);
 
-			weights.push(getUrbanZoneNumberOfBuildings(urbanZone, Building.Professional));
+			weights.push(getFn(Building.Professional));
 			break;
 		case Building.Tertiary:
-			_addQuery(t1, t2, ["TERTIARY"]);
+			await _addQuery(t1, t2, ["TERTIARY"]);
 
-			weights.push(getUrbanZoneNumberOfBuildings(urbanZone, Building.Tertiary));
+			weights.push(getFn(Building.Tertiary));
 			break;
 		case Building.Lighting:
-			_addQuery(t1, t2, ["PUBLIC_LIGHTING"]);
+			await _addQuery(t1, t2, ["PUBLIC_LIGHTING"]);
 
-			weights.push(getUrbanZoneNumberOfBuildings(urbanZone, Building.Lighting));
+			weights.push(getFn(Building.Lighting));
 			break;
 		case Building.All:
-			_addQuery(t1, t2, ["RESIDENTIAL", "PROFESSIONAL", "TERTIARY", "PUBLIC_LIGHTING"]);
+			await _addQuery(t1, t2, ["RESIDENTIAL", "PROFESSIONAL", "TERTIARY", "PUBLIC_LIGHTING"]);
 
-			weights.push(getUrbanZoneNumberOfBuildings(urbanZone, Building.Residential)
-				+ getUrbanZoneNumberOfBuildings(urbanZone, Building.Professional)
-				+ getUrbanZoneNumberOfBuildings(urbanZone, Building.Tertiary)
-				+ getUrbanZoneNumberOfBuildings(urbanZone, Building.Lighting));
+			weights.push(getFn(Building.Residential)
+				+ getFn(Building.Professional)
+				+ getFn(Building.Tertiary)
+				+ getFn(Building.Lighting));
 			break;
 	}
 
@@ -230,14 +225,25 @@ export async function getUrbanZoneElectricityConsumption(t1: number, buildingTyp
 	return resultWh;
 }
 
-export async function getDistrictElectricityConsumption(t1: number, buildingType: Building, t2: number): Promise<number> {
-	const consumptions: number[] = await Promise.all(json_Decoupage_urbain.features
-		.map((feature: UrbanZoneFeature) => feature.properties.libelle)
-		.map(async (urbanZone: string) => {
-			return await getUrbanZoneElectricityConsumption(t1, buildingType, urbanZone, t2);
-		}));
+/**
+ * Return the consumption of electricity for a given urban zone in Wh
+ * @param t1 Timestamp of the beginning of the time period
+ * @param buildingType Building type to get the consumption from
+ * @param urbanZone Urban zone of the buildings
+ * @param t2 Timestamp of the end of the time period
+ */
+export async function getUrbanZoneElectricityConsumption(t1: number, buildingType: Building, urbanZone: string, t2: number): Promise<number> {
+	return await getZoneElectricityConsumption(t1, buildingType, urbanZone, t2);
+}
 
-	return consumptions.reduce((prev: number, curr: number) => prev + curr, 0);
+/**
+ * Return the consumption of electricity for La Bastide in Wh
+ * @param t1 Timestamp of the beginning of the time period
+ * @param buildingType Building type to get the consumption from
+ * @param t2 Timestamp of the end of the time period
+ */
+export async function getDistrictElectricityConsumption(t1: number, buildingType: Building, t2: number): Promise<number> {
+	return await getZoneElectricityConsumption(t1, buildingType, 'La Bastide', t2);
 }
 
 export async function getUrbanZoneElectricityProduction(t1: number, urbanZone: string, t2: number): Promise<number> {
@@ -247,13 +253,9 @@ export async function getUrbanZoneElectricityProduction(t1: number, urbanZone: s
 }
 
 export async function getDistrictElectricityProduction(t1: number, t2: number): Promise<number> {
-	const consumptions: number[] = await Promise.all(json_Decoupage_urbain.features
-		.map((feature: UrbanZoneFeature) => feature.properties.libelle)
-		.map(async (urbanZone: string) => {
-			return await getUrbanZoneElectricityProduction(t1, urbanZone, t2);
-		}));
-
-	return consumptions.reduce((prev: number, curr: number) => prev + curr, 0);
+	const rawRes = await runQuery(`production?minDate=${t1}&maxDate=${t2}&profiles[0]=SOLAR`);
+	const res = rawRes.filter((rawRecord: { mean_curve: null | number; }) => rawRecord.mean_curve != null);
+	return (res.reduce((total: number, next: { mean_curve: number; }) => total + next.mean_curve, 0) / res.length) * getDistrictNumberOfBuildings(Building.Producer);
 }
 
 export async function getUrbanZoneSelfConsumptionRatio(t1: number, urbanZone: string, t2: number): Promise<number> {
