@@ -161,7 +161,6 @@ export function getDistrictArea(): number {
 
 async function runQuery(queryLink: string) {
 	const host = window.location.hostname === 'localhost' ? 'http://localhost:5000' : 'https://pfa.c-saccoccio.fr';
-
 	try {
 		const response = await fetch(`${host}/${queryLink}`);
 		return await response.json()
@@ -176,6 +175,7 @@ interface QueryResults {
 	profiles: string[];
 	result: Promise<any>;
 }
+
 interface QueriedData {
 	timestamps: [number, number];
 	profiles: string[];
@@ -185,16 +185,15 @@ let computedResults: QueryResults[] = [];
 let queried: QueriedData[] = [];
 
 async function getZoneElectricityConsumption(t1: number, buildingType: Building, zoneName: string, t2: number): Promise<number> {
-	let queryResults: Promise<any>[] = [];
-	let weights: any[] = [];
+	let queryResults: [Promise<any>, number][] = [];
 
 	const getFn = zoneName === 'La Bastide' ? getDistrictNumberOfBuildings : (bType: Building) => getUrbanZoneNumberOfBuildings(zoneName, bType);
 
-	async function _addQuery(t1: number, t2: number, profiles: string[]) {
+	async function _addQuery(t1: number, t2: number, profiles: string[], nbBuilding: number) {
 		const timestamps = [t1, t2];
 		if (queried.filter(value => value.timestamps.every((v, i) => v === timestamps[i]) && value.profiles.every((v, i) => v === profiles[i])).length !== 0) {
 			const result: QueryResults[] = computedResults.filter(value => value.timestamps.every((v, i) => v === timestamps[i]) && value.profiles.every((v, i) => v === profiles[i]));
-			queryResults.push(result[0].result);
+			queryResults.push([result[0].result, nbBuilding]);
 		} else {
 			queried.push({
 				timestamps: [t1, t2],
@@ -207,35 +206,26 @@ async function getZoneElectricityConsumption(t1: number, buildingType: Building,
 					+ profiles.reduce((prev: string, curr: string, i: number) => prev + `&profiles[${i}]=${curr}`, ""))
 			};
 			computedResults.push(record);
-			queryResults.push(record.result)
+			queryResults.push([record.result, nbBuilding])
 		}
 	}
 
 	switch (buildingType) {
 		case Building.Residential:
-			await _addQuery(t1, t2, ["RESIDENTIAL"]);
-
-			weights.push(getFn(Building.Residential));
+			await _addQuery(t1, t2, ["RESIDENTIAL"], getFn(Building.Residential));
 			break;
 		case Building.Professional:
-			await _addQuery(t1, t2, ["PROFESSIONAL"]);
-
-			weights.push(getFn(Building.Professional));
+			await _addQuery(t1, t2, ["PROFESSIONAL"], getFn(Building.Professional));
 			break;
 		case Building.Tertiary:
-			await _addQuery(t1, t2, ["TERTIARY"]);
-
-			weights.push(getFn(Building.Tertiary));
+			await _addQuery(t1, t2, ["TERTIARY"], getFn(Building.Tertiary));
 			break;
 		case Building.Lighting:
-			await _addQuery(t1, t2, ["PUBLIC_LIGHTING"]);
-
-			weights.push(getFn(Building.Lighting));
+			await _addQuery(t1, t2, ["PUBLIC_LIGHTING"], getFn(Building.Lighting));
 			break;
 		case Building.All:
-			await _addQuery(t1, t2, ["RESIDENTIAL", "PROFESSIONAL", "TERTIARY", "PUBLIC_LIGHTING"]);
-
-			weights.push(getFn(Building.Residential)
+			await _addQuery(t1, t2, ["RESIDENTIAL", "PROFESSIONAL", "TERTIARY", "PUBLIC_LIGHTING"],
+				getFn(Building.Residential)
 				+ getFn(Building.Professional)
 				+ getFn(Building.Tertiary)
 				+ getFn(Building.Lighting));
@@ -245,9 +235,9 @@ async function getZoneElectricityConsumption(t1: number, buildingType: Building,
 	let resultWh: number = 0;
 
 	for (let i: number = 0; i < queryResults.length; i++) {
-		const res = (await queryResults[i]).filter((rawRecord: { mean_curve: null | number; }) => rawRecord.mean_curve != null);
+		const res = (await queryResults[i][0]).filter((rawRecord: { mean_curve: null | number; }) => rawRecord.mean_curve != null);
 
-		resultWh += res.reduce((total: number, next: { mean_curve: number; }) => total + next.mean_curve, 0) / res.length * weights[i];
+		resultWh += res.reduce((total: number, next: { mean_curve: number; }) => total + next.mean_curve, 0) / res.length * queryResults[i][1];
 	}
 
 	return resultWh;
@@ -274,16 +264,38 @@ export async function getDistrictElectricityConsumption(t1: number, buildingType
 	return await getZoneElectricityConsumption(t1, buildingType, 'La Bastide', t2);
 }
 
+async function getZoneElectricityProduction(t1: number, zoneName: string, t2: number): Promise<number> {
+	const getFn = zoneName === 'La Bastide' ? () => getDistrictNumberOfBuildings(Building.Producer) : () => getUrbanZoneNumberOfBuildings(zoneName, Building.Producer);
+	let rawRes;
+
+	const timestamps = [t1, t2];
+	const profiles = ["SOLAR"];
+	if (queried.filter(value => value.timestamps.every((v, i) => v === timestamps[i]) && value.profiles.every((v, i) => v === profiles[i])).length !== 0) {
+		const result: QueryResults[] = computedResults.filter(value => value.timestamps.every((v, i) => v === timestamps[i]) && value.profiles.every((v, i) => v === profiles[i]));
+		rawRes = result[0].result;
+	} else {
+		queried.push({
+			timestamps: [t1, t2],
+			profiles: profiles
+		});
+		const record: QueryResults = {
+			timestamps: [t1, t2],
+			profiles: profiles,
+			result: runQuery(`production?minDate=${t1}&maxDate=${t2}&profiles[0]=SOLAR`)
+		};
+		computedResults.push(record);
+		rawRes = record.result;
+	}
+	const res = (await rawRes).filter((rawRecord: { mean_curve: null | number; }) => rawRecord.mean_curve != null);
+	return (res.reduce((total: number, next: { mean_curve: number; }) => total + next.mean_curve, 0) / res.length) * getFn();
+}
+
 export async function getUrbanZoneElectricityProduction(t1: number, urbanZone: string, t2: number): Promise<number> {
-	const rawRes = await runQuery(`production?minDate=${t1}&maxDate=${t2}&profiles[0]=SOLAR`);
-	const res = rawRes.filter((rawRecord: { mean_curve: null | number; }) => rawRecord.mean_curve != null);
-	return (res.reduce((total: number, next: { mean_curve: number; }) => total + next.mean_curve, 0) / res.length) * getUrbanZoneNumberOfBuildings(urbanZone, Building.Producer);
+	return getZoneElectricityProduction(t1, urbanZone, t2);
 }
 
 export async function getDistrictElectricityProduction(t1: number, t2: number): Promise<number> {
-	const rawRes = await runQuery(`production?minDate=${t1}&maxDate=${t2}&profiles[0]=SOLAR`);
-	const res = rawRes.filter((rawRecord: { mean_curve: null | number; }) => rawRecord.mean_curve != null);
-	return (res.reduce((total: number, next: { mean_curve: number; }) => total + next.mean_curve, 0) / res.length) * getDistrictNumberOfBuildings(Building.Producer);
+	return getZoneElectricityProduction(t1, 'La Bastide', t2);
 }
 
 export async function getUrbanZoneSelfConsumptionRatio(t1: number, urbanZone: string, t2: number): Promise<number> {

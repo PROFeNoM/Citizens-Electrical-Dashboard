@@ -1,6 +1,6 @@
 import './HomeMap.css';
 import React, { useEffect, useState } from 'react';
-import { MapContainer as LMap, Marker, Polygon, Popup, TileLayer } from 'react-leaflet';
+import { MapContainer as LMap, Polygon, TileLayer } from 'react-leaflet';
 import { Col, Container, Row } from "react-grid-system";
 import {
 	Building,
@@ -16,7 +16,7 @@ import {
 
 
 function updateText(urbanZone: string, nbBuilding: number, area: number, elecCons: number, elecProd: number) {
-	const ratio : number = elecCons !== 0 ? Math.round(elecProd / elecCons * 100) / 100 : 0;
+	const ratio : number = elecCons !== 0 ? Math.round(elecProd / elecCons * 100) : 0;
 
 	// @ts-ignore
 	document.getElementById('urban-zone').innerText = urbanZone;

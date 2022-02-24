@@ -35,7 +35,7 @@ function DistrictEnergyBalance() {
 		})();
 	});
 
-	const ratio: number = elecCons !== 0 ? Math.round(elecProd / elecCons * 100) / 100 : 0;
+	const ratio: number = elecCons !== 0 ? Math.round(elecProd / elecCons * 100) : 0;
 
 	return (
 		<div id="district-infos">
