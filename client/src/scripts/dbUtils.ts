@@ -171,15 +171,44 @@ async function runQuery(queryLink: string) {
 	}
 }
 
+interface QueryResults {
+	timestamps: [number, number];
+	profiles: string[];
+	result: Promise<any>;
+}
+interface QueriedData {
+	timestamps: [number, number];
+	profiles: string[];
+}
+
+let computedResults: QueryResults[] = [];
+let queried: QueriedData[] = [];
+
 async function getZoneElectricityConsumption(t1: number, buildingType: Building, zoneName: string, t2: number): Promise<number> {
-	let queries: string[] = [];
+	let queryResults: Promise<any>[] = [];
 	let weights: any[] = [];
 
 	const getFn = zoneName === 'La Bastide' ? getDistrictNumberOfBuildings : (bType: Building) => getUrbanZoneNumberOfBuildings(zoneName, bType);
 
 	async function _addQuery(t1: number, t2: number, profiles: string[]) {
-		queries.push(`consumption?minDate=${t1}&maxDate=${t2}`
-			+ profiles.reduce((prev: string, curr: string, i: number) => prev + `&profiles[${i}]=${curr}`, ""));
+		const timestamps = [t1, t2];
+		if (queried.filter(value => value.timestamps.every((v, i) => v === timestamps[i]) && value.profiles.every((v, i) => v === profiles[i])).length !== 0) {
+			const result: QueryResults[] = computedResults.filter(value => value.timestamps.every((v, i) => v === timestamps[i]) && value.profiles.every((v, i) => v === profiles[i]));
+			queryResults.push(result[0].result);
+		} else {
+			queried.push({
+				timestamps: [t1, t2],
+				profiles: profiles
+			});
+			const record: QueryResults = {
+				timestamps: [t1, t2],
+				profiles: profiles,
+				result: runQuery(`consumption?minDate=${t1}&maxDate=${t2}`
+					+ profiles.reduce((prev: string, curr: string, i: number) => prev + `&profiles[${i}]=${curr}`, ""))
+			};
+			computedResults.push(record);
+			queryResults.push(record.result)
+		}
 	}
 
 	switch (buildingType) {
@@ -215,9 +244,8 @@ async function getZoneElectricityConsumption(t1: number, buildingType: Building,
 
 	let resultWh: number = 0;
 
-	for (let i: number = 0; i < queries.length; i++) {
-		const rawRes = await runQuery(queries[i]);
-		const res = rawRes.filter((rawRecord: { mean_curve: null | number; }) => rawRecord.mean_curve != null);
+	for (let i: number = 0; i < queryResults.length; i++) {
+		const res = (await queryResults[i]).filter((rawRecord: { mean_curve: null | number; }) => rawRecord.mean_curve != null);
 
 		resultWh += res.reduce((total: number, next: { mean_curve: number; }) => total + next.mean_curve, 0) / res.length * weights[i];
 	}
