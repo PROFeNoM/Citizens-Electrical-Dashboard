@@ -24,7 +24,7 @@ var json_Decoupage_urbain = {
             "type": "Feature",
             "properties": {
                 "gid": 9.0,
-                "libelle": "Quaritier historique Nord Thiers",
+                "libelle": "Quartier historique Nord Thiers",
                 "RES1": 200,
                 "RES2": 0,
                 "PRO1": 10,
