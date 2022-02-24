@@ -4,7 +4,7 @@ import {Header} from "../../containers";
 
 function About() {
     return (
-        <Header title={'ABOUT'} />
+        <Header title={'À PROPOS'} />
     );
 }
 

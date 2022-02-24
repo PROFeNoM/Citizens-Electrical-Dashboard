@@ -4,7 +4,7 @@ import {Header} from "../../containers";
 
 function Legal() {
     return (
-        <Header title={'LEGAL'} />
+        <Header title={'MENTIONS'} />
     );
 }
 

@@ -5,25 +5,25 @@ import * as AiIcons from "react-icons/ai";
 
 export const HamburgerMenuData = [
     {
-        title: 'Home',
+        title: 'Accueil',
         path: '/',
         icon: <AiIcons.AiOutlineHome />,
         cName: 'nav-text'
     },
     {
-        title: 'Connection',
+        title: 'Connexion',
         path: '/connection',
         icon: <AiIcons.AiOutlineDisconnect />,
         cName: 'nav-text'
     },
     {
-        title: 'About',
+        title: 'à propos',
         path: '/about',
         icon: <AiIcons.AiOutlineInfoCircle />,
         cName: 'nav-text'
     },
     {
-        title: 'Legal',
+        title: 'Mentions légales',
         path: '/legal',
         icon: <AiIcons.AiOutlineBook />,
         cName: 'nav-text'

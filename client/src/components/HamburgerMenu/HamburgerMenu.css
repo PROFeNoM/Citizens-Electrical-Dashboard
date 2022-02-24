@@ -38,12 +38,13 @@
     list-style: none;
     height: 60px;
     border-bottom: 5px dotted #fff;
+    text-transform: uppercase;
+    font-size: 1rem;
 }
 
 .nav-text a {
     text-decoration: none;
     color: #fff;
-    font-size: 18px;
     width: 95%;
     height: 100%;
     display: flex;

@@ -4,7 +4,7 @@ import {Header} from "../../containers";
 
 function Connection() {
     return (
-        <Header title={'CONNECTION'} />
+        <Header title={'CONNEXION'} />
     );
 }
 
