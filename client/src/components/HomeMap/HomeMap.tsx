@@ -1,7 +1,7 @@
 import './HomeMap.css';
-import React, {useEffect, useState} from 'react';
-import {MapContainer as LMap, Marker, Polygon, Popup, TileLayer} from 'react-leaflet';
-import {Col, Container, Row} from "react-grid-system";
+import React, { useEffect, useState } from 'react';
+import { MapContainer as LMap, Marker, Polygon, Popup, TileLayer } from 'react-leaflet';
+import { Col, Container, Row } from "react-grid-system";
 import {
 	Building,
 	getAllUrbanZone,
@@ -15,54 +15,58 @@ import {
 } from '../../scripts/dbUtils';
 
 
-function change_text(urbanZone: string, nbBuilding: number, area: string, elecCons: string, elecProd: string) {
+function updateText(urbanZone: string, nbBuilding: number, area: number, elecCons: number, elecProd: number) {
+	const ratio : number = elecCons !== 0 ? Math.round(elecProd / elecCons * 100) / 100 : 0;
+
 	// @ts-ignore
-	document.getElementById("urbanZone").innerText = urbanZone;
+	document.getElementById('urban-zone').innerText = urbanZone;
 	// @ts-ignore
-	document.getElementById("nbBuilding").innerText = `${nbBuilding} bâtiments`;
+	document.getElementById('nb-building').innerText = `${nbBuilding} bâtiments`;
 	// @ts-ignore
-	document.getElementById("area").innerText = `${area} m²`;
+	document.getElementById('area').innerText = `${ new Intl.NumberFormat().format(area)} m²`;
 	// @ts-ignore
-	document.getElementById("elecCons").innerText = `${elecCons} kWh/mois d'électricité consommée`;
+	document.getElementById('elec-cons').innerText = `${ new Intl.NumberFormat().format(elecCons)} kWh/mois d'électricité consommée`;
 	// @ts-ignore
-	document.getElementById("elecProd").innerText = `${elecProd} kWh/mois d'électricité produite`;
+	document.getElementById('elec-prod').innerText = `${ new Intl.NumberFormat().format(elecProd)} kWh/mois d'électricité produite`;
+	// @ts-ignore
+	document.getElementById('ratio-prod-cons').innerText = `${ratio}% ratio production/consommation`;
 }
 
 // @ts-ignore
-const UrbanZoneEnergyBalance = ({item}) => {
+const UrbanZoneEnergyBalance = ({ item }) => {
 	const urbanZone: string = getUrbanZoneLibelle(item);
 	const nbBuilding: number = getUrbanZoneNumberOfBuildings(urbanZone, Building.Residential)
 		+ getUrbanZoneNumberOfBuildings(urbanZone, Building.Professional)
 		+ getUrbanZoneNumberOfBuildings(urbanZone, Building.Tertiary);
 
-	const area: string = new Intl.NumberFormat().format(Math.round(getUrbanZoneArea(urbanZone)));
+	const area: number = Math.round(getUrbanZoneArea(urbanZone));
 
-	const [elecCons, setElecCons] = useState("");
-	const [elecProd, setElecProd] = useState("");
+	const [elecCons, setElecCons] = useState(0);
+	const [elecProd, setElecProd] = useState(0);
 
 	useEffect(() => {
 		(async () => {
-			const t1 = new Date('2021-12-01 00:30:00').getTime();
-			const t2 = new Date('2021-12-31 23:30:00').getTime();
-			const r = new Intl.NumberFormat().format(Math.round(await getUrbanZoneElectricityConsumption(t1, Building.All, urbanZone, t2)));
+			const t1 = new Date('2021-12-01T00:30:00Z').getTime();
+			const t2 = new Date('2021-12-31T23:30:00Z').getTime();
+			const r =Math.round(await getUrbanZoneElectricityConsumption(t1, Building.All, urbanZone, t2));
 			setElecCons(r);
 		})();
 
 		(async () => {
-			const t1 = new Date('2021-12-01 00:30:00').getTime();
-			const t2 = new Date('2021-12-31 23:30:00').getTime();
-			const r = new Intl.NumberFormat().format(Math.round(await getUrbanZoneElectricityProduction(t1, urbanZone, t2)));
+			const t1 = new Date('2021-12-01T00:30:00Z').getTime();
+			const t2 = new Date('2021-12-31T23:30:00Z').getTime();
+			const r = Math.round(await getUrbanZoneElectricityProduction(t1, urbanZone, t2));
 			setElecProd(r);
 		})();
 	});
 
 	return (
 		<Polygon className="leaflet-area" positions={getUrbanZoneCoordinates(item)}
-				 eventHandlers={{
-					 mouseover: () => {
-						 change_text(urbanZone, nbBuilding, area, elecCons, elecProd);
-					 }
-				 }}>
+			eventHandlers={{
+				mouseover: () => {
+					updateText(urbanZone, nbBuilding, area, elecCons, elecProd);
+				}
+			}}>
 		</Polygon>
 	);
 }
@@ -71,7 +75,7 @@ function HomeMap() {
 
 	const UrbanZones = getAllUrbanZone();
 
-	const center = {lat: 44.845615, lng: -0.554897};
+	const center = { lat: 44.845615, lng: -0.554897 };
 	const zoom = 14;
 
 	return (
@@ -81,18 +85,19 @@ function HomeMap() {
 					<LMap center={center} zoom={zoom}>
 						<TileLayer
 							attribution='&copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-							url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+							url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
 						/>
-						{UrbanZones.map((item: UrbanZoneFeature) => <UrbanZoneEnergyBalance item={item}/>)}
+						{UrbanZones.map((item: UrbanZoneFeature) => <UrbanZoneEnergyBalance item={item} />)}
 					</LMap>
 				</Col>
 				<Col sm={12} md={12} xl={6}>
-					<div className='urban-info'>
-						<h3 id="urbanZone">Choisissez une zone urbaine</h3>
-						<p id="nbBuilding"></p>
+					<div className="urban-info">
+						<h3 id="urban-zone">Choisissez une zone urbaine</h3>
+						<p id="nb-building"></p>
 						<p id="area"></p>
-						<p id="elecCons"></p>
-						<p id="elecProd"></p>
+						<p id="elec-cons"></p>
+						<p id="elec-prod"></p>
+						<p id="ratio-prod-cons"></p>
 					</div>
 				</Col>
 			</Row>

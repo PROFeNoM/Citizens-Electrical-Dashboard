@@ -1,9 +1,5 @@
 @import '~leaflet/dist/leaflet.css';
 
-h1 {
-  font-family: 'Ubuntu', 'Roboto', 'San F', 'Arial', sans-serif;;
-}
-
 .leaflet-container {
   height: 300px;
   width: 100%;
@@ -13,21 +9,6 @@ h1 {
   z-index: 0;
 }
 
-h3 {
-  text-transform: uppercase;
-  text-align: center;
-  color: #005eb8;
-  font-family: 'Ubuntu', 'Roboto', 'San F', 'Arial', sans-serif;
-  padding: 1rem;
-}
-
-p {
-  font-family: 'Ubuntu', 'Roboto', 'San F', 'Arial', sans-serif;
-  color: #00a3e0;
-  padding: 1rem;
-  text-align: center;
-}
-
 .urban-info {
   background-color: white;
   border-radius: 25px;
@@ -35,6 +16,18 @@ p {
   justify-content: center;
 }
 
+.urban-info p {
+  color: #00a3e0;
+  padding: 1rem;
+  text-align: center;
+}
+
+.urban-info h3 {
+  text-transform: uppercase;
+  text-align: center;
+  color: #005eb8;
+  padding: 1rem;
+}
 
 .leaflet-area {
   stroke-width: 1px;

@@ -1,7 +1,7 @@
 import * as turf from '@turf/turf';
 
-const {json_Decoupage_urbain} = require("../map/layers/Decoupage_urbain");
-const {json_eclairage_public_features} = require("../map/bor_ptlum");
+const { json_Decoupage_urbain } = require("../map/layers/Decoupage_urbain");
+const { json_eclairage_public_features } = require("../map/bor_ptlum");
 
 export enum Building {
 	Residential,
@@ -141,10 +141,7 @@ export function getUrbanZoneNumberOfBuildings(urbanZone: string, buildingType: B
 export function getUrbanZoneArea(urbanZone: string): number {
 	const data: UrbanZoneFeature = getUrbanZoneFeatures(urbanZone, json_Decoupage_urbain);
 
-	if (data)
-		return turf.area(turf.polygon(data.geometry.coordinates[0]));
-	else
-		return 0;
+	return data ? turf.area(turf.polygon(data.geometry.coordinates[0])) : 0;
 }
 
 /**
@@ -163,7 +160,7 @@ export function getDistrictArea(): number {
 }
 
 async function runQuery(queryLink: string) {
-	const host = window.location.hostname === 'localhost' ? 'http://localhost:5000' : 'https://pfa.c-saccoccio.fr'
+	const host = window.location.hostname === 'localhost' ? 'http://localhost:5000' : 'https://pfa.c-saccoccio.fr';
 
 	try {
 		const response = await fetch(`${host}/${queryLink}`);
@@ -184,7 +181,6 @@ async function runQuery(queryLink: string) {
 export async function getUrbanZoneElectricityConsumption(t1: number, buildingType: Building, urbanZone: string, t2: number): Promise<number> {
 	let queries: string[] = [];
 	let weights: any[] = [];
-
 
 	function _addQuery(t1: number, t2: number, profiles?: string[]) {
 		queries.push(`consumption?minDate=${t1}&maxDate=${t2}`

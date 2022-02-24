@@ -1,9 +1,10 @@
-import React, {useEffect, useState} from 'react';
+import { useEffect, useState } from 'react';
 import './DistrictEnergyBalance.css';
 import {
 	Building,
 	getDistrictArea,
 	getDistrictElectricityConsumption,
+	getDistrictElectricityProduction,
 	getDistrictNumberOfBuildings
 } from "../../scripts/dbUtils";
 
@@ -13,25 +14,38 @@ function DistrictEnergyBalance() {
 		+ getDistrictNumberOfBuildings(Building.Tertiary);
 
 	const area: string = new Intl.NumberFormat().format(Math.round(getDistrictArea()));
-	const [elecCons, setElecCons] = useState("");
+	const [elecCons, setElecCons] = useState(0);
+	const [elecProd, setElecProd] = useState(0);
 
 	useEffect(() => {
 		(async () => {
-			const t1 = new Date('2021-12-01 00:30:00').getTime();
-			const t2 = new Date('2021-12-31 23:30:00').getTime();
-			const r = new Intl.NumberFormat().format(Math.round(await getDistrictElectricityConsumption(t1, Building.All, t2)));
+			const t1 = new Date('2021-12-01T00:30:00').getTime();
+			const t2 = new Date('2021-12-31T23:30:00').getTime();
+			const r = Math.round(await getDistrictElectricityConsumption(t1, Building.All, t2));
 			setElecCons(r);
 		})();
-	}, []);
+	});
+
+	useEffect(() => {
+		(async () => {
+			const t1 = new Date('2021-12-01T00:30:00').getTime();
+			const t2 = new Date('2021-12-31T23:30:00').getTime();
+			const r = Math.round(await getDistrictElectricityProduction(t1, t2));
+			setElecProd(r);
+		})();
+	});
+
+	const ratio: number = elecCons !== 0 ? Math.round(elecProd / elecCons * 100) / 100 : 0;
 
 	return (
-		<>
-			<div className='district-info-container'>
-				<p className='district-info'>{nbBuilding} bâtiments</p>
-				<p className='district-info'>{area} m2</p>
-				<p className='district-info'>{elecCons} conso mois dec</p>
-			</div>
-		</>
+		<div id="district-infos">
+			<h2 id="district-name">Quartier de la Bastide</h2>
+			<p>{nbBuilding} bâtiments</p>
+			<p>{area} m²</p>
+			<p>{new Intl.NumberFormat().format(elecCons)} kWh/mois d'électricité consommée</p>
+			<p>{new Intl.NumberFormat().format(elecProd)} kWh/mois d'électricité produite</p>
+			<p>{ratio}% ratio production/consommation</p>
+		</div>
 	);
 }
 

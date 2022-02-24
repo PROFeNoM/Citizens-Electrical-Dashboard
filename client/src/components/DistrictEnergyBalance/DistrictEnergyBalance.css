@@ -1,28 +1,17 @@
-.district-name {
-    justify-content: center;
+#district-infos {
     color: white;
+    border: 5px solid white;
+    border-radius: 25px;
+    text-align: center;
+    width: fit-content;
+    margin: auto;
+}
+
+#district-infos p {
     padding: 1rem;
-    margin: 1rem;
 }
 
-@media (max-width: 1200px) {
-    .district-name {
-        text-align: center;
-        font-size: 5vw;
-    }
-    .district-info {
-        color: white;
-        padding: 1rem;
-        text-align: center;
-        margin-left: 1rem;
-    }
-}
-
-@media (min-width: 1200px) {
-    .district-info {
-        color: white;
-        padding: 1rem;
-        text-align: left;
-        margin-left: 1rem;
-    }
+#district-name {
+    text-transform: uppercase;
+    padding: 1rem;
 }
