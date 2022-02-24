@@ -48,7 +48,7 @@ for (const route of routes) {
 				.from(route.entity, 'x')
 				.where('x.timestamp between :minDate and :maxDate', { minDate, maxDate });
 
-			if (profiles) {
+			if (profiles && profiles.length < Object.keys(route.profileEnum).length) {
 				query = query.andWhere('x.profile IN (:...profiles)', { profiles });
 			}
 
