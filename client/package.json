@@ -1,6 +1,6 @@
 {
 	"name": "dashboard",
-	"version": "1.0.0-alpha-4",
+	"version": "1.0.0-alpha-5",
 	"private": true,
 	"dependencies": {
 		"@turf/turf": "^6.5.0",
