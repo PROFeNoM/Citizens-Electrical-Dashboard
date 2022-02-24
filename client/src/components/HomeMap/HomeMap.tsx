@@ -25,9 +25,9 @@ function updateText(urbanZone: string, nbBuilding: number, area: number, elecCon
 	// @ts-ignore
 	document.getElementById('area').innerText = `${ new Intl.NumberFormat().format(area)} m²`;
 	// @ts-ignore
-	document.getElementById('elec-cons').innerText = `${ new Intl.NumberFormat().format(elecCons)} kWh/mois d'électricité consommée`;
+	document.getElementById('elec-cons').innerText = `${ new Intl.NumberFormat().format(elecCons)} MWh/mois d'électricité consommée`;
 	// @ts-ignore
-	document.getElementById('elec-prod').innerText = `${ new Intl.NumberFormat().format(elecProd)} kWh/mois d'électricité produite`;
+	document.getElementById('elec-prod').innerText = `${ new Intl.NumberFormat().format(elecProd)} MWh/mois d'électricité produite`;
 	// @ts-ignore
 	document.getElementById('ratio-prod-cons').innerText = `${ratio}% ratio production/consommation`;
 }
@@ -48,14 +48,14 @@ const UrbanZoneEnergyBalance = ({ item }) => {
 		(async () => {
 			const t1 = new Date('2021-12-01T00:30:00Z').getTime();
 			const t2 = new Date('2021-12-31T23:30:00Z').getTime();
-			const r =Math.round(await getUrbanZoneElectricityConsumption(t1, Building.All, urbanZone, t2));
+			const r =Math.round(await getUrbanZoneElectricityConsumption(t1, Building.All, urbanZone, t2) / 1000 / 1000);
 			setElecCons(r);
 		})();
 
 		(async () => {
 			const t1 = new Date('2021-12-01T00:30:00Z').getTime();
 			const t2 = new Date('2021-12-31T23:30:00Z').getTime();
-			const r = Math.round(await getUrbanZoneElectricityProduction(t1, urbanZone, t2));
+			const r = Math.round(await getUrbanZoneElectricityProduction(t1, urbanZone, t2) / 1000 / 1000);
 			setElecProd(r);
 		})();
 	});

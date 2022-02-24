@@ -21,7 +21,7 @@ function DistrictEnergyBalance() {
 		(async () => {
 			const t1 = new Date('2021-12-01T00:30:00').getTime();
 			const t2 = new Date('2021-12-31T23:30:00').getTime();
-			const r = Math.round(await getDistrictElectricityConsumption(t1, Building.All, t2));
+			const r = Math.round(await getDistrictElectricityConsumption(t1, Building.All, t2) / 1000 / 1000);
 			setElecCons(r);
 		})();
 	});
@@ -30,7 +30,7 @@ function DistrictEnergyBalance() {
 		(async () => {
 			const t1 = new Date('2021-12-01T00:30:00').getTime();
 			const t2 = new Date('2021-12-31T23:30:00').getTime();
-			const r = Math.round(await getDistrictElectricityProduction(t1, t2));
+			const r = Math.round(await getDistrictElectricityProduction(t1, t2) / 1000 / 1000);
 			setElecProd(r);
 		})();
 	});
@@ -42,8 +42,8 @@ function DistrictEnergyBalance() {
 			<h2 id="district-name">Quartier de la Bastide</h2>
 			<p>{nbBuilding} bâtiments</p>
 			<p>{area} m²</p>
-			<p>{new Intl.NumberFormat().format(elecCons)} kWh/mois d'électricité consommée</p>
-			<p>{new Intl.NumberFormat().format(elecProd)} kWh/mois d'électricité produite</p>
+			<p>{new Intl.NumberFormat().format(elecCons)} MWh/mois d'électricité consommée</p>
+			<p>{new Intl.NumberFormat().format(elecProd)} MWh/mois d'électricité produite</p>
 			<p>{ratio}% ratio production/consommation</p>
 		</div>
 	);

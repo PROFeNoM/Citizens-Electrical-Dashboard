@@ -233,11 +233,17 @@ async function getZoneElectricityConsumption(t1: number, buildingType: Building,
 	}
 
 	let resultWh: number = 0;
-
+	const buildings = {
+		"RESIDENTIAL": getFn(Building.Residential),
+		"PROFESSIONAL": getFn(Building.Professional),
+		"TERTIARY": getFn(Building.Tertiary),
+		"PUBLIC_LIGHTING": getFn(Building.Lighting)
+	}
 	for (let i: number = 0; i < queryResults.length; i++) {
 		const res = (await queryResults[i][0]).filter((rawRecord: { mean_curve: null | number; }) => rawRecord.mean_curve != null);
-
-		resultWh += res.reduce((total: number, next: { mean_curve: number; }) => total + next.mean_curve, 0) / res.length * queryResults[i][1];
+		// @ts-ignore
+		resultWh += res.reduce((total: number, next: { mean_curve: number; profile: string; }) => total + (next.mean_curve/2) * buildings[next.profile], 0)
+		//resultWh += res.reduce((total: number, next: { mean_curve: number; }) => total + next.mean_curve, 0) / res.length * queryResults[i][1];
 	}
 
 	return resultWh;
@@ -287,7 +293,10 @@ async function getZoneElectricityProduction(t1: number, zoneName: string, t2: nu
 		rawRes = record.result;
 	}
 	const res = (await rawRes).filter((rawRecord: { mean_curve: null | number; }) => rawRecord.mean_curve != null);
-	return (res.reduce((total: number, next: { mean_curve: number; }) => total + next.mean_curve, 0) / res.length) * getFn();
+	//return (res.reduce((total: number, next: { mean_curve: number; }) => total + next.mean_curve, 0) / res.length) * getFn();
+	const nbBuildings = getFn();
+	return res.reduce((total: number, next: { mean_curve: number; }) => total + (next.mean_curve/2) * nbBuildings, 0)
+	//return (res.reduce((total: number, next: { mean_curve: number; }) => total + next.mean_curve, 0) / res.length) * getFn();
 }
 
 export async function getUrbanZoneElectricityProduction(t1: number, urbanZone: string, t2: number): Promise<number> {
