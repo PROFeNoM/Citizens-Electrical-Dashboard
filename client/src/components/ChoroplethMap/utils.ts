@@ -15,7 +15,7 @@ export async function updateProperties(
 	featureCollection: GeoJSON.FeatureCollection<GeoJSON.Geometry>,
 	accessor: (f: GeoJSON.Feature<GeoJSON.Geometry>) => Promise<number>,
 	minDomainRange: number = 0,
-	maxDomainRange: number = 8
+	maxDomainRange: number = 4
 ): Promise<GeoJSON.FeatureCollection<GeoJSON.Geometry>> {
 	const {features} = featureCollection;
 	const values = await Promise.all(features.map(async (f) => await accessor(f)));

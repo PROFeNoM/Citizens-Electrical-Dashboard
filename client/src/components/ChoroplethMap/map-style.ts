@@ -9,21 +9,17 @@ export const dataLayer: FillLayer = {
 			property: 'choroplethValue',
 			stops: [
 				[0, '#7fd1ef'],
-				[1, '#76cbed'],
-				[2, '#6cc5eb'],
-				[3, '#62bfe9'],
-				[4, '#56bae8'],
-				[5, '#4ab4e6'],
-				[6, '#3baee4'],
-				[7, '#28a9e2'],
-				[8, '#00a3e0']
+				[1, '#6ab3e1'],
+				[2, '#5395d4'],
+				[3, '#3779c6'],
+				[4, '#005eb8'],
 			]
 		},
 		'fill-opacity': [
 			"case",
 			["boolean", ["feature-state", "hover"], false],
 			1,
-			0.6,
+			0.8,
 		],
 	}
 };
