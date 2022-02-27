@@ -32,7 +32,7 @@
 		"build": "react-scripts build",
 		"test": "react-scripts test",
 		"eject": "react-scripts eject",
-		"postinstall": "rm -rf node_modules/@types/react-native node_modules/@types/@types+eslint@7.29.0"
+		"postinstall": "rm -rf node_modules/@types/react-native node_modules/.pnpm/@types+eslint@7.29.0/"
 	},
 	"eslintConfig": {
 		"extends": [
