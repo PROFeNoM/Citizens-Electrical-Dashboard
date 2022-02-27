@@ -1,25 +1,33 @@
 import './ChoroplethMap.css'
 import React from 'react';
-import Map, {Layer, Source} from 'react-map-gl';
 import {json_Decoupage_urbain} from "../../map/layers/Decoupage_urbain";
-import {dataLayer} from './map-style';
+import {dataLayer, polyStyle} from './map-style';
 import {FeatureCollection} from "geojson";
 import {updateProperties} from "./utils";
 import {Building, getUrbanZoneElectricityConsumption} from "../../scripts/dbUtils";
+import mapboxgl from "mapbox-gl";
 
 const MAPBOX_TOKEN = 'pk.eyJ1IjoicHJvZmVub20iLCJhIjoiY2wwNDR3NnNoMGE2NTNpb2dxazg4NW1tdCJ9.hCeP49duNV1x-13qb2aMtA';
 
 
 interface ChoroplethMapState {
+	latitude: number;
+	longitude: number;
+	zoom: number;
 	data: FeatureCollection;
 }
 
 class ChoroplethMap extends React.Component<{}, ChoroplethMapState> {
+	private readonly mapContainer: React.RefObject<any>;
 	constructor(props: any) {
 		super(props);
 		this.state = {
+			latitude: 44.845615,
+			longitude: -0.554897,
+			zoom: 13.5,
 			data: json_Decoupage_urbain as FeatureCollection
 		};
+		this.mapContainer = React.createRef();
 	}
 
 	componentDidMount() {
@@ -33,24 +41,63 @@ class ChoroplethMap extends React.Component<{}, ChoroplethMapState> {
 				data
 			});
 		})();
-	}
 
+		let map = new mapboxgl.Map({
+			container: this.mapContainer.current,
+			style: "mapbox://styles/mapbox/streets-v9",
+			center: [this.state.longitude, this.state.latitude],
+			zoom: this.state.zoom,
+			accessToken: MAPBOX_TOKEN
+		});
+
+		let hoveredStateId: any = null;
+
+		map.on('load', () => {
+			map.addSource('urbanZone-source', {
+				'type': 'geojson',
+				'data': this.state.data,
+				'generateId': true
+			});
+			map.addLayer(dataLayer);
+			map.addLayer(polyStyle);
+
+		});
+		map.on('mousemove', 'data', (e) => {
+			// @ts-ignore
+			if (e.features.length > 0) {
+				if (hoveredStateId !== null) {
+					map.setFeatureState(
+						{source: 'urbanZone-source', id: hoveredStateId},
+						{hover: false}
+					);
+				}
+				// @ts-ignore
+				hoveredStateId = e.features[0].id;
+				map.setFeatureState(
+					{source: 'urbanZone-source', id: hoveredStateId},
+					{hover: true}
+				);
+			}
+		});
+		map.on('mouseleave', 'data', () => {
+			if (hoveredStateId !== null) {
+				map.setFeatureState(
+					{ source: 'urbanZone-source', id: hoveredStateId },
+					{ hover: false }
+				);
+			}
+			hoveredStateId = null;
+		});
+	}
+	
 	render() {
 		return (
-			<Map
-				initialViewState={{
-					latitude: 44.845615,
-					longitude: -0.554897,
-					zoom: 13.5,
-				}}
-				style={{width: 600, height: 400}}
-				mapStyle="mapbox://styles/mapbox/streets-v9"
-				mapboxAccessToken={MAPBOX_TOKEN}
-			>
-				<Source type='geojson' data={this.state.data}>
-					<Layer {...dataLayer}/>
-				</Source>
-			</Map>
+			<div className="district-map-wrapper">
+				<div id="districtDetailMap" className="map">
+					<div style={{ height: "400px", width: "400px" }} ref={this.mapContainer}>
+					</div>
+				</div>
+			</div>
 		);
 	}
 }
