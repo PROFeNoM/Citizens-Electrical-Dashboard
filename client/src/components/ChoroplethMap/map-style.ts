@@ -1,4 +1,4 @@
-import type {FillLayer, LineLayer} from "react-map-gl";
+import type {FillExtrusionLayer, FillLayer, LineLayer} from "react-map-gl";
 
 export const dataLayer: FillLayer = {
 	id: 'data',
@@ -36,5 +36,34 @@ export const polyStyle: LineLayer = {
 			4,
 			1
 		]
+	}
+}
+
+export const buildings3D: FillExtrusionLayer = {
+	'id': 'add-3d-buildings',
+	'source': 'district-buildings',
+	'type': 'fill-extrusion',
+	'minzoom': 13.5,
+	'paint': {
+		'fill-extrusion-color': '#aaa',
+		'fill-extrusion-height': [
+			'interpolate',
+			['linear'],
+			['zoom'],
+			15,
+			0,
+			15.05,
+			['get', 'HAUTEUR']
+		],
+		'fill-extrusion-base': [
+			'interpolate',
+			['linear'],
+			['zoom'],
+			15,
+			0,
+			15.05,
+			['get', 'Z_MIN_SOL']
+		],
+		'fill-extrusion-opacity': 0.6
 	}
 }

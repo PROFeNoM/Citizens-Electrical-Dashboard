@@ -1,7 +1,8 @@
 import './ChoroplethMap.css'
 import React from 'react';
 import {json_Decoupage_urbain} from "../../map/layers/Decoupage_urbain";
-import {dataLayer, polyStyle} from './map-style';
+import {json_Batiment_Bordeaux_Bastide_TEC} from "../../map/layers/Batiment_Bordeaux_Bastide_TEC"
+import {buildings3D, dataLayer, polyStyle} from './map-style';
 import {FeatureCollection} from "geojson";
 import {updateProperties} from "./utils";
 import {Building, getUrbanZoneElectricityConsumption} from "../../scripts/dbUtils";
@@ -15,6 +16,7 @@ interface ChoroplethMapState {
 	longitude: number;
 	zoom: number;
 	data: FeatureCollection;
+	buildingData: FeatureCollection;
 }
 
 class ChoroplethMap extends React.PureComponent<{}, ChoroplethMapState> {
@@ -26,7 +28,8 @@ class ChoroplethMap extends React.PureComponent<{}, ChoroplethMapState> {
 			latitude: 44.845615,
 			longitude: -0.554897,
 			zoom: 13.5,
-			data: json_Decoupage_urbain as FeatureCollection
+			data: json_Decoupage_urbain as FeatureCollection,
+			buildingData: json_Batiment_Bordeaux_Bastide_TEC as FeatureCollection
 		};
 		this.mapContainer = React.createRef();
 	}
@@ -59,8 +62,14 @@ class ChoroplethMap extends React.PureComponent<{}, ChoroplethMapState> {
 							'data': this.state.data,
 							'generateId': true
 						});
+						map.addSource('district-buildings', {
+							'type': 'geojson',
+							'data': this.state.buildingData,
+							'generateId': true
+						});
 						map.addLayer(dataLayer);
 						map.addLayer(polyStyle);
+						map.addLayer(buildings3D);
 
 						map.on('mousemove', 'data', (e) => {
 							// @ts-ignore

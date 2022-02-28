@@ -90385,3 +90385,5 @@ var json_Batiment_Bordeaux_Bastide_TEC = {
         }
     ]
 }
+
+module.exports = {json_Batiment_Bordeaux_Bastide_TEC}
