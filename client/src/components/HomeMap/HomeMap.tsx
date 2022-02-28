@@ -11,17 +11,20 @@ import {
 	getUrbanZoneElectricityProduction,
 	getUrbanZoneLibelle,
 	getUrbanZoneNumberOfBuildings,
+	getUrbanZoneNumberOfSites,
 	UrbanZoneFeature
 } from '../../scripts/dbUtils';
 
 
-function updateText(urbanZone: string, nbBuilding: number, area: number, elecCons: number, elecProd: number) {
+function updateText(urbanZone: string, nbBuildings: number, nbSites: number, area: number, elecCons: number, elecProd: number) {
 	const ratio : number = elecCons !== 0 ? Math.round(elecProd / elecCons * 100) : 0;
 
 	// @ts-ignore
 	document.getElementById('urban-zone').innerText = urbanZone;
 	// @ts-ignore
-	document.getElementById('nb-building').innerText = `${nbBuilding} bâtiments`;
+	document.getElementById('nb-building').innerText = `${nbBuildings} bâtiments`;
+	// @ts-ignore
+	document.getElementById('nb-sites').innerText = `${nbSites} consommateurs`;
 	// @ts-ignore
 	document.getElementById('area').innerText = `${ new Intl.NumberFormat().format(area)} m²`;
 	// @ts-ignore
@@ -35,9 +38,10 @@ function updateText(urbanZone: string, nbBuilding: number, area: number, elecCon
 // @ts-ignore
 const UrbanZoneEnergyBalance = ({ item }) => {
 	const urbanZone: string = getUrbanZoneLibelle(item);
-	const nbBuilding: number = getUrbanZoneNumberOfBuildings(urbanZone, Building.Residential)
-		+ getUrbanZoneNumberOfBuildings(urbanZone, Building.Professional)
-		+ getUrbanZoneNumberOfBuildings(urbanZone, Building.Tertiary);
+	const nbSites: number = getUrbanZoneNumberOfSites(urbanZone, Building.Residential)
+		+ getUrbanZoneNumberOfSites(urbanZone, Building.Professional)
+		+ getUrbanZoneNumberOfSites(urbanZone, Building.Tertiary);
+	const nbBuildings: number = getUrbanZoneNumberOfBuildings(urbanZone);
 
 	const area: number = Math.round(getUrbanZoneArea(urbanZone));
 
@@ -64,7 +68,7 @@ const UrbanZoneEnergyBalance = ({ item }) => {
 		<Polygon className="leaflet-area" positions={getUrbanZoneCoordinates(item)}
 			eventHandlers={{
 				mouseover: () => {
-					updateText(urbanZone, nbBuilding, area, elecCons, elecProd);
+					updateText(urbanZone, nbBuildings, nbSites, area, elecCons, elecProd);
 				}
 			}}>
 		</Polygon>
@@ -94,6 +98,7 @@ function HomeMap() {
 					<div className="urban-info">
 						<h3 id="urban-zone">Choisissez une zone urbaine</h3>
 						<p id="nb-building"></p>
+						<p id="nb-sites"></p>
 						<p id="area"></p>
 						<p id="elec-cons"></p>
 						<p id="elec-prod"></p>

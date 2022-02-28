@@ -5,14 +5,15 @@ import {
 	getDistrictArea,
 	getDistrictElectricityConsumption,
 	getDistrictElectricityProduction,
-	getDistrictNumberOfBuildings
+	getDistrictNumberOfBuildings,
+	getDistrictNumberOfSites
 } from "../../scripts/dbUtils";
 
 function DistrictEnergyBalance() {
-	const nbBuilding: number = getDistrictNumberOfBuildings(Building.Residential)
-		+ getDistrictNumberOfBuildings(Building.Professional)
-		+ getDistrictNumberOfBuildings(Building.Tertiary);
-
+	const nbSites: number = getDistrictNumberOfSites(Building.Residential)
+		+ getDistrictNumberOfSites(Building.Professional)
+		+ getDistrictNumberOfSites(Building.Tertiary);
+	const nbBuildings: number = getDistrictNumberOfBuildings();
 	const area: string = new Intl.NumberFormat().format(Math.round(getDistrictArea()));
 	const [elecCons, setElecCons] = useState(0);
 	const [elecProd, setElecProd] = useState(0);
@@ -40,7 +41,8 @@ function DistrictEnergyBalance() {
 	return (
 		<div id="district-infos">
 			<h2 id="district-name">Quartier de la Bastide</h2>
-			<p>{nbBuilding} bâtiments</p>
+			<p>{nbBuildings} bâtiments</p>
+			<p>{nbSites} consommateurs</p>
 			<p>{area} m²</p>
 			<p>{new Intl.NumberFormat().format(elecCons)} MWh/mois d'électricité consommée</p>
 			<p>{new Intl.NumberFormat().format(elecProd)} MWh/mois d'électricité produite</p>

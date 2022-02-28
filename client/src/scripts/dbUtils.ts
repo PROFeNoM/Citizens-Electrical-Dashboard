@@ -2,6 +2,7 @@ import * as turf from '@turf/turf';
 
 const {json_Decoupage_urbain} = require("../map/layers/Decoupage_urbain");
 const {json_eclairage_public_features} = require("../map/bor_ptlum");
+const {json_Batiment_Bordeaux_Bastide_TEC} = require("../map/layers/Batiment_Bordeaux_Bastide_TEC");
 
 export enum Building {
 	Residential,
@@ -97,12 +98,40 @@ export function getUrbanZoneLibelle(zone: UrbanZoneFeature): string {
 	return zone.properties.libelle;
 }
 
+let urbanZoneNumberOfBuildings: { [urbanZone: string]: number } = {};
+
 /**
  * Return the number of buildings in an urban zone
  * @param urbanZone Urban zone to search into
+ */
+export function getUrbanZoneNumberOfBuildings(urbanZone: string): number {
+	if (urbanZoneNumberOfBuildings[urbanZone])
+		return urbanZoneNumberOfBuildings[urbanZone];
+
+	const searchWithin = turf.polygon(getUrbanZoneFeatures(urbanZone, json_Decoupage_urbain).geometry.coordinates[0]);
+	const buildings = json_Batiment_Bordeaux_Bastide_TEC
+		.features
+		.map((f: { geometry: { coordinates: turf.helpers.Position[][][]; }; }) => turf.booleanContains(searchWithin, turf.polygon(f.geometry.coordinates[0])))
+		.filter(Boolean)
+		.length;
+
+	urbanZoneNumberOfBuildings[urbanZone] = buildings;
+	return buildings;
+}
+
+/**
+ * Return the number of buildings in La Bastide
+ */
+export function getDistrictNumberOfBuildings(): number {
+	return json_Decoupage_urbain.features.reduce((prev: number, curr: UrbanZoneFeature) => prev + getUrbanZoneNumberOfBuildings(curr.properties.libelle), 0);
+}
+
+/**
+ * Return the number of sites in an urban zone
+ * @param urbanZone Urban zone to search into
  * @param buildingType Building type searched
  */
-export function getUrbanZoneNumberOfBuildings(urbanZone: string, buildingType: Building): number {
+export function getUrbanZoneNumberOfSites(urbanZone: string, buildingType: Building): number {
 	const data: UrbanZoneFeature = getUrbanZoneFeatures(urbanZone, json_Decoupage_urbain);
 
 	if (data) {
@@ -145,11 +174,11 @@ export function getUrbanZoneArea(urbanZone: string): number {
 }
 
 /**
- * Return the number of buildings in La Bastide
+ * Return the number of sites in La Bastide
  * @param buildingType
  */
-export function getDistrictNumberOfBuildings(buildingType: Building): number {
-	return json_Decoupage_urbain.features.reduce((prev: number, curr: UrbanZoneFeature) => prev + getUrbanZoneNumberOfBuildings(curr.properties.libelle, buildingType), 0);
+export function getDistrictNumberOfSites(buildingType: Building): number {
+	return json_Decoupage_urbain.features.reduce((prev: number, curr: UrbanZoneFeature) => prev + getUrbanZoneNumberOfSites(curr.properties.libelle, buildingType), 0);
 }
 
 /**
@@ -187,7 +216,7 @@ let queried: QueriedData[] = [];
 async function getZoneElectricityConsumption(t1: number, buildingType: Building, zoneName: string, t2: number): Promise<number> {
 	let queryResults: [Promise<any>, number][] = [];
 
-	const getFn = zoneName === 'La Bastide' ? getDistrictNumberOfBuildings : (bType: Building) => getUrbanZoneNumberOfBuildings(zoneName, bType);
+	const getFn = zoneName === 'La Bastide' ? getDistrictNumberOfSites : (bType: Building) => getUrbanZoneNumberOfSites(zoneName, bType);
 
 	async function _addQuery(t1: number, t2: number, profiles: string[], nbBuilding: number) {
 		const timestamps = [t1, t2];
@@ -242,7 +271,7 @@ async function getZoneElectricityConsumption(t1: number, buildingType: Building,
 	for (let i: number = 0; i < queryResults.length; i++) {
 		const res = (await queryResults[i][0]).filter((rawRecord: { mean_curve: null | number; }) => rawRecord.mean_curve != null);
 		// @ts-ignore
-		resultWh += res.reduce((total: number, next: { mean_curve: number; profile: string; }) => total + (next.mean_curve/2) * buildings[next.profile], 0)
+		resultWh += res.reduce((total: number, next: { mean_curve: number; profile: string; }) => total + (next.mean_curve / 2) * buildings[next.profile], 0)
 		//resultWh += res.reduce((total: number, next: { mean_curve: number; }) => total + next.mean_curve, 0) / res.length * queryResults[i][1];
 	}
 
@@ -271,7 +300,7 @@ export async function getDistrictElectricityConsumption(t1: number, buildingType
 }
 
 async function getZoneElectricityProduction(t1: number, zoneName: string, t2: number): Promise<number> {
-	const getFn = zoneName === 'La Bastide' ? () => getDistrictNumberOfBuildings(Building.Producer) : () => getUrbanZoneNumberOfBuildings(zoneName, Building.Producer);
+	const getFn = zoneName === 'La Bastide' ? () => getDistrictNumberOfSites(Building.Producer) : () => getUrbanZoneNumberOfSites(zoneName, Building.Producer);
 	let rawRes;
 
 	const timestamps = [t1, t2];
@@ -295,7 +324,7 @@ async function getZoneElectricityProduction(t1: number, zoneName: string, t2: nu
 	const res = (await rawRes).filter((rawRecord: { mean_curve: null | number; }) => rawRecord.mean_curve != null);
 	//return (res.reduce((total: number, next: { mean_curve: number; }) => total + next.mean_curve, 0) / res.length) * getFn();
 	const nbBuildings = getFn();
-	return res.reduce((total: number, next: { mean_curve: number; }) => total + (next.mean_curve/2) * nbBuildings, 0)
+	return res.reduce((total: number, next: { mean_curve: number; }) => total + (next.mean_curve / 2) * nbBuildings, 0)
 	//return (res.reduce((total: number, next: { mean_curve: number; }) => total + next.mean_curve, 0) / res.length) * getFn();
 }
 
