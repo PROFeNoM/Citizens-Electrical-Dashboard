@@ -1,6 +1,6 @@
 import './Home.css';
 import { Header } from '../../containers';
-import { Col, Container, Row } from 'react-grid-system';
+import { Col, Container, Row } from 'react-bootstrap';
 import { DistrictEnergyBalance } from '../../components';
 import HomeMap from '../../components/HomeMap/HomeMap';
 
@@ -10,7 +10,7 @@ function Home() {
             <Header title={'ACCUEIL'} />
             <h1 className="app-title">TABLEAU ELECTRIQUE CITOYEN</h1>
 
-            <Container fluid>
+            <Container>
                 <Row>
                     <Col sm={12} md={12} lg={12} xl={4}>
                         <DistrictEnergyBalance />
