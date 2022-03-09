@@ -6,6 +6,13 @@
     text-transform: uppercase;
 }
 
+#map {
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 #nav-items {
     height: 100%;
     display: flex;
