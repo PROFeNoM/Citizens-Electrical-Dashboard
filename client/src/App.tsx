@@ -2,10 +2,11 @@ import React from 'react';
 import './App.css';
 
 import {HamburgerMenu} from './components';
-import {BrowserRouter as Router, Routes, Route} from "react-router-dom";
-import {Home, Connection, About, Legal, Error} from "./pages";
+import {BrowserRouter as Router, Routes, Route} from 'react-router-dom';
+import {Home, Connection, About, Legal, Error} from './pages';
 import Consommation from './pages/Consommation/Consommation';
 import Production from './pages/Production/Production';
+import Balance from './pages/Balance/Balance';
 import Dropmenu from './components/Dropmenu/Dropmenu';
 function App() {
     return (
@@ -19,6 +20,7 @@ function App() {
                     <Route path='/legal' element={<Legal />}/>
                     <Route path='/production' element={<Production />}/>
                     <Route path='/consommation' element={<Consommation />}/>
+                    <Route path='/balance' element={<Balance />}/>
 
                     <Route path='*' element={<Error />}/>
                 </Routes>
