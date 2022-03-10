@@ -6,13 +6,10 @@ export const dataLayer: FillLayer = {
 	source: 'urbanZone-source',
 	paint: {
 		'fill-color': {
-			property: 'choroplethValue',
+			property: 'curentZone',
 			stops: [
 				[0, '#7fd1ef'],
-				[1, '#6ab3e1'],
-				[2, '#5395d4'],
-				[3, '#3779c6'],
-				[4, '#005eb8'],
+				[1, '#005eb8'],
 			]
 		},
 		'fill-opacity': [

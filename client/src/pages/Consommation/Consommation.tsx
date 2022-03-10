@@ -1,7 +1,7 @@
 import "./Consommation.css";
 import { Header } from "../../containers";
 import { Col, Container, Row } from "react-bootstrap";
-import { DistrictEnergyBalance } from "../../components";
+import { ChoroplethMapController, DistrictEnergyBalance } from "../../components";
 import HomeMap from "../../components/HomeMap/HomeMap";
 import DropdownMenu from "react-bootstrap/esm/DropdownMenu";
 import { Dropdown } from "react-bootstrap";

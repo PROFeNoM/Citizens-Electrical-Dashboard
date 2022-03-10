@@ -5,11 +5,15 @@ import { Col, Container, Row } from 'react-bootstrap';
 import { Link } from "react-router-dom";
 import BalanceMapController from '../../components/BalanceMap/BalanceMapController';
 
-function Home() {
+
+function Balance() {
+
+    const libelle: string = "Bastide Niel"
+
     return (
         <>
             <Header title={'BILAN'} />
-            <h2 id="zone-name">{"<Nom de la zone>"}</h2>
+            <h2 id="zone-name">{libelle}</h2>
 
             <Container>
                 <Row>
@@ -21,7 +25,7 @@ function Home() {
                     </Col>
                     <Col sm={12} md={12} lg={12} xl={4}>
                         <div id="map">
-                           <BalanceMapController />
+                           <BalanceMapController curentZone={libelle}/>
                         </div>
                     </Col>
                     <Col sm={12} md={12} lg={12} xl={4}>
@@ -45,4 +49,4 @@ function Home() {
     );
 }
 
-export default Home;
+export default Balance;

@@ -12,23 +12,23 @@ function changeRange(n: number, minOld: number, maxOld: number, minNew: number, 
 }
 
 export async function updateProperties(
-	featureCollection: GeoJSON.FeatureCollection<GeoJSON.Geometry>,
-	accessor: (f: GeoJSON.Feature<GeoJSON.Geometry>) => Promise<number>,
-	minDomainRange: number = 0,
-	maxDomainRange: number = 4
+	featureCollection: GeoJSON.FeatureCollection<GeoJSON.Geometry>, curentZone: string
 ): Promise<GeoJSON.FeatureCollection<GeoJSON.Geometry>> {
 	const {features} = featureCollection;
-	const values = await Promise.all(features.map(async (f) => await accessor(f)));
-	const minValue = Math.min(...values);
-	const maxValue = Math.max(...values);
+	const values = features.map( (item) => {
+        if (item.properties.libelle === curentZone)
+            return 1;
+        else
+            return 0;
+    });
+
 
 	return {
 		type: 'FeatureCollection',
 		features: features.map((f, i) => {
-			const value = Math.round(changeRange(values[i], minValue, maxValue, minDomainRange, maxDomainRange));
 			const properties = {
 				...f.properties,
-				choroplethValue: value
+				curentZone: values[i]
 			};
 			return {...f, properties};
 		})

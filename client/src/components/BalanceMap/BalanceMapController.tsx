@@ -14,8 +14,12 @@ class BalanceMapController extends React.Component<any, any> {
 
 	componentDidMount() {
 		console.log("[DEBUG]: componentDidMount called");
+		console.log(this.props.curentZone);
+		console.log(this.balanceMapModel.data.features[0].properties.libelle)
+
 		this.balanceMapModel.updateData(() => {
 			this.balanceMapModel.mapModel.initializeMap();
+			console.log(this.balanceMapModel.data)
 			this.balanceMapModel.mapModel.map.current.on('load', () => {
 				let hoveredStateId: any = null;
 				this.balanceMapModel.mapModel.addSources(['urbanZone-source', 'district-buildings'], [
@@ -30,7 +34,7 @@ class BalanceMapController extends React.Component<any, any> {
 						'generateId': true
 					}
 				])
-
+	
 				this.balanceMapModel.mapModel.addLayers([dataLayer, polyStyle, buildings3D]);
 
 				this.balanceMapModel.mapModel.map.current.on('mousemove', 'data', (e) => {
@@ -60,8 +64,13 @@ class BalanceMapController extends React.Component<any, any> {
 					}
 					hoveredStateId = null;
 				});
+
+				this.balanceMapModel.mapModel.map.current.on('click', 'data', () => {
+					//Redirect to the urban zone selected balance page
+				});
+
 			});
-		});
+		}, this.props.curentZone);
 	}
 
 	render() {
