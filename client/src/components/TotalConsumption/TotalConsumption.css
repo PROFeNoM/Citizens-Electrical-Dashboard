@@ -1,0 +1,33 @@
+
+
+
+.total-consumption-wrapper {
+    width: 100%;
+    height: 600px;
+}
+
+.total-consumption {
+    width: 100%;
+    height: 400px;
+}
+
+.mapboxgl-canvas {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.color-wrapper {
+    margin: 0 auto;
+    width: 100%;
+    text-align: center;
+}
+
+.total-consumption-title-wrapper {
+    background-color: white;
+    margin-bottom: 5px;
+    padding: 10px;
+}
+
