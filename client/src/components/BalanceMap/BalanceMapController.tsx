@@ -3,6 +3,7 @@ import React from 'react';
 import {buildings3D, dataLayer, polyStyle} from './map-style';
 import BalanceMapView from "./BalanceMapView";
 import BalanceMapModel, {BalanceMapState} from "./BalanceMapModel";
+import { Link } from "react-router-dom";
 
 class BalanceMapController extends React.Component<any, any> {
 	private balanceMapModel: BalanceMapState;
@@ -67,6 +68,7 @@ class BalanceMapController extends React.Component<any, any> {
 
 				this.balanceMapModel.mapModel.map.current.on('click', 'data', () => {
 					//Redirect to the urban zone selected balance page
+					
 				});
 
 			});
