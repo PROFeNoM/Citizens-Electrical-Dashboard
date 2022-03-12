@@ -6,7 +6,7 @@
 
 .choropleth-map-wrapper {
     width: 100%;
-    height: 600px;
+    height: auto;
 }
 
 .choropleth-map {
@@ -32,6 +32,7 @@
     background-color: white;
     margin-bottom: 5px;
     padding: 10px;
+    text-align: center;
 }
 
 .high-end-color-wrapper, .low-end-color-wrapper {

@@ -4,4 +4,5 @@ export {default as HomeMap} from './HomeMap/HomeMap'
 export {default as ChoroplethMapController} from './ChoroplethMap/ChoroplethMapController'
 export {default as TotalConsumptionController} from './TotalConsumption/TotalConsumptionController'
 export {default as MapController} from './MapboxMap/MapboxMapController'
-
+export {default as HorizontalSliderController} from './HorizontalSlider/HorizontalSliderController'
+export {default as HorizontalSliderView} from './HorizontalSlider/HorizontalSliderView'

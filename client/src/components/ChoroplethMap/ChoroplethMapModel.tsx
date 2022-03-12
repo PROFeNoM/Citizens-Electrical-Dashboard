@@ -9,7 +9,7 @@ export interface ChoroplethMapState {
 	mapModel: MapState;
 	data: FeatureCollection;
 	buildingData: FeatureCollection;
-	updateData: (callback: () => void) => void;
+	updateData: (t1: number, t2: number, callback: () => void) => void;
 }
 
 class ChoroplethMapModel implements ChoroplethMapState {
@@ -23,11 +23,12 @@ class ChoroplethMapModel implements ChoroplethMapState {
 		this.buildingData = json_Batiment_Bordeaux_Bastide_TEC as FeatureCollection;
 	}
 
-	updateData(callback) {
-		const t1 = new Date('2021-12-01T00:30:00Z').getTime();
-		const t2 = new Date('2021-12-31T23:30:00Z').getTime();
+	updateData(t1: number, t2: number, callback) {
+		console.log("[DEBUG]: updateData called");
 		(async () => {
-			this.data = await updateProperties(json_Decoupage_urbain as FeatureCollection, async f => getUrbanZoneElectricityConsumption(t1, Building.All, f.properties.libelle, t2));
+			this.data = await updateProperties(
+				json_Decoupage_urbain as FeatureCollection,
+				async f => getUrbanZoneElectricityConsumption(t1, Building.All, f.properties.libelle, t2));
 			callback();
 		})();
 

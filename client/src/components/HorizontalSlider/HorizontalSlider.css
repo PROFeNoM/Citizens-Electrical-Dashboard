@@ -1,0 +1,38 @@
+.MuiSlider-rail, .MuiSlider-thumb {
+    color: white;
+}
+
+.MuiSlider-markLabel {
+    color: white !important;
+    font-family: 'Ubuntu', 'Roboto Mono', 'San F', 'Arial', sans-serif !important;
+    font-size: 2vw !important;
+}
+
+@media (max-width: 760px) {
+    .MuiSlider-markLabel {
+        font-family: 'Ubuntu Mono', 'Roboto Mono', 'San F', 'Arial', sans-serif !important;
+        font-size: 4vw !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        max-width: 3ch !important;
+    }
+}
+
+.slider-content-wrapper {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+}
+
+.box-slider-wrapper {
+    width: 100%;
+    justify-content: center;
+}
+
+.horizontal-slider-wrapper {
+    padding-bottom: 20px;
+}
+
