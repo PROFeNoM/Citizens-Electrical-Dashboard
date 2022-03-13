@@ -11,20 +11,18 @@ function Consommation() {
 			<Dropmenu/>
 			<div className='consommation-content'>
 				<HorizontalSliderController render={(t1, t2) => (
-					<React.Fragment>
-						<Container>
-							<Row>
-								<Col sm={12} md={12} lg={12} xl={6}>
-									<ChoroplethMapController
-										t1={t1}
-										t2={t2}/>
-								</Col>
-								<Col sm={12} md={12} lg={12} xl={6}>
-									<TotalConsumptionController/>
-								</Col>
-							</Row>
-						</Container>
-					</React.Fragment>
+					<Container>
+						<Row>
+							<Col sm={12} md={12} lg={12} xl={6}>
+								<ChoroplethMapController
+									t1={t1}
+									t2={t2}/>
+							</Col>
+							<Col sm={12} md={12} lg={12} xl={6}>
+								<TotalConsumptionController/>
+							</Col>
+						</Row>
+					</Container>
 				)}/>
 			</div>
 		</>

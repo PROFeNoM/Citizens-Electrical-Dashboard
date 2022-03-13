@@ -8,17 +8,12 @@ function About() {
 		<><Header title={'À PROPOS'}/>
 			<div className='test'>
 				<HorizontalSliderController render={(t1, t2) => (
-					<React.Fragment>
-						<ChoroplethMapController
-							t1={t1}
-							t2={t2}/>
-					</React.Fragment>
+					<ChoroplethMapController t1={t1} t2={t2}/>
 				)}/>
 			</div>
 
 		</>
-	)
-		;
+	);
 }
 
 export default About;
