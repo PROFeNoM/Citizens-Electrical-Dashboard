@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react';
 import React from 'react';
 import './TotalConsumption.css';
 import TotalConsumptionView from './TotalConsumptionView';

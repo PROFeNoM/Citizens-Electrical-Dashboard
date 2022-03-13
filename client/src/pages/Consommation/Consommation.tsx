@@ -1,11 +1,7 @@
 import "./Consommation.css";
 import React from "react";
-import {Header} from "../../containers";
 import {Col, Container, Row} from "react-bootstrap";
-import {ChoroplethMapController, DistrictEnergyBalance, HorizontalSliderController} from "../../components";
-import HomeMap from "../../components/HomeMap/HomeMap";
-import DropdownMenu from "react-bootstrap/esm/DropdownMenu";
-import {Dropdown} from "react-bootstrap";
+import {ChoroplethMapController, HorizontalSliderController} from "../../components";
 import Dropmenu from "../../components/Dropmenu/Dropmenu";
 import {TotalConsumptionController} from "../../components";
 

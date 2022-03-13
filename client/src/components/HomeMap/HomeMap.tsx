@@ -2,7 +2,6 @@ import './HomeMap.css';
 import React, { useEffect, useState } from 'react';
 import { MapContainer as LMap, Polygon, TileLayer } from 'react-leaflet';
 import { Col, Container, Row } from "react-bootstrap";
-import {Link} from "react-router-dom";
 import {
 	Building,
 	getAllUrbanZone,

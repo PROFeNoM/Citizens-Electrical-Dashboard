@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react';
 import './TotalConsumption.css';
 import {CanvasJSChart} from 'canvasjs-react-charts';
 import { ChartOptions } from './TotalConsumptionModel';

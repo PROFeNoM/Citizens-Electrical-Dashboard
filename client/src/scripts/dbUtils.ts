@@ -72,11 +72,11 @@ function getUrbanZoneFeatures(urbanZone: string, json: { features: [] }): UrbanZ
  *
  */
 export function getAllUrbanZone(): Array<UrbanZoneFeature> {
-	var UrbanZones = json_Decoupage_urbain.features;
+	const UrbanZones = json_Decoupage_urbain.features;
 	//Reorder coordinates
-	UrbanZones.map((item: UrbanZoneFeature) => {
-		item.geometry.coordinates[0][0].map((item: [number, number]) => {
-			var tmp = item[0];
+	UrbanZones.forEach((item: UrbanZoneFeature) => {
+		item.geometry.coordinates[0][0].forEach((item: [number, number]) => {
+			const tmp = item[0];
 			item[0] = item[1];
 			item[1] = tmp;
 		})
