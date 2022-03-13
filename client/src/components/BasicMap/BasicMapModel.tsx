@@ -3,18 +3,7 @@ import mapboxgl, {AnyLayer, AnySourceData} from "mapbox-gl";
 
 const MAPBOX_TOKEN = 'pk.eyJ1IjoicHJvZmVub20iLCJhIjoiY2wwNDR3NnNoMGE2NTNpb2dxazg4NW1tdCJ9.hCeP49duNV1x-13qb2aMtA';
 
-export interface MapState {
-	mapContainer: React.RefObject<HTMLInputElement>;
-	map: React.MutableRefObject<mapboxgl.Map>;
-	lng: number;
-	lat: number;
-	zoom: number;
-	initializeMap: () => void;
-	addSources: (ids: string[], sources: AnySourceData[]) => void;
-	addLayers: (layers: AnyLayer[]) => void;
-}
-
-class MapModel implements MapState {
+class MapModel {
 	mapContainer: React.RefObject<HTMLInputElement>;
 	map: React.MutableRefObject<mapboxgl.Map>;
 	lng: number;

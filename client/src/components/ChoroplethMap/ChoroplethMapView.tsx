@@ -1,6 +1,6 @@
 import './ChoroplethMap.css';
 import React from "react";
-import MapView from "../MapboxMap/MapboxMapView";
+import BasicMapView from "../BasicMap/BasicMapView";
 
 function ChoroplethMapView(props: { mapContainer: React.LegacyRef<HTMLDivElement> | undefined; }) {
 	return (
@@ -10,7 +10,7 @@ function ChoroplethMapView(props: { mapContainer: React.LegacyRef<HTMLDivElement
 			</div>
 
 			<div id="urbanZoneComparisonMap" className="choropleth-map">
-				<MapView mapContainer={props.mapContainer} />
+				<BasicMapView mapContainer={props.mapContainer} />
 			</div>
 
 			<div className='color-wrapper'>

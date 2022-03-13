@@ -1,13 +1,13 @@
 import './BalanceMap.css';
 import React from "react";
-import MapView from "../MapboxMap/MapboxMapView";
+import BasicMapView from "../BasicMap/BasicMapView";
 
 function BalanceMapView(props: { mapContainer: React.LegacyRef<HTMLDivElement> | undefined; }) {
 	return (
 		<div className='balance-map-wrapper'>
 			
 			<div id="BalanceMap" className="balance-map">
-				<MapView mapContainer={props.mapContainer} />
+				<BasicMapView mapContainer={props.mapContainer} />
 			</div>
 		</div>
 	);

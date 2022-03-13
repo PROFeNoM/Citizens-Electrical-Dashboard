@@ -2,10 +2,10 @@ import './BalanceMap.css'
 import React from 'react';
 import {buildings3D, dataLayer, polyStyle} from './map-style';
 import BalanceMapView from "./BalanceMapView";
-import BalanceMapModel, {BalanceMapState} from "./BalanceMapModel";
+import BalanceMapModel from "./BalanceMapModel";
 
 class BalanceMapController extends React.Component<any, any> {
-	private balanceMapModel: BalanceMapState;
+	private balanceMapModel: BalanceMapModel;
 
 	constructor(props) {
 		super(props);
@@ -18,11 +18,11 @@ class BalanceMapController extends React.Component<any, any> {
 		console.log(this.balanceMapModel.data.features[0].properties.libelle)
 
 		this.balanceMapModel.updateData(() => {
-			this.balanceMapModel.mapModel.initializeMap();
+			this.balanceMapModel.initializeMap();
 			console.log(this.balanceMapModel.data)
-			this.balanceMapModel.mapModel.map.current.on('load', () => {
+			this.balanceMapModel.map.current.on('load', () => {
 				let hoveredStateId: any = null;
-				this.balanceMapModel.mapModel.addSources(['urbanZone-source', 'district-buildings'], [
+				this.balanceMapModel.addSources(['urbanZone-source', 'district-buildings'], [
 					{
 						'type': 'geojson',
 						'data': this.balanceMapModel.data,
@@ -35,31 +35,31 @@ class BalanceMapController extends React.Component<any, any> {
 					}
 				])
 	
-				this.balanceMapModel.mapModel.addLayers([dataLayer, polyStyle, buildings3D]);
+				this.balanceMapModel.addLayers([dataLayer, polyStyle, buildings3D]);
 
-				this.balanceMapModel.mapModel.map.current.on('mousemove', 'data', (e) => {
+				this.balanceMapModel.map.current.on('mousemove', 'data', (e) => {
 					// @ts-ignore
 					if (e.features.length > 0) {
 						if (hoveredStateId !== null) {
-							this.balanceMapModel.mapModel.map.current.setFeatureState(
+							this.balanceMapModel.map.current.setFeatureState(
 								{source: 'urbanZone-source', id: hoveredStateId},
 								{hover: false}
 							);
 						}
 						// @ts-ignore
 						hoveredStateId = e.features[0].id;
-						this.balanceMapModel.mapModel.map.current.getCanvas().style.cursor = 'pointer';
-						this.balanceMapModel.mapModel.map.current.setFeatureState(
+						this.balanceMapModel.map.current.getCanvas().style.cursor = 'pointer';
+						this.balanceMapModel.map.current.setFeatureState(
 							{source: 'urbanZone-source', id: hoveredStateId},
 							{hover: true}
 						);
 					}
 				});
 
-				this.balanceMapModel.mapModel.map.current.on('mouseleave', 'data', () => {
+				this.balanceMapModel.map.current.on('mouseleave', 'data', () => {
 					if (hoveredStateId !== null) {
-						this.balanceMapModel.mapModel.map.current.getCanvas().style.cursor = '';
-						this.balanceMapModel.mapModel.map.current.setFeatureState(
+						this.balanceMapModel.map.current.getCanvas().style.cursor = '';
+						this.balanceMapModel.map.current.setFeatureState(
 							{source: 'urbanZone-source', id: hoveredStateId},
 							{hover: false}
 						);
@@ -68,7 +68,7 @@ class BalanceMapController extends React.Component<any, any> {
 				});
 
 
-				this.balanceMapModel.mapModel.map.current.on('click', 'data', (e) => {
+				this.balanceMapModel.map.current.on('click', 'data', (e) => {
 					//Redirect to the urban zone selected balance page
 					console.log("[DEBUG] CLICK");
 					console.log(e.features);
@@ -82,7 +82,7 @@ class BalanceMapController extends React.Component<any, any> {
 
 	render() {
 		return (
-			<BalanceMapView mapContainer={this.balanceMapModel.mapModel.mapContainer}/>
+			<BalanceMapView mapContainer={this.balanceMapModel.mapContainer}/>
 		);
 	}
 }
