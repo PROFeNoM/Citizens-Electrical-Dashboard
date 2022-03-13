@@ -1,4 +1,4 @@
-var json_Batiment_Bordeaux_Bastide_TEC = {
+{
     "type": "FeatureCollection",
     "name": "Batiment_Bordeaux_Bastide_TEC",
     "crs": {"type": "name", "properties": {"name": "urn:ogc:def:crs:OGC:1.3:CRS84"}},
@@ -90385,5 +90385,3 @@ var json_Batiment_Bordeaux_Bastide_TEC = {
         }
     ]
 }
-
-module.exports = {json_Batiment_Bordeaux_Bastide_TEC}

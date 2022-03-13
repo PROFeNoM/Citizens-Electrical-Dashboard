@@ -1,4 +1,4 @@
-var json_eclairage_public_features = [{
+[{
     "datasetid": "bor_ptlum",
     "recordid": "b6fc61268746df61f2d9eeb97a552eb0f75a2425",
     "fields": {
@@ -23301,5 +23301,3 @@ var json_eclairage_public_features = [{
     "geometry": {"type": "Point", "coordinates": [-0.560422102678, 44.8461779743]},
     "record_timestamp": "2020-07-24T11:47:28.807+02:00"
 }]
-
-module.exports = {json_eclairage_public_features}

@@ -1,9 +1,9 @@
 import MapModel, {MapState} from "../MapboxMap/MapboxMapModel";
 import {FeatureCollection} from "geojson";
-import {json_Decoupage_urbain} from "../../map/layers/Decoupage_urbain";
-import {json_Batiment_Bordeaux_Bastide_TEC} from "../../map/layers/Batiment_Bordeaux_Bastide_TEC";
-import {Building, getUrbanZoneElectricityConsumption} from "../../scripts/dbUtils";
 import {updateProperties} from "./utils";
+
+const json_Decoupage_urbain = require("../../map/layers/Decoupage_urbain.json");
+const json_Batiment_Bordeaux_Bastide_TEC = require("../../map/layers/Batiment_Bordeaux_Bastide_TEC.json");
 
 export interface BalanceMapState {
 	mapModel: MapState;

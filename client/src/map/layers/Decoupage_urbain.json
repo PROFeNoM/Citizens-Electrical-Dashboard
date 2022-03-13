@@ -1,4 +1,4 @@
-var json_Decoupage_urbain = {
+{
     "type": "FeatureCollection",
     "name": "Decoupage_urbain",
     "crs": {"type": "name", "properties": {"name": "urn:ogc:def:crs:OGC:1.3:CRS84"}},
@@ -158,5 +158,3 @@ var json_Decoupage_urbain = {
         }
     ]
 }
-
-module.exports = {json_Decoupage_urbain}

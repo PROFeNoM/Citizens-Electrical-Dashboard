@@ -1,4 +1,4 @@
-var json_BornesVE_Bordeaux_Bastide = {
+{
     "type": "FeatureCollection",
     "name": "BornesVE_Bordeaux_Bastide",
     "crs": {"type": "name", "properties": {"name": "urn:ogc:def:crs:OGC:1.3:CRS84"}},

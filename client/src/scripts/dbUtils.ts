@@ -1,8 +1,8 @@
 import * as turf from '@turf/turf';
 
-const {json_Decoupage_urbain} = require("../map/layers/Decoupage_urbain");
-const {json_eclairage_public_features} = require("../map/bor_ptlum");
-const {json_Batiment_Bordeaux_Bastide_TEC} = require("../map/layers/Batiment_Bordeaux_Bastide_TEC");
+const json_Decoupage_urbain = require("../map/layers/Decoupage_urbain.json");
+const json_eclairage_public_features = require("../map/bor_ptlum.json");
+const json_Batiment_Bordeaux_Bastide_TEC = require("../map/layers/Batiment_Bordeaux_Bastide_TEC.json");
 
 export enum Building {
 	Residential,
