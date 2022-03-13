@@ -3,7 +3,7 @@ import { Header } from '../../containers';
 import { Col, Container, Row } from 'react-bootstrap';
 // import EnergyBalance from '../../components/EnergyBalance/EnergyBalance';
 import { Link } from "react-router-dom";
-import BalanceMapController from '../../components/BalanceMap/BalanceMapController';
+import BalanceMap from '../../components/BalanceMap/BalanceMap';
 
 
 function Balance() {
@@ -25,7 +25,7 @@ function Balance() {
                     </Col>
                     <Col sm={12} md={12} lg={12} xl={4}>
                         <div id="map">
-                           <BalanceMapController curentZone={libelle}/>
+                           <BalanceMap currentZone={libelle}/>
                         </div>
                     </Col>
                     <Col sm={12} md={12} lg={12} xl={4}>
