@@ -4,7 +4,11 @@ import {buildings3D, dataLayer, polyStyle} from './map-style';
 import BalanceMapView from "./BalanceMapView";
 import BalanceMapModel from "./BalanceMapModel";
 
-class BalanceMapController extends React.Component<any, any> {
+interface Props {
+	curentZone: string,
+}
+
+class BalanceMapController extends React.Component<Props, {}> {
 	private balanceMapModel: BalanceMapModel;
 
 	constructor(props) {

@@ -2,7 +2,7 @@ import React from 'react';
 import BasicMapView from "./BasicMapView";
 import BasicMapModel from "./BasicMapModel";
 
-class BasicMapController extends React.Component<any, any> {
+class BasicMapController extends React.Component<{}, {}> {
 	private mapModel: BasicMapModel;
 
 	constructor(props) {

@@ -12,60 +12,61 @@ interface Props {
 interface State {
 	t1: number,
 	t2: number,
-	choroplethMapModel: ChoroplethMapModel,
 }
 
 class ChoroplethMapController extends React.Component<Props, State> {
+	private choroplethMapModel: ChoroplethMapModel;
+
 	constructor(props) {
 		super(props);
 		this.state = {
 			t1: props.t1,
 			t2: props.t2,
-			choroplethMapModel: new ChoroplethMapModel()
 		}
+		this.choroplethMapModel = new ChoroplethMapModel();
 	}
 
 	componentDidMount() {
-		this.state.choroplethMapModel.updateData(this.state.t1, this.state.t2, () => {
-			this.state.choroplethMapModel.initializeMap();
-			this.state.choroplethMapModel.map.current.on('load', () => {
+		this.choroplethMapModel.updateData(this.state.t1, this.state.t2, () => {
+			this.choroplethMapModel.initializeMap();
+			this.choroplethMapModel.map.current.on('load', () => {
 				let hoveredStateId: any = null;
-				this.state.choroplethMapModel.addSources(['urbanZone-source', 'district-buildings'], [
+				this.choroplethMapModel.addSources(['urbanZone-source', 'district-buildings'], [
 					{
 						'type': 'geojson',
-						'data': this.state.choroplethMapModel.data,
+						'data': this.choroplethMapModel.data,
 						'generateId': true
 					},
 					{
 						'type': 'geojson',
-						'data': this.state.choroplethMapModel.buildingData,
+						'data': this.choroplethMapModel.buildingData,
 						'generateId': true
 					}
 				]);
 
-				this.state.choroplethMapModel.addLayers([dataLayer, polyStyle, buildings3D]);
+				this.choroplethMapModel.addLayers([dataLayer, polyStyle, buildings3D]);
 
-				this.state.choroplethMapModel.map.current.on('mousemove', 'data', (e) => {
+				this.choroplethMapModel.map.current.on('mousemove', 'data', (e) => {
 					// @ts-ignore
 					if (e.features.length > 0) {
 						if (hoveredStateId !== null) {
-							this.state.choroplethMapModel.map.current.setFeatureState(
+							this.choroplethMapModel.map.current.setFeatureState(
 								{source: 'urbanZone-source', id: hoveredStateId},
 								{hover: false}
 							);
 						}
 						// @ts-ignore
 						hoveredStateId = e.features[0].id;
-						this.state.choroplethMapModel.map.current.setFeatureState(
+						this.choroplethMapModel.map.current.setFeatureState(
 							{source: 'urbanZone-source', id: hoveredStateId},
 							{hover: true}
 						);
 					}
 				});
 
-				this.state.choroplethMapModel.map.current.on('mouseleave', 'data', () => {
+				this.choroplethMapModel.map.current.on('mouseleave', 'data', () => {
 					if (hoveredStateId !== null) {
-						this.state.choroplethMapModel.map.current.setFeatureState(
+						this.choroplethMapModel.map.current.setFeatureState(
 							{source: 'urbanZone-source', id: hoveredStateId},
 							{hover: false}
 						);
@@ -78,7 +79,7 @@ class ChoroplethMapController extends React.Component<Props, State> {
 
 	render() {
 		return (
-			<ChoroplethMapView mapContainer={this.state.choroplethMapModel.mapContainer}/>
+			<ChoroplethMapView mapContainer={this.choroplethMapModel.mapContainer}/>
 		);
 	}
 }
