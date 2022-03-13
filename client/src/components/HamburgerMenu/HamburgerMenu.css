@@ -70,6 +70,6 @@
     align-items: center;
 }
 
-span {
+.item-title {
     margin-left: 16px;
 }

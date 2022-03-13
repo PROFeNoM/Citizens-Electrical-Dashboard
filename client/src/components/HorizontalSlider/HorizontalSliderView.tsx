@@ -11,10 +11,7 @@ function HorizontalSliderView(props: {
 		<div className='slider-content-wrapper'>
 			<div className='box-slider-wrapper'>
 				<Box
-					display='flex'
-					alignItems='center'
-					justifyContent='center'
-					width='92%'
+					width='100%'
 				>
 					<Slider
 						aria-label="Restricted values"
