@@ -18,7 +18,7 @@ interface State {
 	districtConsumptionData: { x: Date, y: number }[],
 	urbanZoneConsumptionData: { x: Date, y: number }[]
 }
-
+// TODO: Link it with the urban zone that is given. within props ? token ?
 export default class TypicalConsumptionDay extends React.Component<Props, State> {
 	constructor(props) {
 		super(props);
@@ -78,7 +78,13 @@ export default class TypicalConsumptionDay extends React.Component<Props, State>
 		const chartOptions = {
 			animationEnabled: true,
 			axisX: {
-				valueFormatString: "HH:mm"
+				valueFormatString: "HH:mm",
+				fontFamily: 'Ubuntu',
+			},
+			axisY: {
+				fontFamily: 'Ubuntu',
+				title: 'kWh',
+				titleFontWeight: 'bold'
 			},
 			axisY2: {
 				lineColor: '#e63b11',
@@ -98,7 +104,7 @@ export default class TypicalConsumptionDay extends React.Component<Props, State>
 				color: '#688199'
 			}, {
 				type: "column",
-				name: "Consommation de La Bastide (kWh)",
+				name: "Consommation de la zone urbaine (kWh)",
 				axisYType: "primary",
 				xValueFormatString: "HH:mm",
 				dataPoints: this.state.urbanZoneConsumptionData,
