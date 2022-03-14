@@ -1,5 +1,6 @@
-import React from 'react';
-import HorizontalSliderView from "./HorizontalSliderView";
+import './HorizontalSlider.css';
+import React, { ReactElement } from 'react';
+import { Box, Slider } from '@mui/material';
 
 const months = ["Janvier", "Fevrier", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Decembre"]
 
@@ -8,7 +9,7 @@ const steps = ["Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "
 const marks = steps.map((month, index) => {
 	return {
 		value: Math.round(index / (steps.length - 1) * 100),
-		label: month
+		label: month,
 	};
 })
 
@@ -23,47 +24,59 @@ function valueToMonth(value: number, marks: { label: string, value: number }[]) 
 	return marks.find((el) => el.value === value).label;
 }
 
-class HorizontalSliderController extends React.Component<any, any> {
+interface Props {
+	children: (t1: number, t2: number) => ReactElement,
+}
+
+interface State {
+	month: string,
+	t1: number,
+	t2: number,
+}
+
+export default class HorizontalSlider extends React.Component<Props, State> {
 	constructor(props) {
 		super(props);
 		this.state = {
-			defaultValue: 100,
 			month: 'Decembre',
-			marks: marks,
 			t1: new Date('2021-12-01T00:30:00Z').getTime(),
 			t2: new Date('2021-12-31T23:30:00Z').getTime()
 		};
 
-		this.handleOnChangeCommitted = this.handleOnChangeCommitted.bind(this);
+		this.onChangeCommitted = this.onChangeCommitted.bind(this);
 	}
 
-	handleOnChangeCommitted(event: Event, newValue: number) {
-		this.setState({
-			month: valueToMonth(newValue, marks)
-		});
-		const [_t1, _t2] = getMonthTimestampsBounds(this.state.month);
-		console.log("[DEBUG]: displaying " + this.state.month)
-		this.setState({
-			t1: _t1,
-			t2: _t2
-		});
+	private onChangeCommitted(_event: Event, newValue: number) {
+		const month = valueToMonth(newValue, marks);
+		const [t1, t2] = getMonthTimestampsBounds(this.state.month);
+		this.setState({ month, t1, t2 });
 	}
 
 	render() {
 		return (
 			<div className='slider-bounded-content-wrapper'>
 				<div className='horizontal-slider-wrapper'>
-					<HorizontalSliderView
-						marks={this.state.marks}
-						handleChangeCommitted={this.handleOnChangeCommitted}
-						defaultValue={this.state.defaultValue}/>
+					<div className='slider-content-wrapper'>
+						<div className='box-slider-wrapper'>
+							<Box width='100%'>
+								<Slider
+									aria-label="Restricted values"
+									defaultValue={100}
+									step={null}
+									valueLabelDisplay="off"
+									marks={marks}
+									onChangeCommitted={this.onChangeCommitted}
+									size='small'
+									track={false}
+								/>
+							</Box>
+						</div>
+					</div>
 				</div>
 				<div className='slider-bounded-content' key={this.state.t1}>
-					{this.props.render(this.state.t1, this.state.t2)}
+					{this.props.children(this.state.t1, this.state.t2)}
 				</div>
 			</div>
 		)
 	}
 }
-
-export default HorizontalSliderController;

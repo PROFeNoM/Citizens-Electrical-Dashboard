@@ -1,7 +1,7 @@
 import "./Consommation.css";
 import React from "react";
 import {Col, Container, Row} from "react-bootstrap";
-import {ChoroplethMap, HorizontalSliderController, TypicalConsumptionDay} from "../../components";
+import {ChoroplethMap, HorizontalSlider, TypicalConsumptionDay} from "../../components";
 import Dropmenu from "../../components/Dropmenu/Dropmenu";
 import {TotalConsumptionController} from "../../components";
 
@@ -10,7 +10,7 @@ function Consommation() {
 		<>
 			<Dropmenu/>
 			<div className='consommation-content'>
-				<HorizontalSliderController render={(t1, t2) => (
+				<HorizontalSlider children={(t1, t2) => (
 					<Container>
 						<Row>
 							<Col sm={12} md={12} lg={12} xl={6}>
