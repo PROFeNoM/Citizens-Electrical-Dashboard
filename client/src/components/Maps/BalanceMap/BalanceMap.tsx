@@ -1,7 +1,7 @@
 import './BalanceMap.css';
 import React from 'react';
 import { updateProperties } from './utils';
-import UrbanZoneMap from '../BaseMap/UrbanZoneMap';
+import UrbanZoneMap from '../UrbanZonesMap/UrbanZoneMap';
 
 interface Props {
 	currentZone: string,

@@ -13,9 +13,9 @@ export const zonesBorder: LineLayer = {
 			'case',
 			['boolean', ['feature-state', 'hover'], false],
 			4,
-			1
-		]
-	}
+			1,
+		],
+	},
 }
 
 export const zonesFill = (fillColor: FillColor) => ({
@@ -30,7 +30,7 @@ export const zonesFill = (fillColor: FillColor) => ({
 			1,
 			0.8,
 		],
-	}
+	},
 }) as FillLayer;
 
 export const buildings3D: FillExtrusionLayer = {
@@ -47,7 +47,7 @@ export const buildings3D: FillExtrusionLayer = {
 			15,
 			0,
 			15.05,
-			['get', 'HAUTEUR']
+			['get', 'HAUTEUR'],
 		],
 		'fill-extrusion-base': [
 			'interpolate',
@@ -56,8 +56,8 @@ export const buildings3D: FillExtrusionLayer = {
 			15,
 			0,
 			15.05,
-			['get', 'Z_MIN_SOL']
+			['get', 'Z_MIN_SOL'],
 		],
-		'fill-extrusion-opacity': 0.6
-	}
+		'fill-extrusion-opacity': 0.6,
+	},
 }

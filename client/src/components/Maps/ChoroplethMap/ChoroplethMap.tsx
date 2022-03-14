@@ -1,8 +1,8 @@
 import './ChoroplethMap.css';
 import React from 'react';
 import { updateProperties } from './utils';
-import { Building, getUrbanZoneElectricityConsumption } from '../../scripts/dbUtils';
-import UrbanZoneMap from '../BaseMap/UrbanZoneMap';
+import { Building, getUrbanZoneElectricityConsumption } from '../../../scripts/dbUtils';
+import UrbanZoneMap from '../UrbanZonesMap/UrbanZoneMap';
 
 interface Props {
 	t1: number,

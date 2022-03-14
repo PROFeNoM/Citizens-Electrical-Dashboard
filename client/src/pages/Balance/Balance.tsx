@@ -3,7 +3,7 @@ import { Header } from '../../containers';
 import { Col, Container, Row } from 'react-bootstrap';
 // import EnergyBalance from '../../components/EnergyBalance/EnergyBalance';
 import { Link } from "react-router-dom";
-import BalanceMap from '../../components/BalanceMap/BalanceMap';
+import BalanceMap from '../../components/Maps/BalanceMap/BalanceMap';
 
 
 function Balance() {
