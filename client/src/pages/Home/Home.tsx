@@ -1,26 +1,13 @@
 import './Home.css';
 import { Header } from '../../containers';
-import { Col, Container, Row } from 'react-bootstrap';
-import { DistrictEnergyBalance } from '../../components';
-import HomeMap from '../../components/HomeMap/HomeMap';
+import { HomeMap } from '../../components';
 
 function Home() {
     return (
-        <>
+        <div id='home-container'>
             <Header title={'ACCUEIL'} />
-            <h1 className="app-title">TABLEAU ELECTRIQUE CITOYEN</h1>
-
-            <Container>
-                <Row>
-                    <Col sm={12} md={12} lg={12} xl={4}>
-                        <DistrictEnergyBalance />
-                    </Col>
-                    <Col sm={12} md={12} lg={12} xl={8}>
-                        <HomeMap />
-                    </Col>
-                </Row>
-            </Container>
-        </>
+            <HomeMap />
+        </div>
     );
 }
 

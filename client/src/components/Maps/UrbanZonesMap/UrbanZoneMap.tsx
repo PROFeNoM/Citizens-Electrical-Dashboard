@@ -7,6 +7,11 @@ const zones = require('../../../map/layers/Decoupage_urbain.json') as FeatureCol
 const buildings = require('../../../map/layers/Batiment_Bordeaux_Bastide_TEC.json') as FeatureCollection;
 
 interface Props {
+	lng?: number,
+	lat?: number,
+	zoom?: number,
+	pitch?: number,
+	interactive?: boolean,
 	zonesTransformer?: (zones: FeatureCollection) => Promise<FeatureCollection>,
 	zonesFillColor?: FillColor,
 }
@@ -71,6 +76,13 @@ export default class UrbanZoneMap extends React.Component<Props, {}> {
 	}
 
 	render() {
-		return <BaseMap ref={this.mapRef} />;
+		return <BaseMap
+			ref={this.mapRef}
+			lng={this.props.lng}
+			lat={this.props.lat}
+			zoom={this.props.zoom}
+			pitch={this.props.pitch}
+			interactive={this.props.interactive}
+		/>;
 	}
 }

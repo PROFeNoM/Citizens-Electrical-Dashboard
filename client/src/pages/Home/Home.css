@@ -1,3 +1,9 @@
+#home-container {
+    display: flex;
+    flex-flow: column;
+    height: 100vh;
+}
+
 .app-title {
     text-align: center;
     color: white;

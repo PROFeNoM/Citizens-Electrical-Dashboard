@@ -1,13 +1,8 @@
-.navbar {
-    background-color: #005eb8;
-    height: 50px;
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-}
-
 .menu-bars {
-    margin-left: 2rem;
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    z-index: 1;
     font-size: 2rem;
     background: none;
 }

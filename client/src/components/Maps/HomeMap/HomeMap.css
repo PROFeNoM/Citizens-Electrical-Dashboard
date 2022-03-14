@@ -1,0 +1,13 @@
+#home-map-container {
+    display: grid;
+    grid-template-columns: 5fr 4fr;
+    height: 100%;
+}
+
+#home-map-container .map-container {
+    height: 100%;
+}
+
+#home-map-container .mapboxgl-canvas-container.mapboxgl-interactive:hover {
+    cursor: pointer;
+}

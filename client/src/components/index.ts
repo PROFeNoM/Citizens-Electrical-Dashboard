@@ -1,6 +1,6 @@
 export {default as HamburgerMenu} from './HamburgerMenu/HamburgerMenu'
 export {default as DistrictEnergyBalance} from './DistrictEnergyBalance/DistrictEnergyBalance'
-export {default as HomeMap} from './HomeMap/HomeMap'
+export {default as HomeMap} from './Maps/HomeMap/HomeMap'
 export {default as ChoroplethMap} from './Maps/ChoroplethMap/ChoroplethMap'
 export {default as TotalConsumptionController} from './TotalConsumption/TotalConsumptionController'
 export {default as BaseMap} from './Maps/BaseMap/BaseMap'
