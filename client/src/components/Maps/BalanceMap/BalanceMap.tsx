@@ -29,9 +29,9 @@ export default class BalanceMap extends React.Component<Props, {}> {
 						zonesTransformer={zones => this.zoneTransformer(zones)}
 						zonesFillColor={[
 							'case',
-							['boolean', ['feature-state', 'currentZone'], false],
-							'#7fd1ef',
+							['get', 'currentZone'],
 							'#005eb8',
+							'#7fd1ef',
 						]}
 					/>
 				</div>

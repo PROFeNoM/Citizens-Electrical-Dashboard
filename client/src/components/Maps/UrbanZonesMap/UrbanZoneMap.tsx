@@ -16,6 +16,15 @@ export default class UrbanZoneMap extends React.Component<Props, {}> {
 	private hoveredZone: string | number = null;
 
 	async componentDidMount() {
+		// wait for the map to be loaded
+		await new Promise<void>(resolve => {
+			if (this.map.loaded()) {
+				resolve();
+			} else {
+				this.map.on('load', resolve);
+			}
+		})
+
 		this.map
 			.addSource('urbanZone-source', {
 				type: 'geojson',
