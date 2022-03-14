@@ -1,30 +1,9 @@
-import type {FillExtrusionLayer, FillLayer, LineLayer} from "react-map-gl";
+import { FillExtrusionLayer, FillLayer, LineLayer } from 'react-map-gl';
+import { Expression, StyleFunction } from 'mapbox-gl';
 
-export const dataLayer: FillLayer = {
-	id: 'data',
-	type: 'fill',
-	source: 'urbanZone-source',
-	paint: {
-		'fill-color': {
-			property: 'choroplethValue',
-			stops: [
-				[0, '#7fd1ef'],
-				[1, '#6ab3e1'],
-				[2, '#5395d4'],
-				[3, '#3779c6'],
-				[4, '#005eb8'],
-			]
-		},
-		'fill-opacity': [
-			"case",
-			["boolean", ["feature-state", "hover"], false],
-			1,
-			0.8,
-		],
-	}
-};
+export type FillColor = string | StyleFunction | Expression | undefined;
 
-export const polyStyle: LineLayer = {
+export const zonesBorder: LineLayer = {
 	id: 'outline',
 	type: 'line',
 	source: 'urbanZone-source',
@@ -38,6 +17,21 @@ export const polyStyle: LineLayer = {
 		]
 	}
 }
+
+export const zonesFill = (fillColor: FillColor) => ({
+	id: 'data',
+	type: 'fill',
+	source: 'urbanZone-source',
+	paint: {
+		'fill-color': fillColor,
+		'fill-opacity': [
+			'case',
+			['boolean', ['feature-state', 'hover'], false],
+			1,
+			0.8,
+		],
+	}
+}) as FillLayer;
 
 export const buildings3D: FillExtrusionLayer = {
 	'id': 'add-3d-buildings',

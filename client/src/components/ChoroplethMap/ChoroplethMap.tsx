@@ -18,12 +18,22 @@ export default class ChoroplethMap extends React.Component<Props, {}> {
 				</div>
 
 				<div id="urbanZoneComparisonMap" className="choropleth-map">
-					<UrbanZoneMap zonesTransformer={
-						zones => updateProperties(
+					<UrbanZoneMap
+						zonesTransformer={zones => updateProperties(
 							zones,
 							async f => getUrbanZoneElectricityConsumption(this.props.t1, Building.All, f.properties.libelle, this.props.t2),
-						)
-					} />
+						)}
+						zonesFillColor={{
+							property: 'choroplethValue',
+							stops: [
+								[0, '#7fd1ef'],
+								[1, '#6ab3e1'],
+								[2, '#5395d4'],
+								[3, '#3779c6'],
+								[4, '#005eb8'],
+							]
+						}}
+					/>
 				</div>
 
 				<div className='color-wrapper'>

@@ -12,12 +12,19 @@ export default class BalanceMap extends React.Component<Props, {}> {
 		return (
 			<div className='balance-map-wrapper'>
 				<div id="BalanceMap" className="balance-map">
-					<UrbanZoneMap zonesTransformer={
-						zones => updateProperties(
+					<UrbanZoneMap
+						zonesTransformer={zones => updateProperties(
 							zones,
 							this.props.currentZone,
-						)
-					} />
+						)}
+						zonesFillColor={{
+							property: 'curentZone',
+							stops: [
+								[0, '#7fd1ef'],
+								[1, '#005eb8'],
+							]
+						}}
+					/>
 				</div>
 			</div>
 		);
