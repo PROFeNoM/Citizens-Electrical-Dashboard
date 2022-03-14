@@ -6,3 +6,4 @@ export {default as TotalConsumptionController} from './TotalConsumption/TotalCon
 export {default as BaseMap} from './Maps/BaseMap/BaseMap'
 export {default as HorizontalSliderController} from './HorizontalSlider/HorizontalSliderController'
 export {default as HorizontalSliderView} from './HorizontalSlider/HorizontalSliderView'
+export {default as TypicalConsumptionDay} from './TypicalConsumptionDay/TypicalConsumptionDay'
