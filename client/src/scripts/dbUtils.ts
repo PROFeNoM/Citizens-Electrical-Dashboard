@@ -285,7 +285,7 @@ async function getZoneElectricityConsumption(t1: number, buildingType: Building,
  * @param urbanZone Urban zone of the buildings
  * @param t2 Timestamp of the end of the time period
  */
-export async function getUrbanZoneElectricityConsumption(t1: number, buildingType: Building, urbanZone: string, t2: number): Promise<number> {
+export async function getZoneConsumption(t1: number, buildingType: Building, urbanZone: string, t2: number): Promise<number> {
 	return await getZoneElectricityConsumption(t1, buildingType, urbanZone, t2);
 }
 
@@ -338,7 +338,7 @@ export async function getDistrictElectricityProduction(t1: number, t2: number): 
 
 export async function getUrbanZoneSelfConsumptionRatio(t1: number, urbanZone: string, t2: number): Promise<number> {
 	const prod = await getUrbanZoneElectricityProduction(t1, urbanZone, t2);
-	const cons = await getUrbanZoneElectricityConsumption(t1, Building.All, urbanZone, t2);
+	const cons = await getZoneConsumption(t1, Building.All, urbanZone, t2);
 
 	return prod / cons;
 }

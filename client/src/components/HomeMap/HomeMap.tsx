@@ -7,7 +7,7 @@ import {
 	getAllUrbanZone,
 	getUrbanZoneArea,
 	getUrbanZoneCoordinates,
-	getUrbanZoneElectricityConsumption,
+	getZoneConsumption,
 	getUrbanZoneElectricityProduction,
 	getUrbanZoneLibelle,
 	getUrbanZoneNumberOfBuildings,
@@ -52,7 +52,7 @@ const UrbanZoneEnergyBalance = ({ item }) => {
 		(async () => {
 			const t1 = new Date('2021-12-01T00:30:00Z').getTime();
 			const t2 = new Date('2021-12-31T23:30:00Z').getTime();
-			const r = Math.round(await getUrbanZoneElectricityConsumption(t1, Building.All, urbanZone, t2) / 1000 / 1000);
+			const r = Math.round(await getZoneConsumption(t1, Building.All, urbanZone, t2) / 1000 / 1000);
 			setElecCons(r);
 		})();
 
