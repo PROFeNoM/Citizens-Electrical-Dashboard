@@ -14,7 +14,7 @@ import {
 	getUrbanZoneNumberOfSites,
 	UrbanZoneFeature
 } from '../../scripts/dbUtils';
-
+import {useNavigate} from "react-router-dom";
 
 function updateText(urbanZone: string, nbBuildings: number, nbSites: number, area: number, elecCons: number, elecProd: number) {
 	const ratio : number = elecCons !== 0 ? Math.round(elecProd / elecCons * 100) : 0;
@@ -37,6 +37,8 @@ function updateText(urbanZone: string, nbBuildings: number, nbSites: number, are
 
 // @ts-ignore
 const UrbanZoneEnergyBalance = ({ item }) => {
+	let navigate = useNavigate();
+
 	const urbanZone: string = getUrbanZoneLibelle(item);
 	const nbSites: number = getUrbanZoneNumberOfSites(urbanZone, Building.Residential)
 		+ getUrbanZoneNumberOfSites(urbanZone, Building.Professional)
@@ -81,6 +83,9 @@ const UrbanZoneEnergyBalance = ({ item }) => {
 						document.getElementById("urban-infos").style.display = "none";
 						document.getElementById("district-infos").style.display = "block";
 					}
+				},
+				click: () => {
+					navigate(`/consommation/${urbanZone}`);
 				}
 			}}>
 	

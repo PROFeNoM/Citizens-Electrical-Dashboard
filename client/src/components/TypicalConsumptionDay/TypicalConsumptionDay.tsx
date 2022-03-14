@@ -87,9 +87,9 @@ export default class TypicalConsumptionDay extends React.Component<Props, State>
 				titleFontWeight: 'bold'
 			},
 			axisY2: {
-				lineColor: '#e63b11',
-				labelFontColor: '#e63b11',
-				tickColor: '#e63b11',
+				lineColor: '#93c90e',
+				labelFontColor: '#93c90e',
+				tickColor: '#93c90e',
 				fontFamily: 'Ubuntu'
 			},
 			toolTip: {

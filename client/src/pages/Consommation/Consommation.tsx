@@ -4,8 +4,11 @@ import {Col, Container, Row} from "react-bootstrap";
 import {ChoroplethMap, HorizontalSlider, TypicalConsumptionDay} from "../../components";
 import Dropmenu from "../../components/Dropmenu/Dropmenu";
 import {TotalConsumptionController} from "../../components";
+import {useParams} from "react-router-dom";
 
 function Consommation() {
+	let params = useParams();
+
 	return (
 		<>
 			<Dropmenu/>
@@ -27,7 +30,7 @@ function Consommation() {
 								<TypicalConsumptionDay
 									t1={t1}
 									t2={t2}
-									urbanZone={'quartier historique sud avenue thiers'}
+									urbanZone={params.zoneName}
 								/>
 							</Col>
 						</Row>
