@@ -1,7 +1,18 @@
 import React from 'react';
 import './TotalConsumption.css';
-import TotalConsumptionView from './TotalConsumptionView';
-import { ChartOptions } from './TotalConsumptionModel'
+import { CanvasJSChart } from 'canvasjs-react-charts';
+
+interface ChartOptions {
+	data: Array<{
+		type: string,
+		dataPoints: Array<{
+			x: number, y: number
+		}>
+
+	}>
+}
+
+interface Props {}
 
 const points1 = [
 	{ x: 10, y: 71 },
@@ -35,38 +46,41 @@ const points2 = [
 	{ x: 130, y: 26 }
 ];
 
-class TotalConsumptionController extends React.Component<any, any> {
-	
+class TotalConsumption extends React.Component<Props, {}> {
+
 	private options: ChartOptions;
 
-	constructor(props) {
+	constructor(props: Props) {
 		super(props);
-	
+
 		this.options = {
-			title:{
-				text: "Simple area Chart with Index Labels"
-			},
 			data: [{
 				type: "area", //change type to bar, line, area, pie, etc
 				dataPoints: points1
-				
+
 			}, {
 				type: "line",
 				dataPoints: points2
-				
+
 			}]
 		}
-			
+
 	}
-	
+
 
 	render() {
-
-
 		return (
-			<TotalConsumptionView Options={this.options}/>
+			<div className="total-consumption-wrapper">
+				<div className="total-consumption-title-wrapper">
+					Consommation totale
+				</div>
+
+				<div id="TotalGraph" className="total-consumption">
+					<CanvasJSChart options={this.options} />
+				</div>
+			</div>
 		);
 	}
 }
 
-export default TotalConsumptionController;
+export default TotalConsumption;
