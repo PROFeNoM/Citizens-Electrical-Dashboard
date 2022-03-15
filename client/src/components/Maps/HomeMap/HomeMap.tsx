@@ -8,11 +8,13 @@ export default class HomeMap extends React.Component<{}, {}> {
 		return (
 			<div id='home-map-container'>
 				<UrbanZoneMap
-					lng={-0.5564}
-					lat={44.8431}
+					center={[-0.5564, 44.8431]}
+					bounds={[
+						[-0.5463, 44.8522],
+						[-0.5665, 44.8382],
+					]}
 					zoom={15.5}
 					pitch={42}
-					interactive={false}
 				/>
 				<DistrictEnergyBalance/>
 			</div>

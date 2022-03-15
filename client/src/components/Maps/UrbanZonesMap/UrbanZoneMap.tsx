@@ -1,17 +1,12 @@
 import React from 'react';
-import BaseMap from '../BaseMap/BaseMap';
+import BaseMap, { BaseMapProps } from '../BaseMap/BaseMap';
 import { FeatureCollection } from 'geojson';
 import { buildings3D, FillColor, zonesBorder, zonesFill } from '../layers';
 
 const zones = require('../../../map/layers/Decoupage_urbain.json') as FeatureCollection;
 const buildings = require('../../../map/layers/Batiment_Bordeaux_Bastide_TEC.json') as FeatureCollection;
 
-interface Props {
-	lng?: number,
-	lat?: number,
-	zoom?: number,
-	pitch?: number,
-	interactive?: boolean,
+interface Props extends BaseMapProps {
 	zonesTransformer?: (zones: FeatureCollection) => Promise<FeatureCollection>,
 	zonesFillColor?: FillColor,
 }
@@ -21,19 +16,16 @@ export default class UrbanZoneMap extends React.Component<Props, {}> {
 	private hoveredZone: string | number = null;
 
 	async componentDidMount() {
-		// wait for the map to be loaded
-		await new Promise<void>(resolve => {
-			if (this.map.loaded()) {
-				resolve();
-			} else {
-				this.map.on('load', resolve);
-			}
-		})
+		// wait for map loading and apply zonesTransformer on parallel
+		const [, transformedZones] = await Promise.all([
+			this.mapRef.current.ensureMapLoading(),
+			this.props.zonesTransformer ? (await this.props.zonesTransformer(zones)) : zones,
+		])
 
 		this.map
 			.addSource('urbanZone-source', {
 				type: 'geojson',
-				data: this.props.zonesTransformer ? (await this.props.zonesTransformer(zones)) : zones,
+				data: transformedZones,
 				generateId: true,
 			})
 			.addSource('district-buildings', {
@@ -73,16 +65,16 @@ export default class UrbanZoneMap extends React.Component<Props, {}> {
 			{ source: 'urbanZone-source', id: this.hoveredZone },
 			{ hover: false }
 		);
+		this.hoveredZone = null;
 	}
 
 	render() {
 		return <BaseMap
 			ref={this.mapRef}
-			lng={this.props.lng}
-			lat={this.props.lat}
+			center={this.props.center}
+			bounds={this.props.bounds}
 			zoom={this.props.zoom}
 			pitch={this.props.pitch}
-			interactive={this.props.interactive}
 		/>;
 	}
 }

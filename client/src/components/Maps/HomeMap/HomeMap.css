@@ -11,3 +11,10 @@
 #home-map-container .mapboxgl-canvas-container.mapboxgl-interactive:hover {
     cursor: pointer;
 }
+
+@media (max-width: 800px) {
+    #home-map-container {
+        grid-template-columns: unset;
+        grid-template-rows: 2fr 3fr;
+    }
+}
