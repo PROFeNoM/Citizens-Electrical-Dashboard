@@ -397,7 +397,7 @@ async function getMeanZone(t1: number, buildingType: Building, urbanZone: string
 	return hoursClassification.map(value => {
 		return {
 			hour: value.hour,
-			mean: value.records.reduce((a, b) => a + b, 0) / value.records.length || 0
+			mean: value.records.reduce((a, b) => a + b, 0) || 0
 		}
 	});
 }
