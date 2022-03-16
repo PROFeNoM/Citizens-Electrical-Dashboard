@@ -85,7 +85,7 @@ const UrbanZoneEnergyBalance = ({ item }) => {
 					}
 				},
 				click: () => {
-					navigate(`/consommation/${urbanZone}`);
+					navigate(`/balance/${urbanZone}`);
 				}
 			}}>
 	
