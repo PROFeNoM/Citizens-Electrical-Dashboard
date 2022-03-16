@@ -1,8 +1,8 @@
 import * as turf from '@turf/turf';
 
-const {json_Decoupage_urbain} = require("../map/layers/Decoupage_urbain");
-const {json_eclairage_public_features} = require("../map/bor_ptlum");
-const {json_Batiment_Bordeaux_Bastide_TEC} = require("../map/layers/Batiment_Bordeaux_Bastide_TEC");
+const json_Decoupage_urbain = require("../map/layers/Decoupage_urbain.json");
+const json_eclairage_public_features = require("../map/bor_ptlum.json");
+const json_Batiment_Bordeaux_Bastide_TEC = require("../map/layers/Batiment_Bordeaux_Bastide_TEC.json");
 
 export enum Building {
 	Residential,
@@ -72,11 +72,11 @@ function getUrbanZoneFeatures(urbanZone: string, json: { features: [] }): UrbanZ
  *
  */
 export function getAllUrbanZone(): Array<UrbanZoneFeature> {
-	var UrbanZones = json_Decoupage_urbain.features;
+	const UrbanZones = json_Decoupage_urbain.features;
 	//Reorder coordinates
-	UrbanZones.map((item: UrbanZoneFeature) => {
-		item.geometry.coordinates[0][0].map((item: [number, number]) => {
-			var tmp = item[0];
+	UrbanZones.forEach((item: UrbanZoneFeature) => {
+		item.geometry.coordinates[0][0].forEach((item: [number, number]) => {
+			const tmp = item[0];
 			item[0] = item[1];
 			item[1] = tmp;
 		})
@@ -213,7 +213,7 @@ interface QueriedData {
 let computedResults: QueryResults[] = [];
 let queried: QueriedData[] = [];
 
-async function getZoneElectricityConsumption(t1: number, buildingType: Building, zoneName: string, t2: number): Promise<number> {
+async function getZoneElectricityConsumption(t1: number, buildingType: Building, zoneName: string, t2: number, returnRaw=false): Promise<number | any[]> {
 	let queryResults: [Promise<any>, number][] = [];
 
 	const getFn = zoneName === 'La Bastide' ? getDistrictNumberOfSites : (bType: Building) => getUrbanZoneNumberOfSites(zoneName, bType);
@@ -260,14 +260,27 @@ async function getZoneElectricityConsumption(t1: number, buildingType: Building,
 				+ getFn(Building.Lighting));
 			break;
 	}
-
-	let resultWh: number = 0;
 	const buildings = {
 		"RESIDENTIAL": getFn(Building.Residential),
 		"PROFESSIONAL": getFn(Building.Professional),
 		"TERTIARY": getFn(Building.Tertiary),
 		"PUBLIC_LIGHTING": getFn(Building.Lighting)
 	}
+
+	if (returnRaw) {
+		let rawRecords: any[] = [];
+		for (let i: number = 0; i < queryResults.length; i++) {
+			(await queryResults[i][0])
+				.filter((rawRecord: { mean_curve: null | number; }) => rawRecord.mean_curve != null)
+				.forEach(el => rawRecords.push({
+					...el,
+					mean_curve: el.mean_curve / 2 * buildings[el.profile]
+				}));
+		}
+		return rawRecords;
+	}
+
+	let resultWh: number = 0;
 	for (let i: number = 0; i < queryResults.length; i++) {
 		const res = (await queryResults[i][0]).filter((rawRecord: { mean_curve: null | number; }) => rawRecord.mean_curve != null);
 		// @ts-ignore
@@ -285,7 +298,8 @@ async function getZoneElectricityConsumption(t1: number, buildingType: Building,
  * @param urbanZone Urban zone of the buildings
  * @param t2 Timestamp of the end of the time period
  */
-export async function getUrbanZoneElectricityConsumption(t1: number, buildingType: Building, urbanZone: string, t2: number): Promise<number> {
+export async function getZoneConsumption(t1: number, buildingType: Building, urbanZone: string, t2: number): Promise<number> {
+	// @ts-ignore
 	return await getZoneElectricityConsumption(t1, buildingType, urbanZone, t2);
 }
 
@@ -296,10 +310,11 @@ export async function getUrbanZoneElectricityConsumption(t1: number, buildingTyp
  * @param t2 Timestamp of the end of the time period
  */
 export async function getDistrictElectricityConsumption(t1: number, buildingType: Building, t2: number): Promise<number> {
+	// @ts-ignore
 	return await getZoneElectricityConsumption(t1, buildingType, 'La Bastide', t2);
 }
 
-async function getZoneElectricityProduction(t1: number, zoneName: string, t2: number): Promise<number> {
+async function getZoneElectricityProduction(t1: number, zoneName: string, t2: number, returnRaw=false): Promise<number | any[]> {
 	const getFn = zoneName === 'La Bastide' ? () => getDistrictNumberOfSites(Building.Producer) : () => getUrbanZoneNumberOfSites(zoneName, Building.Producer);
 	let rawRes;
 
@@ -322,23 +337,34 @@ async function getZoneElectricityProduction(t1: number, zoneName: string, t2: nu
 		rawRes = record.result;
 	}
 	const res = (await rawRes).filter((rawRecord: { mean_curve: null | number; }) => rawRecord.mean_curve != null);
-	//return (res.reduce((total: number, next: { mean_curve: number; }) => total + next.mean_curve, 0) / res.length) * getFn();
 	const nbBuildings = getFn();
+
+	if (returnRaw) {
+		return res.map(el => {
+			return {
+				...el,
+				mean_curve: el.mean_curve / 2 * nbBuildings
+			}
+		});
+	}
+	//return (res.reduce((total: number, next: { mean_curve: number; }) => total + next.mean_curve, 0) / res.length) * getFn();
 	return res.reduce((total: number, next: { mean_curve: number; }) => total + (next.mean_curve / 2) * nbBuildings, 0)
 	//return (res.reduce((total: number, next: { mean_curve: number; }) => total + next.mean_curve, 0) / res.length) * getFn();
 }
 
 export async function getUrbanZoneElectricityProduction(t1: number, urbanZone: string, t2: number): Promise<number> {
+	// @ts-ignore
 	return getZoneElectricityProduction(t1, urbanZone, t2);
 }
 
 export async function getDistrictElectricityProduction(t1: number, t2: number): Promise<number> {
+	// @ts-ignore
 	return getZoneElectricityProduction(t1, 'La Bastide', t2);
 }
 
 export async function getUrbanZoneSelfConsumptionRatio(t1: number, urbanZone: string, t2: number): Promise<number> {
 	const prod = await getUrbanZoneElectricityProduction(t1, urbanZone, t2);
-	const cons = await getUrbanZoneElectricityConsumption(t1, Building.All, urbanZone, t2);
+	const cons = await getZoneConsumption(t1, Building.All, urbanZone, t2);
 
 	return prod / cons;
 }
@@ -348,4 +374,38 @@ export async function getDistrictSelfConsumption(t1: number, t2: number): Promis
 	const cons = await getDistrictElectricityConsumption(t1, Building.All, t2);
 
 	return prod / cons;
+}
+
+async function getMeanZone(t1: number, buildingType: Building, urbanZone: string, t2: number, getZoneData: (t1, buildingType, urbanZone, t2) => Promise<any[]>) {
+	const hours = Array
+		.from(Array(24).keys())
+		.map(h => new Date(Date.UTC(2022, 1, 1, h, 0)));
+	const rawRecords = await getZoneData(t1, buildingType, urbanZone, t2);
+
+	const hoursClassification = hours.map(h => {
+		return {
+			hour: h,
+			records: []
+		}
+	});
+
+	rawRecords.forEach(record => {
+		const recordHourIdx = new Date(record.timestamp).getHours();
+		hoursClassification[recordHourIdx].records.push(record.mean_curve);
+	});
+
+	return hoursClassification.map(value => {
+		return {
+			hour: value.hour,
+			mean: value.records.reduce((a, b) => a + b, 0) / value.records.length || 0
+		}
+	});
+}
+
+export async function getMeanUrbanZoneElectricityConsumption(t1: number, buildingType: Building, urbanZone: string, t2: number): Promise<{ hour: Date; mean: number }[]> {
+	return getMeanZone(t1, buildingType, urbanZone, t2, (t1, buildingType, urbanZone, t2) => getZoneElectricityConsumption(t1, buildingType, urbanZone, t2, true) as Promise<any[]>);
+}
+
+export async function getMeanUrbanZoneElectricityProduction(t1: number, urbanZone: string, t2: number): Promise<{ hour: Date; mean: number }[]> {
+	return getMeanZone(t1, null, urbanZone, t2, (t1, buildingType, urbanZone, t2) => getZoneElectricityProduction(t1, urbanZone, t2, true) as Promise<any[]>);
 }

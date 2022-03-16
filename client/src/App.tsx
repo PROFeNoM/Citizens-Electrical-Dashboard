@@ -8,6 +8,7 @@ import Consommation from './pages/Consommation/Consommation';
 import Production from './pages/Production/Production';
 import Balance from './pages/Balance/Balance';
 import Bornes from './pages/Bornes/Bornes';
+
 function App() {
     return (
         <>
@@ -18,11 +19,10 @@ function App() {
                     <Route path='/connection' element={<Connection />}/>
                     <Route path='/about' element={<About />}/>
                     <Route path='/legal' element={<Legal />}/>
-                    <Route path='/production' element={<Production />}/>
-                    <Route path='/consommation' element={<Consommation />}/>
-                    <Route path='/balance' element={<Balance />}/>
-                    <Route path='/bornes' element={<Bornes />}/>
-
+                    <Route path='/balance/:zoneName' element={<Balance />}/>
+                    <Route path='/consommation/:zoneName' element={<Consommation />}/>
+                    <Route path='/production/:zoneName' element={<Production />}/>
+                    <Route path='/bornes/:zoneName' element={<Bornes />}/>
                     <Route path='*' element={<Error />}/>
                 </Routes>
             </Router>

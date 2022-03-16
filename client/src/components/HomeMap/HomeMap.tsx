@@ -2,20 +2,19 @@ import './HomeMap.css';
 import React, { useEffect, useState } from 'react';
 import { MapContainer as LMap, Polygon, TileLayer } from 'react-leaflet';
 import { Col, Container, Row } from "react-bootstrap";
-import {Link} from "react-router-dom";
 import {
 	Building,
 	getAllUrbanZone,
 	getUrbanZoneArea,
 	getUrbanZoneCoordinates,
-	getUrbanZoneElectricityConsumption,
+	getZoneConsumption,
 	getUrbanZoneElectricityProduction,
 	getUrbanZoneLibelle,
 	getUrbanZoneNumberOfBuildings,
 	getUrbanZoneNumberOfSites,
 	UrbanZoneFeature
 } from '../../scripts/dbUtils';
-
+import {useNavigate} from "react-router-dom";
 
 function updateText(urbanZone: string, nbBuildings: number, nbSites: number, area: number, elecCons: number, elecProd: number) {
 	const ratio : number = elecCons !== 0 ? Math.round(elecProd / elecCons * 100) : 0;
@@ -38,6 +37,8 @@ function updateText(urbanZone: string, nbBuildings: number, nbSites: number, are
 
 // @ts-ignore
 const UrbanZoneEnergyBalance = ({ item }) => {
+	let navigate = useNavigate();
+
 	const urbanZone: string = getUrbanZoneLibelle(item);
 	const nbSites: number = getUrbanZoneNumberOfSites(urbanZone, Building.Residential)
 		+ getUrbanZoneNumberOfSites(urbanZone, Building.Professional)
@@ -53,7 +54,7 @@ const UrbanZoneEnergyBalance = ({ item }) => {
 		(async () => {
 			const t1 = new Date('2021-12-01T00:30:00Z').getTime();
 			const t2 = new Date('2021-12-31T23:30:00Z').getTime();
-			const r = Math.round(await getUrbanZoneElectricityConsumption(t1, Building.All, urbanZone, t2) / 1000 / 1000);
+			const r = Math.round(await getZoneConsumption(t1, Building.All, urbanZone, t2) / 1000 / 1000);
 			setElecCons(r);
 		})();
 
@@ -82,6 +83,9 @@ const UrbanZoneEnergyBalance = ({ item }) => {
 						document.getElementById("urban-infos").style.display = "none";
 						document.getElementById("district-infos").style.display = "block";
 					}
+				},
+				click: () => {
+					navigate(`/balance/${urbanZone}`);
 				}
 			}}>
 	

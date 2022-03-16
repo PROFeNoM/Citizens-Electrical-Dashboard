@@ -1,35 +1,88 @@
-import "./Consommation.css";
-import React from "react";
-import {Header} from "../../containers";
-import {Col, Container, Row} from "react-bootstrap";
-import {ChoroplethMapController, DistrictEnergyBalance, HorizontalSliderController} from "../../components";
-import HomeMap from "../../components/HomeMap/HomeMap";
-import DropdownMenu from "react-bootstrap/esm/DropdownMenu";
-import {Dropdown} from "react-bootstrap";
-import DropMenu from "../../components/DropMenu/DropMenu";
-import {TotalConsumptionController} from "../../components";
+import './Consommation.css';
+import React from 'react';
+import { Col, Container, Row } from 'react-bootstrap';
+import { ChoroplethMap, HorizontalSlider, TypicalConsumptionDay } from '../../components';
+import DropMenu from '../../components/DropMenu/DropMenu';
+import { TotalConsumption } from '../../components';
+import { useParams } from 'react-router-dom';
+import {Building} from "../../scripts/dbUtils";
 
 function Consommation() {
+	let params = useParams();
+
 	return (
 		<>
 			<DropMenu />
 			<div className='consommation-content'>
-				<HorizontalSliderController render={(t1, t2) => (
-					<React.Fragment>
-						<Container>
-							<Row>
-								<Col sm={12} md={12} lg={12} xl={6}>
-									<ChoroplethMapController
-										t1={t1}
-										t2={t2}/>
-								</Col>
-								<Col sm={12} md={12} lg={12} xl={6}>
-									<TotalConsumptionController/>
-								</Col>
-							</Row>
-						</Container>
-					</React.Fragment>
-				)}/>
+				<HorizontalSlider children={(t1, t2) => (
+					<Container>
+						<Row>
+							<Col sm={12} md={12} lg={12} xl={6}>
+								<ChoroplethMap
+									t1={t1}
+									t2={t2} />
+							</Col>
+							<Col sm={12} md={12} lg={12} xl={6}>
+								<TotalConsumption 
+									t1={t1}
+									t2={t2}
+									urbanZone={params.zoneName}
+									title={"Consommation par filière"}/>
+							</Col>
+						</Row>
+						<Row>
+							<Col sm={12} md={12} lg={12} xl={6}>
+								<TypicalConsumptionDay
+									t1={t1}
+									t2={t2}
+									urbanZone={params.zoneName}
+									buildingType={Building.All}
+									title={"Consommation quotidienne moyenne de la zone urbaine par rapport au quartier"}
+								/>
+							</Col>
+							<Col sm={12} md={12} lg={12} xl={6}>
+								<TypicalConsumptionDay
+									t1={t1}
+									t2={t2}
+									urbanZone={params.zoneName}
+									buildingType={Building.Residential}
+									title={"Consommation quotidienne moyenne résidentielle de la zone urbaine par rapport au quartier"}
+								/>
+							</Col>
+						</Row>
+						<Row>
+							<Col sm={12} md={12} lg={12} xl={6}>
+								<TypicalConsumptionDay
+									t1={t1}
+									t2={t2}
+									urbanZone={params.zoneName}
+									buildingType={Building.Tertiary}
+									title={"Consommation quotidienne moyenne tertiare de la zone urbaine par rapport au quartier"}
+								/>
+							</Col>
+							<Col sm={12} md={12} lg={12} xl={6}>
+								<TypicalConsumptionDay
+									t1={t1}
+									t2={t2}
+									urbanZone={params.zoneName}
+									buildingType={Building.Professional}
+									title={"Consommation quotidienne moyenne professionelle de la zone urbaine par rapport au quartier"}
+								/>
+							</Col>
+						</Row>
+						<Row>
+							<Col sm={12} md={12} lg={12} xl={6}>
+								<TypicalConsumptionDay
+									t1={t1}
+									t2={t2}
+									urbanZone={params.zoneName}
+									buildingType={Building.Lighting}
+									title={"Consommation quotidienne moyenne des dispositifs d'éclairage public de la zone urbaine par rapport au quartier"}
+								/>
+							</Col>
+						</Row>
+					</Container>
+				)} />
 			</div>
 		</>
 	);
