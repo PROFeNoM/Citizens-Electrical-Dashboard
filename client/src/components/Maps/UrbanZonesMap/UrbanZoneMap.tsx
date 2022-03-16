@@ -9,11 +9,22 @@ const buildings = require('../../../map/layers/Batiment_Bordeaux_Bastide_TEC.jso
 interface Props extends BaseMapProps {
 	zonesTransformer?: (zones: FeatureCollection) => Promise<FeatureCollection>,
 	zonesFillColor?: FillColor,
+	onZoneClick?: (zoneName: string) => void,
 }
 
-export default class UrbanZoneMap extends React.Component<Props, {}> {
+interface State {
+	hoveredZone: string | number,
+}
+
+export default class UrbanZoneMap extends React.Component<Props, State> {
 	private mapRef = React.createRef<BaseMap>();
-	private hoveredZone: string | number = null;
+
+	constructor(props) {
+		super(props);
+		this.state = {
+			hoveredZone: null,
+		};
+	}
 
 	async componentDidMount() {
 		// wait for map loading and apply zonesTransformer on parallel
@@ -39,6 +50,10 @@ export default class UrbanZoneMap extends React.Component<Props, {}> {
 			.on('mouseenter', 'data', e => this.hoverZone(e.features[0].id))
 			.on('mousemove', 'data', e => this.hoverZone(e.features[0].id))
 			.on('mouseleave', 'data', () => this.cancelZoneHover());
+
+		if (this.props.onZoneClick) {
+			this.map.on('click', 'data', e => this.props.onZoneClick(e.features[0].properties.libelle));
+		}
 	}
 
 	get map() {
@@ -46,35 +61,60 @@ export default class UrbanZoneMap extends React.Component<Props, {}> {
 	}
 
 	private hoverZone(id: string | number) {
-		if (this.hoveredZone === id) {
+		if (this.state.hoveredZone === id) {
 			return;
 		}
-		this.cancelZoneHover();
+		if (this.state.hoveredZone !== null) {
+			this.map.setFeatureState(
+				{ source: 'urbanZone-source', id: this.state.hoveredZone },
+				{ hover: false }
+			);
+		}
 		this.map.setFeatureState(
 			{ source: 'urbanZone-source', id },
 			{ hover: true }
 		);
-		this.hoveredZone = id;
+		this.setState({
+			hoveredZone: id,
+		});
 	}
 
 	private cancelZoneHover() {
-		if (this.hoveredZone === null) {
+		if (this.state.hoveredZone === null) {
 			return;
 		}
 		this.map.setFeatureState(
-			{ source: 'urbanZone-source', id: this.hoveredZone },
+			{ source: 'urbanZone-source', id: this.state.hoveredZone },
 			{ hover: false }
 		);
-		this.hoveredZone = null;
+		this.setState({
+			hoveredZone: null,
+		});
+	}
+
+	private cursorStyle() {
+		if (this.state.hoveredZone !== null && this.props.onZoneClick !== undefined) {
+			return 'pointer';
+		} else {
+			return 'inherit';
+		}
 	}
 
 	render() {
-		return <BaseMap
-			ref={this.mapRef}
-			center={this.props.center}
-			bounds={this.props.bounds}
-			zoom={this.props.zoom}
-			pitch={this.props.pitch}
-		/>;
+		return (
+			<div
+				style={{
+					cursor: this.cursorStyle(),
+				}}
+			>
+				<BaseMap
+					ref={this.mapRef}
+					center={this.props.center}
+					bounds={this.props.bounds}
+					zoom={this.props.zoom}
+					pitch={this.props.pitch}
+				/>
+			</div>
+		);
 	}
 }

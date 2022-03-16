@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React from 'react';
 import './DistrictEnergyBalance.css';
 import {
 	Building,
@@ -7,48 +7,58 @@ import {
 	getDistrictElectricityProduction,
 	getDistrictNumberOfBuildings,
 	getDistrictNumberOfSites
-} from "../../scripts/dbUtils";
+} from '../../scripts/dbUtils';
 
-function DistrictEnergyBalance() {
-	const nbSites: number = getDistrictNumberOfSites(Building.Residential)
-		+ getDistrictNumberOfSites(Building.Professional)
-		+ getDistrictNumberOfSites(Building.Tertiary);
-	const nbBuildings: number = getDistrictNumberOfBuildings();
-	const area: string = new Intl.NumberFormat().format(Math.round(getDistrictArea()));
-	const [elecCons, setElecCons] = useState(0);
-	const [elecProd, setElecProd] = useState(0);
+const nbSites: number = getDistrictNumberOfSites(Building.Residential)
+	+ getDistrictNumberOfSites(Building.Professional)
+	+ getDistrictNumberOfSites(Building.Tertiary);
+const nbBuildings: number = getDistrictNumberOfBuildings();
+const area: string = new Intl.NumberFormat().format(Math.round(getDistrictArea()));
 
-	useEffect(() => {
-		(async () => {
-			const t1 = new Date('2021-12-01T00:30:00').getTime();
-			const t2 = new Date('2021-12-31T23:30:00').getTime();
-			const r = Math.round(await getDistrictElectricityConsumption(t1, Building.All, t2) / 1000 / 1000);
-			setElecCons(r);
-		})();
-	});
-
-	useEffect(() => {
-		(async () => {
-			const t1 = new Date('2021-12-01T00:30:00').getTime();
-			const t2 = new Date('2021-12-31T23:30:00').getTime();
-			const r = Math.round(await getDistrictElectricityProduction(t1, t2) / 1000 / 1000);
-			setElecProd(r);
-		})();
-	});
-
-	const ratio: number = elecCons !== 0 ? Math.round(elecProd / elecCons * 100) : 0;
-
-	return (
-		<div id="district-infos">
-			<h2 id="district-name">Quartier de la Bastide</h2>
-			<p>{nbBuildings} bâtiments</p>
-			<p>{nbSites} consommateurs</p>
-			<p>{area} m²</p>
-			<p>{new Intl.NumberFormat().format(elecCons)} MWh/mois d'électricité consommée</p>
-			<p>{new Intl.NumberFormat().format(elecProd)} MWh/mois d'électricité produite</p>
-			<p>{ratio}% ratio production/consommation</p>
-		</div>
-	);
+interface State {
+	consumption: string,
+	production: string,
+	ratio: string,
 }
 
-export default DistrictEnergyBalance;
+export default class DistrictEnergyBalance extends React.Component<{}, State> {
+	constructor(props) {
+		super(props);
+		this.state = {
+			consumption: '...',
+			production: '...',
+			ratio: '...',
+		};
+	}
+
+	async componentDidMount() {
+		const t1 = new Date('2021-12-01T00:30:00').getTime();
+		const t2 = new Date('2021-12-31T23:30:00').getTime();
+		const [consumption, production] = await Promise.all([
+			getDistrictElectricityConsumption(t1, Building.All, t2),
+			getDistrictElectricityProduction(t1, t2),
+		]);
+		const formatter = new Intl.NumberFormat();
+		this.setState({
+			consumption: formatter.format(Math.round(consumption / 1_000_000)),
+			production: formatter.format(Math.round(production / 1_000_000)),
+			ratio: Math.round(production / consumption * 100).toString(),
+		});
+	}
+
+	render() {
+		return (
+			<div id="district-info">
+				<h2 id="district-name">Quartier de la Bastide</h2>
+				<ul>
+					<li><span className='data'>{area}</span> m²</li>
+					<li><span className='data'>{nbBuildings}</span> bâtiments</li>
+					<li><span className='data'>{nbSites}</span> consommateurs</li>
+					<li><span className='data'>{this.state.consumption}</span> MWh/mois d'électricité consommée</li>
+					<li><span className='data'>{this.state.production}</span> MWh/mois d'électricité produite</li>
+					<li><span className='data'>{this.state.ratio}</span> % de ratio production/consommation</li>
+				</ul>
+			</div>
+		);
+	}
+}

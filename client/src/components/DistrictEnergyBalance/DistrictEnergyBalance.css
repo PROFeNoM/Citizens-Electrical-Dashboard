@@ -1,14 +1,13 @@
-#district-infos {
+#district-info {
     color: white;
-    border: 5px solid white;
-    border-radius: 25px;
-    text-align: center;
-    width: fit-content;
-    margin: auto;
 }
 
-#district-infos p {
+#district-info p {
     padding: 1rem;
+}
+
+#district-info .data {
+    font-weight: bold;
 }
 
 #district-name {

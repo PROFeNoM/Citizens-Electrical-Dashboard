@@ -11,3 +11,20 @@
     padding: 1rem;
     text-transform: uppercase;
 }
+
+main {
+    display: grid;
+    grid-template-columns: 5fr 4fr;
+    height: 100%;
+}
+
+main .map-container {
+    height: 100%;
+}
+
+@media (max-width: 800px) {
+    main {
+        grid-template-columns: unset;
+        grid-template-rows: 2fr 3fr;
+    }
+}
