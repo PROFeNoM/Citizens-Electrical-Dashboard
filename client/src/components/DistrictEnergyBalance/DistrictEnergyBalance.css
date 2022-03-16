@@ -1,13 +1,36 @@
+#district-info-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 #district-info {
     color: white;
 }
 
-#district-info p {
-    padding: 1rem;
+#district-info h2 {
+    font-size: 2.5rem;
+    padding: 0;
+    margin-bottom: 2rem;
 }
 
-#district-info .data {
+#district-info ul {
+    margin-bottom: 5rem;
+}
+
+#district-info li {
+    font-size: 1.5rem;
+    margin: .5rem 0;
+    list-style: none;
+}
+
+#district-info li .data {
     font-weight: bold;
+}
+
+#district-info #zone-hint {
+    font-style: italic;
+    font-size: 1.5rem;
 }
 
 #district-name {

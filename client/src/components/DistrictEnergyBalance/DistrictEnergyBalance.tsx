@@ -48,16 +48,19 @@ export default class DistrictEnergyBalance extends React.Component<{}, State> {
 
 	render() {
 		return (
-			<div id="district-info">
-				<h2 id="district-name">Quartier de la Bastide</h2>
-				<ul>
-					<li><span className='data'>{area}</span> m²</li>
-					<li><span className='data'>{nbBuildings}</span> bâtiments</li>
-					<li><span className='data'>{nbSites}</span> consommateurs</li>
-					<li><span className='data'>{this.state.consumption}</span> MWh/mois d'électricité consommée</li>
-					<li><span className='data'>{this.state.production}</span> MWh/mois d'électricité produite</li>
-					<li><span className='data'>{this.state.ratio}</span> % de ratio production/consommation</li>
-				</ul>
+			<div id="district-info-wrapper">
+				<div id="district-info">
+					<h2 id="district-name">Quartier de la Bastide</h2>
+					<ul>
+						<li><span className='data'>{area}</span> m²</li>
+						<li><span className='data'>{nbBuildings}</span> bâtiments</li>
+						<li><span className='data'>{nbSites}</span> consommateurs</li>
+						<li><span className='data'>{this.state.consumption}</span> MWh/mois d'électricité consommée</li>
+						<li><span className='data'>{this.state.production}</span> MWh/mois d'électricité produite</li>
+						<li><span className='data'>{this.state.ratio}</span> % de ratio production/consommation</li>
+					</ul>
+					<div id="zone-hint">Cliquez sur une zone urbaine pour en savoir plus.</div>
+				</div>
 			</div>
 		);
 	}
