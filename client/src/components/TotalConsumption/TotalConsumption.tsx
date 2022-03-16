@@ -1,86 +1,123 @@
-import React from 'react';
 import './TotalConsumption.css';
-import { CanvasJSChart } from 'canvasjs-react-charts';
+import React from 'react';
+import {CanvasJSChart} from 'canvasjs-react-charts';
+import {
+	Building,
+	getDistrictElectricityConsumption,
+	getMeanUrbanZoneElectricityConsumption,
+	getMeanUrbanZoneElectricityProduction,
+	getUrbanZoneElectricityProduction,
+	getZoneConsumption,
+} from "../../scripts/dbUtils";
 
-interface ChartOptions {
-	data: Array<{
-		type: string,
-		dataPoints: Array<{
-			x: number, y: number
-		}>
-
-	}>
+interface Props {
+	t1: number,
+	t2: number,
+	urbanZone: string,
+	title: string
 }
 
-interface Props {}
+interface State {
+	districtConsumptionData: {x: string, y: Promise<number>}[],
+	urbanZoneConsumptionData: {x: string, y: Promise<number>}[]
+}
 
-const points1 = [
-	{ x: 10, y: 71 },
-	{ x: 20, y: 55 },
-	{ x: 30, y: 50 },
-	{ x: 40, y: 65 },
-	{ x: 50, y: 71 },
-	{ x: 60, y: 68 },
-	{ x: 70, y: 38 },
-	{ x: 80, y: 92 },
-	{ x: 90, y: 50 },
-	{ x: 100, y: 68 },
-	{ x: 110, y: 27 },
-	{ x: 120, y: 45 },
-	{ x: 130, y: 44 }
-];
-
-const points2 = [
-	{ x: 10, y: 71 },
-	{ x: 20, y: 55 },
-	{ x: 30, y: 50 },
-	{ x: 40, y: 33 },
-	{ x: 50, y: 71 },
-	{ x: 60, y: 58 },
-	{ x: 70, y: 48 },
-	{ x: 80, y: 52 },
-	{ x: 90, y: 54 },
-	{ x: 100, y: 60 },
-	{ x: 110, y: 61 },
-	{ x: 120, y: 49 },
-	{ x: 130, y: 26 }
-];
-
-class TotalConsumption extends React.Component<Props, {}> {
-
-	private options: ChartOptions;
-
-	constructor(props: Props) {
+export default class TotalConsumption extends React.Component<Props, State> {
+	constructor(props) {
 		super(props);
+		this.state = {
+			districtConsumptionData: [],
+			urbanZoneConsumptionData: []
+		};
+	}
 
-		this.options = {
+	private async getDistrictConsumptionData() {
+		return (
+			[
+				{x: "Total", y: getDistrictElectricityConsumption(this.props.t1, Building.All, this.props.t2)},
+				{x: "Residentiels", y: getDistrictElectricityConsumption(this.props.t1, Building.Residential, this.props.t2)},
+				{x: "Tertiaires", y: getDistrictElectricityConsumption(this.props.t1, Building.Tertiary, this.props.t2)},
+				{x: "Professionnels", y: getDistrictElectricityConsumption(this.props.t1, Building.Professional, this.props.t2)},
+				{x: "Eclairage", y: getDistrictElectricityConsumption(this.props.t1, Building.Lighting, this.props.t2)}
+			]);
+	}
+	
+	private async getUrbanZoneConsumptionData() {
+
+		return (
+		[
+			{x: "Total", y: getZoneConsumption(this.props.t1, Building.All, this.props.urbanZone, this.props.t2)},
+			{x: "Residentiels", y: getZoneConsumption(this.props.t1, Building.Residential, this.props.urbanZone, this.props.t2)},
+			{x: "Tertiaires", y: getZoneConsumption(this.props.t1, Building.Tertiary, this.props.urbanZone, this.props.t2)},
+			{x: "Professionnels", y: getZoneConsumption(this.props.t1, Building.Professional, this.props.urbanZone, this.props.t2)},
+			{x: "Eclairage", y: getZoneConsumption(this.props.t1, Building.Lighting, this.props.urbanZone, this.props.t2)}
+		]);
+	}
+
+	async componentDidMount() {
+		const districtConsumptionData = await this.getDistrictConsumptionData();
+	 	const urbanZoneConsumptionData = await this.getUrbanZoneConsumptionData();
+	 	this.setState({
+	 		districtConsumptionData: districtConsumptionData,
+	 		urbanZoneConsumptionData: urbanZoneConsumptionData
+	 	});
+	}
+
+	render() {
+
+		const chartOptions = {
+			animationEnabled: true,
+			axisX: {
+				fontFamily: 'Ubuntu',
+			},
+			axisY: {
+				fontFamily: 'Ubuntu',
+				title: 'kWh',
+				titleFontWeight: 'bold'
+			},
+			axisY2: {
+				lineColor: '#93c90e',
+				labelFontColor: '#93c90e',
+				tickColor: '#93c90e',
+				fontFamily: 'Ubuntu'
+			},
+			toolTip: {
+				shared: true
+			},
 			data: [{
-				type: "area", //change type to bar, line, area, pie, etc
-				dataPoints: points1
-
+				type: "column",
+				name: "Consommation de La Bastide (kWh)",
+				axisYType: "primary",
+				dataPoints: this.state.districtConsumptionData,
+				color: '#688199'
 			}, {
-				type: "line",
-				dataPoints: points2
-
+				type: "column",
+				name: "Consommation de la zone urbaine (kWh)",
+				axisYType: "primary",
+				dataPoints: this.state.urbanZoneConsumptionData,
+				color: '#e63b11'
 			}]
 		}
 
-	}
-
-
-	render() {
 		return (
-			<div className="total-consumption-wrapper">
-				<div className="total-consumption-title-wrapper">
-					Consommation totale
+			<div className='typical-c-day-wrapper'>
+				<div className='typical-c-day-title-wrapper'>
+					{this.props.title}
 				</div>
-
-				<div id="TotalGraph" className="total-consumption">
-					<CanvasJSChart options={this.options} />
+				<div className="typical-consumption-day-graph-wrapper">
+					<CanvasJSChart options={chartOptions}/>
+				</div>
+				<div className='typical-c-day-legend-wrapper'>
+					<div className='typical-c-day-urbanZone-legend-wrapper'>
+						<div className='typical-c-day-urbanZone-color'/>
+						<p className='typical-c-day-urbanZone-text'>Consommation par filière dans la zone urbaine</p>
+					</div>
+					<div className='typical-c-day-district-legend-wrapper'>
+						<div className='typical-c-day-district-color'/>
+						<p className='typical-c-day-district-text'>Consommation par filière dans le quartier</p>
+					</div>
 				</div>
 			</div>
-		);
+		)
 	}
 }
-
-export default TotalConsumption;

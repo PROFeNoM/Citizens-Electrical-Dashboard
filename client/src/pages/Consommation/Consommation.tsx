@@ -23,7 +23,11 @@ function Consommation() {
 									t2={t2} />
 							</Col>
 							<Col sm={12} md={12} lg={12} xl={6}>
-								<TotalConsumption />
+								<TotalConsumption 
+									t1={t1}
+									t2={t2}
+									urbanZone={params.zoneName}
+									title={"Consommation par filière"}/>
 							</Col>
 						</Row>
 						<Row>
