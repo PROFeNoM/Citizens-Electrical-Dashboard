@@ -1,7 +1,22 @@
-.app-title {
-    text-align: center;
-    color: white;
-    font-size: 6vw;
-    padding: 1rem;
-    text-transform: uppercase;
+#home-container {
+    display: flex;
+    flex-flow: column;
+    height: 100vh;
+}
+
+main {
+    display: grid;
+    grid-template-columns: 5fr 4fr;
+    height: 100%;
+}
+
+main .map-container {
+    height: 100%;
+}
+
+@media (max-width: 800px) {
+    main {
+        grid-template-columns: unset;
+        grid-template-rows: 2fr 3fr;
+    }
 }

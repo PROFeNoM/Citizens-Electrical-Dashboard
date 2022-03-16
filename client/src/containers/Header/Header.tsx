@@ -3,20 +3,17 @@ import './Header.css';
 import logo from '../../images/logo.png';
 
 interface HeaderProps {
-    title: string;
+	title: string;
 }
 
 function Header({title}: HeaderProps) {
-    return (
-        <>
-            <header className="HeaderImg">
-                <img src={logo} className="Logo" alt="logo" color="#fff"/>
-            </header>
-            <div>
-                <h1 className='header-title'>{title}</h1>
-            </div>
-        </>
-    );
+	return (
+		<header>
+			<div/>
+			<h1 className='header-title'>{title}</h1>
+			<img src={logo} className="logo" alt="Logo Enedis" color="#fff"/>
+		</header>
+	);
 }
 
 export default Header;

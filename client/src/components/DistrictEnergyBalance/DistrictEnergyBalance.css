@@ -1,17 +1,100 @@
-#district-infos {
-    color: white;
-    border: 5px solid white;
-    border-radius: 25px;
-    text-align: center;
-    width: fit-content;
-    margin: auto;
+#district-info-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-#district-infos p {
-    padding: 1rem;
+#district-info {
+    color: white;
+    font-size: 16px;
+}
+
+#district-info h2 {
+    max-width: 30vw;
+    font-size: 2.5em;
+    padding: 0;
+    margin-bottom: 2em;
+}
+
+#district-info ul {
+    margin-bottom: 5em;
+}
+
+#district-info li {
+    font-size: 1.5em;
+    margin: .5em 0;
+    list-style: none;
+}
+
+#district-info li .data {
+    font-weight: bold;
+}
+
+#district-info #zone-hint {
+    font-style: italic;
+    font-size: 1.5em;
+    padding: .5em;
+    background-color: #93c90e;
+}
+
+#district-info #controls {
+    display: flex;
+}
+
+#district-info #controls > * {
+    text-transform: uppercase;
+    font-size: 1.5em;
+    padding: .5em;
+    text-decoration: none;
+    cursor: pointer;
+    color: white;
+    background-color: #93c90e;
+    box-shadow: 5px 5px #5d7910;
+}
+
+#district-info #controls > *:hover {
+    text-decoration: underline;
+}
+
+#district-info #controls > *:not(:first-child) {
+    margin-left: 1em;
 }
 
 #district-name {
     text-transform: uppercase;
-    padding: 1rem;
+    padding: 1em;
+}
+
+@media (max-width: 1350px) {
+    #district-info {
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 1150px) {
+    #district-info {
+        font-size: 12px;
+    }
+}
+
+@media (max-width: 1150px) {
+    #district-info {
+        font-size: 10px;
+    }
+}
+
+@media (max-width: 800px) {
+    #district-info {
+        font-size: 12px;
+    }
+
+    #district-info h2 {
+        max-width: 90vw;
+    }
+}
+
+@media (max-width: 450px) {
+    #district-info {
+        font-size: 10px;
+    }
 }

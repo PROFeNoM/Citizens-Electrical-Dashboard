@@ -85,6 +85,10 @@ export function getAllUrbanZone(): Array<UrbanZoneFeature> {
 	return UrbanZones;
 }
 
+export function getAllUrbanZonesName(): string[] {
+	return json_Decoupage_urbain.features.map(zone => zone.properties.libelle);
+}
+
 /**
  * Returns the coordinates of each vertex bounding an urban area
  * @param zone Zone for which we want the coordinates

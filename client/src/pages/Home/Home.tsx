@@ -1,27 +1,37 @@
 import './Home.css';
 import { Header } from '../../containers';
-import { Col, Container, Row } from 'react-bootstrap';
-import { DistrictEnergyBalance } from '../../components';
-import HomeMap from '../../components/HomeMap/HomeMap';
+import { DistrictEnergyBalance, HomeMap } from '../../components';
+import React from 'react';
 
-function Home() {
-    return (
-        <>
-            <Header title={'ACCUEIL'} />
-            <h1 className="app-title">TABLEAU ELECTRIQUE CITOYEN</h1>
-
-            <Container>
-                <Row>
-                    <Col sm={12} md={12} lg={12} xl={4}>
-                        <DistrictEnergyBalance />
-                    </Col>
-                    <Col sm={12} md={12} lg={12} xl={8}>
-                        <HomeMap />
-                    </Col>
-                </Row>
-            </Container>
-        </>
-    );
+interface State {
+    selectedZoneName: string | null,
 }
 
-export default Home;
+export default class Home extends React.Component<{}, State>{
+    private mapRef = React.createRef<HomeMap>();
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            selectedZoneName: null,
+        };
+    }
+
+    render() {
+        return (
+            <div id='home-container'>
+                <Header title='ACCUEIL'/>
+                <main>
+                    <HomeMap
+                        ref={this.mapRef}
+                        onZoneClick={zoneName => this.setState({ selectedZoneName: zoneName })}
+                    />
+                    <DistrictEnergyBalance
+                        selectedZoneName={this.state.selectedZoneName}
+                        onCancel={() => this.mapRef.current.unselectZone()}
+                    />
+                </main>
+            </div>
+        );
+    }
+}
