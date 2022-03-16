@@ -1,7 +1,6 @@
 import './Home.css';
 import { Header } from '../../containers';
-import { DistrictEnergyBalance } from '../../components';
-import UrbanZoneMap from '../../components/Maps/UrbanZonesMap/UrbanZoneMap';
+import { DistrictEnergyBalance, HomeMap } from '../../components';
 import React from 'react';
 
 function Home() {
@@ -9,14 +8,7 @@ function Home() {
         <div id='home-container'>
             <Header title='ACCUEIL' />
             <main>
-                <UrbanZoneMap
-                    center={[-0.5564, 44.8431]}
-                    bounds={[
-                        [-0.5463, 44.8522],
-                        [-0.5665, 44.8382],
-                    ]}
-                    zoom={15.5}
-                    pitch={42}
+                <HomeMap
                     onZoneClick={x => console.log(x)}
                 />
                 <DistrictEnergyBalance/>

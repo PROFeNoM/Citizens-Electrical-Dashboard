@@ -9,7 +9,8 @@ const buildings = require('../../../map/layers/Batiment_Bordeaux_Bastide_TEC.jso
 interface Props extends BaseMapProps {
 	zonesTransformer?: (zones: FeatureCollection) => Promise<FeatureCollection>,
 	zonesFillColor?: FillColor,
-	onZoneClick?: (zoneName: string) => void,
+	/** Triggered on a click on the map. If the click is performed outside a zone, featureId and zoneName are null. */
+	onZoneClick?: (featureId: string | number | null, zoneName: string | null) => void,
 }
 
 interface State {
@@ -52,7 +53,17 @@ export default class UrbanZoneMap extends React.Component<Props, State> {
 			.on('mouseleave', 'data', () => this.cancelZoneHover());
 
 		if (this.props.onZoneClick) {
-			this.map.on('click', 'data', e => this.props.onZoneClick(e.features[0].properties.libelle));
+			// detect click on a zone
+			this.map.on('click', 'data', e => {
+				e.preventDefault();
+				this.props.onZoneClick(e.features[0].id, e.features[0].properties.libelle);
+			});
+			// detect click outside a zone
+			this.map.on('click', e => {
+				if (!e.defaultPrevented) {
+					this.props.onZoneClick(null, null);
+				}
+			});
 		}
 	}
 

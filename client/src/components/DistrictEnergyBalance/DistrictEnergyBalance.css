@@ -31,6 +31,9 @@
 #district-info #zone-hint {
     font-style: italic;
     font-size: 1.5rem;
+    padding: .5rem;
+
+    background-color: #93c90e;
 }
 
 #district-name {
