@@ -22,22 +22,22 @@ export const DropMenuData = [
 export const DropMenuData2 = [
     {
         title: 'Bastide-Niel',
-        path: '/bastide-niel',
+        path: '',
         cName: 'nav-text'
     },
     {
         title: 'Quartier historique nord',
-        path: '/bastide-niel',
+        path: '',
         cName: 'nav-text'
     },
     {
         title: 'Quartier historique sud',
-        path: '/bastide-niel',
+        path: '',
         cName: 'nav-text'
     },
     {
         title: 'Coeur de Bastide',
-        path: '/bastide-niel',
+        path: '',
         cName: 'nav-text'
     },
 ]

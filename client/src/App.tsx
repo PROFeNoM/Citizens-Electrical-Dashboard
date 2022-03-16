@@ -7,7 +7,7 @@ import {Home, Connection, About, Legal, Error} from './pages';
 import Consommation from './pages/Consommation/Consommation';
 import Production from './pages/Production/Production';
 import Balance from './pages/Balance/Balance';
-import Dropmenu from './components/Dropmenu/Dropmenu';
+import Bornes from './pages/Bornes/Bornes';
 function App() {
     return (
         <>
@@ -21,6 +21,7 @@ function App() {
                     <Route path='/production' element={<Production />}/>
                     <Route path='/consommation' element={<Consommation />}/>
                     <Route path='/balance' element={<Balance />}/>
+                    <Route path='/bornes' element={<Bornes />}/>
 
                     <Route path='*' element={<Error />}/>
                 </Routes>
