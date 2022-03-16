@@ -10,7 +10,9 @@ import {
 interface Props {
 	t1: number,
 	t2: number,
-	urbanZone: string
+	urbanZone: string,
+	buildingType: Building,
+	title: string
 }
 
 interface State {
@@ -18,7 +20,7 @@ interface State {
 	districtConsumptionData: { x: Date, y: number }[],
 	urbanZoneConsumptionData: { x: Date, y: number }[]
 }
-// TODO: Link it with the urban zone that is given. within props ? token ?
+
 export default class TypicalConsumptionDay extends React.Component<Props, State> {
 	constructor(props) {
 		super(props);
@@ -30,7 +32,7 @@ export default class TypicalConsumptionDay extends React.Component<Props, State>
 	}
 
 	private async getSelfConsumptionData() {
-		const meanCons = await getMeanUrbanZoneElectricityConsumption(this.props.t1, Building.All, this.props.urbanZone, this.props.t2);
+		const meanCons = await getMeanUrbanZoneElectricityConsumption(this.props.t1, this.props.buildingType, this.props.urbanZone, this.props.t2);
 		const meanProd = await getMeanUrbanZoneElectricityProduction(this.props.t1, this.props.urbanZone, this.props.t2);
 
 		return meanCons.map(((el, index) => {
@@ -42,7 +44,7 @@ export default class TypicalConsumptionDay extends React.Component<Props, State>
 	}
 
 	private async getDistrictConsumptionData() {
-		const meanCons = await getMeanUrbanZoneElectricityConsumption(this.props.t1, Building.All, 'La Bastide', this.props.t2);
+		const meanCons = await getMeanUrbanZoneElectricityConsumption(this.props.t1, this.props.buildingType, 'La Bastide', this.props.t2);
 
 		return meanCons.map(el => {
 			return {
@@ -53,7 +55,7 @@ export default class TypicalConsumptionDay extends React.Component<Props, State>
 	}
 
 	private async getUrbanZoneConsumptionData() {
-		const meanCons = await getMeanUrbanZoneElectricityConsumption(this.props.t1, Building.All, this.props.urbanZone, this.props.t2);
+		const meanCons = await getMeanUrbanZoneElectricityConsumption(this.props.t1, this.props.buildingType, this.props.urbanZone, this.props.t2);
 
 		return meanCons.map(el => {
 			return {
@@ -122,7 +124,7 @@ export default class TypicalConsumptionDay extends React.Component<Props, State>
 		return (
 			<div className='typical-c-day-wrapper'>
 				<div className='typical-c-day-title-wrapper'>
-					Consommation quotidienne moyenne de la zone urbaine par rapport au quartier
+					{this.props.title}
 				</div>
 				<div className="typical-consumption-day-graph-wrapper">
 					<CanvasJSChart options={chartOptions}
