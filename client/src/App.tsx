@@ -18,10 +18,9 @@ function App() {
                     <Route path='/connection' element={<Connection />}/>
                     <Route path='/about' element={<About />}/>
                     <Route path='/legal' element={<Legal />}/>
-                    <Route path='/production' element={<Production />}/>
+                    <Route path='/balance/:zoneName' element={<Balance />}/>
                     <Route path='/consommation/:zoneName' element={<Consommation />}/>
-                    <Route path='/balance' element={<Balance />}/>
-
+                    <Route path='/production/:zoneName' element={<Production />}/>
                     <Route path='*' element={<Error />}/>
                 </Routes>
             </Router>
