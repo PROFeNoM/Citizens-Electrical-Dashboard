@@ -23,6 +23,8 @@ interface Data {
 
 interface Props {
 	selectedZoneName: string,
+	/** when the cancel btn is pressed (should unselect the currently selected zone) */
+	onCancel: () => void,
 }
 
 interface State {
@@ -110,14 +112,23 @@ export default class DistrictEnergyBalance extends React.Component<Props, State>
 				<div id="district-info">
 					<h2 id="district-name">{title}</h2>
 					<ul>
-						<li><span className='data'>{nbBuildings}</span> bâtiments</li>
-						<li><span className='data'>{area}</span> m² de bâtiments</li>
-						<li><span className='data'>{nbOfConsumers}</span> consommateurs</li>
-						<li><span className='data'>{consumption}</span> MWh/mois d'électricité consommée</li>
-						<li><span className='data'>{production}</span> MWh/mois d'électricité produite</li>
-						<li><span className='data'>{ratio}</span> % de ratio production/consommation</li>
+						<li><span className="data">{nbBuildings}</span> bâtiments</li>
+						<li><span className="data">{area}</span> m² de bâtiments</li>
+						<li><span className="data">{nbOfConsumers}</span> consommateurs</li>
+						<li><span className="data">{consumption}</span> MWh/mois d'électricité consommée</li>
+						<li><span className="data">{production}</span> MWh/mois d'électricité produite</li>
+						<li><span className="data">{ratio}</span> % de ratio production/consommation</li>
 					</ul>
-					<div id="zone-hint">Cliquez sur une zone urbaine pour en savoir plus.</div>
+					{
+						this.props.selectedZoneName === null ? (
+							<div id="zone-hint">Cliquez sur une zone urbaine pour en savoir plus.</div>
+						) : (
+							<div id="controls">
+								<div onClick={this.props.onCancel}>retour</div>
+								<a href={'/balance/' + this.props.selectedZoneName}>plus de détails</a>
+							</div>
+						)
+					}
 				</div>
 			</div>
 		);

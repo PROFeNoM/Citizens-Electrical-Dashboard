@@ -20,6 +20,11 @@ export default class HomeMap extends React.Component<Props, State> {
 		};
 	}
 
+	unselectZone() {
+		// simulate a click outside all zones
+		this.onZoneClick(null, null)
+	}
+
 	get map() {
 		return this.mapRef.current.map;
 	}

@@ -33,8 +33,30 @@
     font-style: italic;
     font-size: 1.5rem;
     padding: .5rem;
-
     background-color: #93c90e;
+}
+
+#district-info #controls {
+    display: flex;
+}
+
+#district-info #controls > * {
+    text-transform: uppercase;
+    font-size: 1.5rem;
+    padding: .5rem;
+    text-decoration: none;
+    cursor: pointer;
+    color: white;
+    background-color: #93c90e;
+    box-shadow: 5px 5px #5d7910;
+}
+
+#district-info #controls > *:hover {
+    text-decoration: underline;
+}
+
+#district-info #controls > *:not(:first-child) {
+    margin-left: 1rem;
 }
 
 #district-name {

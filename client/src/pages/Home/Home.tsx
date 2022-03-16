@@ -8,6 +8,8 @@ interface State {
 }
 
 export default class Home extends React.Component<{}, State>{
+    private mapRef = React.createRef<HomeMap>();
+
     constructor(props) {
         super(props);
         this.state = {
@@ -21,10 +23,12 @@ export default class Home extends React.Component<{}, State>{
                 <Header title='ACCUEIL'/>
                 <main>
                     <HomeMap
+                        ref={this.mapRef}
                         onZoneClick={zoneName => this.setState({ selectedZoneName: zoneName })}
                     />
                     <DistrictEnergyBalance
                         selectedZoneName={this.state.selectedZoneName}
+                        onCancel={() => this.mapRef.current.unselectZone()}
                     />
                 </main>
             </div>
