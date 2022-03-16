@@ -6,13 +6,13 @@ import {ChoroplethMapController, DistrictEnergyBalance, HorizontalSliderControll
 import HomeMap from "../../components/HomeMap/HomeMap";
 import DropdownMenu from "react-bootstrap/esm/DropdownMenu";
 import {Dropdown} from "react-bootstrap";
-import Dropmenu from "../../components/Dropmenu/Dropmenu";
+import DropMenu from "../../components/DropMenu/DropMenu";
 import {TotalConsumptionController} from "../../components";
 
 function Consommation() {
 	return (
 		<>
-			<Dropmenu/>
+			<DropMenu />
 			<div className='consommation-content'>
 				<HorizontalSliderController render={(t1, t2) => (
 					<React.Fragment>
