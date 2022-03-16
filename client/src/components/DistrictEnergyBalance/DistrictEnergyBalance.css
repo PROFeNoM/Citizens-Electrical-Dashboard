@@ -9,6 +9,7 @@
 }
 
 #district-info h2 {
+    max-width: 30vw;
     font-size: 2.5rem;
     padding: 0;
     margin-bottom: 2rem;
