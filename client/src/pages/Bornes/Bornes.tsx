@@ -1,10 +1,11 @@
 import './Bornes.css';
-import DropMenu from '../../components/DropMenu/DropMenu';
+import HeaderDropDown from "../../containers/HeaderDropDown/HeaderDropDown";
+import React from "react";
 
 function Bornes() {
     return (
         <>
-            <DropMenu />
+            <HeaderDropDown/>
         </>
     );
 }

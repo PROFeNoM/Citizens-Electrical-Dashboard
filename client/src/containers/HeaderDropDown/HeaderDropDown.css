@@ -1,0 +1,28 @@
+.header-dd-content-wrapper {
+    width: 100%;
+}
+
+.header-dd-title {
+    display: inline-block;
+    width: 500px;
+    height: 50px;
+    float: left;
+    margin-left: 50px;
+    place-self: center;
+    text-transform: uppercase;
+    line-height: 50px;
+    color: white;
+}
+
+.dd-wrapper {
+    display: inline-block;
+    height: 50px;
+    float: none;
+    overflow: hidden;
+}
+
+@media (max-width: 1200px) {
+    .header-dd-wrapper {
+        display: none;
+    }
+}

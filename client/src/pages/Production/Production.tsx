@@ -1,10 +1,11 @@
 import './Production.css';
-import DropMenu from '../../components/DropMenu/DropMenu';
+import HeaderDropDown from "../../containers/HeaderDropDown/HeaderDropDown";
+import React from "react";
 
 function Production() {
     return (
         <>
-            <DropMenu />
+            <HeaderDropDown/>
         </>
     );
 }

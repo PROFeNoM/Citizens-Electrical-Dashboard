@@ -6,13 +6,14 @@ import DropMenu from '../../components/DropMenu/DropMenu';
 import { TotalConsumption } from '../../components';
 import { useParams } from 'react-router-dom';
 import {Building} from "../../scripts/dbUtils";
+import HeaderDropDown from "../../containers/HeaderDropDown/HeaderDropDown";
 
 function Consommation() {
 	let params = useParams();
 
 	return (
 		<>
-			<DropMenu />
+			<HeaderDropDown/>
 			<div className='consommation-content' key={window.location.pathname}>
 				<HorizontalSlider children={(t1, t2) => (
 					<Container>
