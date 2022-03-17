@@ -18,8 +18,8 @@ interface Props {
 }
 
 interface State {
-	districtConsumptionData: {x: string, y: Promise<number>}[],
-	urbanZoneConsumptionData: {x: string, y: Promise<number>}[]
+	districtConsumptionData: {label: string, y: number}[],
+	urbanZoneConsumptionData: {label: string, y: number}[]
 }
 
 export default class TotalConsumption extends React.Component<Props, State> {
@@ -34,11 +34,11 @@ export default class TotalConsumption extends React.Component<Props, State> {
 	private async getDistrictConsumptionData() {
 		return (
 			[
-				{x: "Total", y: getDistrictElectricityConsumption(this.props.t1, Building.All, this.props.t2)},
-				{x: "Residentiels", y: getDistrictElectricityConsumption(this.props.t1, Building.Residential, this.props.t2)},
-				{x: "Tertiaires", y: getDistrictElectricityConsumption(this.props.t1, Building.Tertiary, this.props.t2)},
-				{x: "Professionnels", y: getDistrictElectricityConsumption(this.props.t1, Building.Professional, this.props.t2)},
-				{x: "Eclairage", y: getDistrictElectricityConsumption(this.props.t1, Building.Lighting, this.props.t2)}
+				{label: "Total", y: Math.round(await getDistrictElectricityConsumption(this.props.t1, Building.All, this.props.t2)/1000)},
+				{label: "Residentiels", y: Math.round(await getDistrictElectricityConsumption(this.props.t1, Building.Residential, this.props.t2)/1000)},
+				{label: "Tertiaires", y: Math.round(await getDistrictElectricityConsumption(this.props.t1, Building.Tertiary, this.props.t2)/1000)},
+				{label: "Professionnels", y: Math.round(await getDistrictElectricityConsumption(this.props.t1, Building.Professional, this.props.t2)/1000)},
+				{label: "Eclairage", y: Math.round(await getDistrictElectricityConsumption(this.props.t1, Building.Lighting, this.props.t2)/1000)}
 			]);
 	}
 	
@@ -46,11 +46,11 @@ export default class TotalConsumption extends React.Component<Props, State> {
 
 		return (
 		[
-			{x: "Total", y: getZoneConsumption(this.props.t1, Building.All, this.props.urbanZone, this.props.t2)},
-			{x: "Residentiels", y: getZoneConsumption(this.props.t1, Building.Residential, this.props.urbanZone, this.props.t2)},
-			{x: "Tertiaires", y: getZoneConsumption(this.props.t1, Building.Tertiary, this.props.urbanZone, this.props.t2)},
-			{x: "Professionnels", y: getZoneConsumption(this.props.t1, Building.Professional, this.props.urbanZone, this.props.t2)},
-			{x: "Eclairage", y: getZoneConsumption(this.props.t1, Building.Lighting, this.props.urbanZone, this.props.t2)}
+			{label: "Total", y: Math.round(await getZoneConsumption(this.props.t1, Building.All, this.props.urbanZone, this.props.t2)/1000)},
+			{label: "Residentiels", y: Math.round(await getZoneConsumption(this.props.t1, Building.Residential, this.props.urbanZone, this.props.t2)/1000)},
+			{label: "Tertiaires", y: Math.round(await getZoneConsumption(this.props.t1, Building.Tertiary, this.props.urbanZone, this.props.t2)/1000)},
+			{label: "Professionnels", y: Math.round(await getZoneConsumption(this.props.t1, Building.Professional, this.props.urbanZone, this.props.t2)/1000)},
+			{label: "Eclairage", y: Math.round(await getZoneConsumption(this.props.t1, Building.Lighting, this.props.urbanZone, this.props.t2)/1000)}
 		]);
 	}
 
@@ -69,11 +69,14 @@ export default class TotalConsumption extends React.Component<Props, State> {
 			animationEnabled: true,
 			axisX: {
 				fontFamily: 'Ubuntu',
+				title: 'Filière',
+				titleFontWeight: 'bold'
 			},
 			axisY: {
 				fontFamily: 'Ubuntu',
 				title: 'kWh',
-				titleFontWeight: 'bold'
+				titleFontWeight: 'bold',
+				logarithmic: false
 			},
 			axisY2: {
 				lineColor: '#93c90e',
@@ -98,6 +101,7 @@ export default class TotalConsumption extends React.Component<Props, State> {
 				color: '#e63b11'
 			}]
 		}
+
 
 		return (
 			<div className='typical-c-day-wrapper'>
