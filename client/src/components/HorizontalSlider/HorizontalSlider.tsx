@@ -43,10 +43,10 @@ export default class HorizontalSlider extends React.Component<Props, State> {
 			t2: new Date('2021-12-31T23:30:00Z').getTime()
 		};
 
-		this.onChangeCommitted = this.onChangeCommitted.bind(this);
+		this.onChange = this.onChange.bind(this);
 	}
 
-	private onChangeCommitted(_event: Event, newValue: number) {
+	private onChange(_event: Event, newValue: number) {
 		const month = valueToMonth(newValue, marks);
 		const [t1, t2] = getMonthTimestampsBounds(this.state.month);
 		this.setState({ month, t1, t2 });
@@ -65,7 +65,7 @@ export default class HorizontalSlider extends React.Component<Props, State> {
 									step={null}
 									valueLabelDisplay="off"
 									marks={marks}
-									onChangeCommitted={this.onChangeCommitted}
+									onChange={this.onChange}
 									size='small'
 									track={false}
 								/>

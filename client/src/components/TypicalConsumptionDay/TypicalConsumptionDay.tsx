@@ -27,19 +27,19 @@ interface Props {
 interface State {
 	selfConsumptionData: { x: Date, y: number }[],
 	districtConsumptionData: { x: Date, y: number }[],
-	urbanZoneConsumptionData: { x: Date, y: number }[]
+	urbanZoneConsumptionData: { x: Date, y: number }[],
+	renderMe: boolean
 }
 
 export default class TypicalConsumptionDay extends React.Component<Props, State> {
-	private chart: React.RefObject<unknown>;
 	constructor(props) {
 		super(props);
 		this.state = {
 			selfConsumptionData: tmpPoints,
 			districtConsumptionData: tmpPoints,
-			urbanZoneConsumptionData: tmpPoints
+			urbanZoneConsumptionData: tmpPoints,
+			renderMe: false
 		};
-		this.chart = React.createRef();
 	}
 
 	private async getSelfConsumptionData() {
@@ -76,18 +76,18 @@ export default class TypicalConsumptionDay extends React.Component<Props, State>
 		});
 	}
 
-	async componentWillMount() {
+	async componentDidMount() {
 		const selfConsumptionData = await this.getSelfConsumptionData();
 		const districtConsumptionData = await this.getDistrictConsumptionData();
 		const urbanZoneConsumptionData = await this.getUrbanZoneConsumptionData();
 		this.setState({
 			selfConsumptionData: selfConsumptionData,
 			districtConsumptionData: districtConsumptionData,
-			urbanZoneConsumptionData: urbanZoneConsumptionData
+			urbanZoneConsumptionData: urbanZoneConsumptionData,
+			renderMe: true
 		});
-		//console.log(this.props.title, this.chart)
-		//console.log(this.props.title, this.state);
 	}
+
 
 	render() {
 		const chartOptions = {
@@ -133,16 +133,15 @@ export default class TypicalConsumptionDay extends React.Component<Props, State>
 				color: '#93c90e'
 			}]
 		}
-		//console.log("[RENDER]", this.props.title, this.state);
 
-		return (
-			<div className='typical-c-day-wrapper'>
+		if (this.state.renderMe)
+			return (
+				<div className='typical-c-day-wrapper'>
 				<div className='typical-c-day-title-wrapper'>
 					{this.props.title}
 				</div>
 				<div className="typical-consumption-day-graph-wrapper">
-					<CanvasJSChart options={chartOptions}
-						onRef={ref => this.chart = ref}/>
+					<CanvasJSChart options={chartOptions}/>
 				</div>
 				<div className='typical-c-day-legend-wrapper'>
 					<div className='typical-c-day-urbanZone-legend-wrapper'>
@@ -159,6 +158,8 @@ export default class TypicalConsumptionDay extends React.Component<Props, State>
 					</div>
 				</div>
 			</div>
-		)
+			)
+		else
+			return null;
 	}
 }
