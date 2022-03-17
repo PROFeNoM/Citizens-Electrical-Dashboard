@@ -7,6 +7,15 @@ import {
 	getMeanUrbanZoneElectricityProduction,
 } from "../../scripts/dbUtils";
 
+const tmpPoints = Array
+	.from(Array(24).keys())
+	.map(h => {
+		return {
+			x: new Date(Date.UTC(2022, 1, 1, h, 0)),
+			y: 42
+		}
+	});
+
 interface Props {
 	t1: number,
 	t2: number,
@@ -22,13 +31,15 @@ interface State {
 }
 
 export default class TypicalConsumptionDay extends React.Component<Props, State> {
+	private chart: React.RefObject<unknown>;
 	constructor(props) {
 		super(props);
 		this.state = {
-			selfConsumptionData: [],
-			districtConsumptionData: [],
-			urbanZoneConsumptionData: []
+			selfConsumptionData: tmpPoints,
+			districtConsumptionData: tmpPoints,
+			urbanZoneConsumptionData: tmpPoints
 		};
+		this.chart = React.createRef();
 	}
 
 	private async getSelfConsumptionData() {
@@ -65,7 +76,7 @@ export default class TypicalConsumptionDay extends React.Component<Props, State>
 		});
 	}
 
-	async componentDidMount() {
+	async componentWillMount() {
 		const selfConsumptionData = await this.getSelfConsumptionData();
 		const districtConsumptionData = await this.getDistrictConsumptionData();
 		const urbanZoneConsumptionData = await this.getUrbanZoneConsumptionData();
@@ -74,6 +85,8 @@ export default class TypicalConsumptionDay extends React.Component<Props, State>
 			districtConsumptionData: districtConsumptionData,
 			urbanZoneConsumptionData: urbanZoneConsumptionData
 		});
+		//console.log(this.props.title, this.chart)
+		//console.log(this.props.title, this.state);
 	}
 
 	render() {
@@ -120,6 +133,7 @@ export default class TypicalConsumptionDay extends React.Component<Props, State>
 				color: '#93c90e'
 			}]
 		}
+		//console.log("[RENDER]", this.props.title, this.state);
 
 		return (
 			<div className='typical-c-day-wrapper'>
@@ -128,7 +142,7 @@ export default class TypicalConsumptionDay extends React.Component<Props, State>
 				</div>
 				<div className="typical-consumption-day-graph-wrapper">
 					<CanvasJSChart options={chartOptions}
-					/>
+						onRef={ref => this.chart = ref}/>
 				</div>
 				<div className='typical-c-day-legend-wrapper'>
 					<div className='typical-c-day-urbanZone-legend-wrapper'>

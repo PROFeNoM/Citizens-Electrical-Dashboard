@@ -1,10 +1,9 @@
 import "./DropMenu.css"
 import React from "react";
 import { DropMenuData, DropMenuData2 } from "./DropMenuData"
-import { Link } from "react-router-dom";
+import {Link, useLocation} from "react-router-dom";
 import { IoIosArrowDown } from "react-icons/io";
 import { useState } from "react"
-import { Col, Container, Row } from 'react-bootstrap';
 
 function DropMenu() {
     const [dropmenu, setDropmenu] = useState(false)
@@ -14,6 +13,9 @@ function DropMenu() {
     const [dropmenu2, setDropmenu2] = useState(false)
 
     const showDropmenu2 = () => setDropmenu2(!dropmenu2)
+
+    const currentPage = useLocation().pathname.split('/')[1];
+    const currentUrbanZone = useLocation().pathname.split('/')[2];
 
     return (
         <>
@@ -26,7 +28,7 @@ function DropMenu() {
                         {DropMenuData.map((item, index) => {
                             return (
                                 <li key={index} className={item.cName}>
-                                    <Link to={item.path}>
+                                    <Link to={`${item.path}/${currentUrbanZone}`}>
                                         <span className='item-title'>{item.title}</span>
                                     </Link>
                                 </li>
@@ -42,7 +44,7 @@ function DropMenu() {
                         {DropMenuData2.map((item, index) => {
                             return (
                                 <li key={index} className={item.cName}>
-                                    <Link to={item.path}>
+                                    <Link to={`/${currentPage}/${item.path}`}>
                                         <span className='item-title'>{item.title}</span>
                                     </Link>
                                 </li>

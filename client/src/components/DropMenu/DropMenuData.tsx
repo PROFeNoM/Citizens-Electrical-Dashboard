@@ -1,5 +1,5 @@
 import React from "react"
-import * as AiIcons from "react-icons/ai";
+import {getAllUrbanZonesName} from "../../scripts/dbUtils";
 
 export const DropMenuData = [
     {
@@ -17,27 +17,13 @@ export const DropMenuData = [
         path: '/bornes',
         cName: 'nav-text'
     },
-]
+];
 
-export const DropMenuData2 = [
-    {
-        title: 'Bastide-Niel',
-        path: '',
-        cName: 'nav-text'
-    },
-    {
-        title: 'Quartier historique nord',
-        path: '',
-        cName: 'nav-text'
-    },
-    {
-        title: 'Quartier historique sud',
-        path: '',
-        cName: 'nav-text'
-    },
-    {
-        title: 'Coeur de Bastide',
-        path: '',
-        cName: 'nav-text'
-    },
-]
+export const DropMenuData2 = getAllUrbanZonesName()
+        .map(name => {
+           return {
+               title: name,
+               path: name,
+               cName: 'nav-text'
+           }
+        });

@@ -13,7 +13,7 @@ function Consommation() {
 	return (
 		<>
 			<DropMenu />
-			<div className='consommation-content'>
+			<div className='consommation-content' key={window.location.pathname}>
 				<HorizontalSlider children={(t1, t2) => (
 					<Container>
 						<Row>
