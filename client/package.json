@@ -1,6 +1,6 @@
 {
 	"name": "dashboard",
-	"version": "1.0.0-alpha-6",
+	"version": "1.0.0-alpha-7",
 	"private": true,
 	"dependencies": {
 		"@emotion/react": "^11.8.2",
@@ -48,7 +48,7 @@
 	},
 	"browserslist": {
 		"production": [
-			">0.2%",
+			">0.2% and supports es6-class",
 			"not dead",
 			"not op_mini all"
 		],
