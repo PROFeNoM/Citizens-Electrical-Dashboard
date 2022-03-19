@@ -1,5 +1,6 @@
 import * as express from 'express';
 import { NextFunction, Request, Response } from 'express';
+import { resolve } from 'path';
 import { getConnection } from 'typeorm';
 import { ConsumerProfile, Consumption } from './db/entities/Consumption';
 import { query, validationResult } from 'express-validator';
@@ -9,11 +10,12 @@ import { config } from './config';
 
 const app = express();
 const cors = require('cors');
+const wwwDir = resolve(process.env.NODE_ENV === 'production' ? 'www' : '../client/build');
 
 // middleware
 app.use(cors());
 app.use(express.json());
-app.use(express.static('www'))
+app.use(express.static(wwwDir));
 
 // examples: http://localhost:5000/consumption?minDate=1609455600000&maxDate=1609459200000
 
@@ -55,6 +57,12 @@ for (const route of routes) {
 			res.send(await query.getRawMany());
 		});
 }
+
+
+app.get('*', (req, res) => {
+	res.sendFile(wwwDir + '/index.html');
+});
+
 
 function isEnumArray(input: string[], enumDef: object) {
 	const accepted = Object.keys(enumDef);
