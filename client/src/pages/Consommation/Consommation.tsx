@@ -7,9 +7,41 @@ import { TotalConsumption } from '../../components';
 import { useParams } from 'react-router-dom';
 import {Building} from "../../scripts/dbUtils";
 import HeaderDropDown from "../../containers/HeaderDropDown/HeaderDropDown";
+import {Link, useLocation} from "react-router-dom";
+import {IoIosArrowDown} from "react-icons/io";
+import {useState} from "react"
+import Button from '@mui/material/Button';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
 
 function Consommation() {
+
+	const [currentChart, setCurrentChart] = useState(0);
+
+	const buildingTypes = [Building.All, Building.Residential, Building.Tertiary, Building.Professional, Building.Lighting];
+	const labels = ["Total", "Résidentiels", "Tértiaires", "Professionnels", "Eclairage"];
+	const titles = [
+		"Consommation quotidienne moyenne de la zone urbaine par rapport au quartier",
+		"Consommation quotidienne moyenne résidentielle de la zone urbaine par rapport au quartier",
+		"Consommation quotidienne moyenne tertiare de la zone urbaine par rapport au quartier",
+		"Consommation quotidienne moyenne professionelle de la zone urbaine par rapport au quartier",
+		"Consommation quotidienne moyenne des dispositifs d'éclairage public de la zone urbaine par rapport au quartier",
+	];
+
 	let params = useParams();
+
+	const [chartopen, setChartopen] = useState(false);
+
+	const [dropmenu, setDropmenu] = useState(null);
+	const open = Boolean(dropmenu);
+	const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+		setDropmenu(event.currentTarget);
+	};
+	const handleClose = (ind :number) => {
+		setDropmenu(null);
+		setChartopen(true);
+		setCurrentChart(ind);
+	};
 
 	return (
 		<>
@@ -31,15 +63,78 @@ function Consommation() {
 									title={"Consommation par filière"}/>
 							</Col>
 						</Row>
-						<Row>
+						<div>
+							{chartopen == true && (
+								<div key={currentChart}>
+									<TypicalConsumptionDay
+										t1={t1}
+										t2={t2}
+										urbanZone={params.zoneName}
+										buildingType={buildingTypes[currentChart]}
+										title={titles[currentChart]}
+									/>
+								</div>
+								
+							)}
+						</div>
+						
+						<div>
+							<Button
+								id="basic-button"
+								aria-controls={open ? 'basic-menu' : undefined}
+								aria-haspopup="true"
+								aria-expanded={open ? 'true' : undefined}
+								onClick={handleClick}
+							>
+								CHOISISSEZ UNE FILIERE POUR UN GRAPHIQUE DETAILLÉ
+							</Button>
+							<Menu
+								id="basic-menu"
+								anchorEl={dropmenu}
+								open={open}
+								onClose={() => handleClose(currentChart)}
+								MenuListProps={{
+									'aria-labelledby': 'basic-button',
+								}}
+							>
+								{
+									labels.map((item, index)=> {
+										return (
+											<div>
+												<MenuItem onClick={() => handleClose(index)}>{item}</MenuItem>
+											</div>
+										)
+									})
+								}
+								{/*<MenuItem onClick={handleClose}>2</MenuItem>
+								<MenuItem onClick={handleClose}>3</MenuItem>*/}
+							</Menu>
+						</div>
+
+						{/* <div className='dropmenu-page-wrapper'>	
+							<div className='dropButton'>
+								<IoIosArrowDown onClick={showDropmenu} />
+							</div>
+							<div className='dropmenu-page-title'>{currentChart}</div>
+							<div className='dropmenu-wrapper'>
+								<nav className={dropmenu ? 'dropmenu active' : 'dropmenu'}>
+									<ul className='dropmenu-items' onClick={showDropmenu}>
+										{(Object.keys(Building) as Array<String>).map((item) => {
+											return (
+												<div >
+													<span className='item-title-dd' onClick={showChart}>{item}</span>
+												</div>
+											)
+										})}
+									</ul>
+								</nav>
+							</div>
+						</div> */}
+
+
+						{/* <Row>
 							<Col sm={12} md={12} lg={12} xl={6}>
-								<TypicalConsumptionDay
-									t1={t1}
-									t2={t2}
-									urbanZone={params.zoneName}
-									buildingType={Building.All}
-									title={"Consommation quotidienne moyenne de la zone urbaine par rapport au quartier"}
-								/>
+
 							</Col>
 							<Col sm={12} md={12} lg={12} xl={6}>
 								<TypicalConsumptionDay
@@ -67,7 +162,7 @@ function Consommation() {
 									t2={t2}
 									urbanZone={params.zoneName}
 									buildingType={Building.Professional}
-									title={"Consommation quotidienne moyenne professionelle de la zone urbaine par rapport au quartier"}
+									title={"Consommation quotidienne moyenne professionelle de la zone urbaine par rapport au quartier","Consommation quotidienne moyenne tertiare de la zone urbaine par rapport au quartier",}
 								/>
 							</Col>
 						</Row>
@@ -81,7 +176,7 @@ function Consommation() {
 									title={"Consommation quotidienne moyenne des dispositifs d'éclairage public de la zone urbaine par rapport au quartier"}
 								/>
 							</Col>
-						</Row>
+						</Row> */}
 					</Container>
 				)} />
 			</div>
