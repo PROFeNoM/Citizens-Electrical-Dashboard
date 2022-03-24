@@ -40,24 +40,22 @@ export const buildings3D: FillExtrusionLayer = {
 	'minzoom': 13.5,
 	'paint': {
 		'fill-extrusion-color': '#aaa',
-		'fill-extrusion-height': [
-			'interpolate',
-			['linear'],
-			['zoom'],
-			15,
-			0,
-			15.05,
-			['get', 'HAUTEUR'],
-		],
-		'fill-extrusion-base': [
-			'interpolate',
-			['linear'],
-			['zoom'],
-			15,
-			0,
-			15.05,
-			['get', 'Z_MIN_SOL'],
-		],
+		'fill-extrusion-height': ["*", 1.5, ['get', 'HAUTEUR']],
+		'fill-extrusion-base': ['get', 'Z_MIN_SOL'],
+		'fill-extrusion-opacity': 0.6,
+	},
+}
+
+export const residentialBuildings3D: FillExtrusionLayer = {
+	'id': 'add-3d-buildings',
+	'source': 'district-buildings',
+	'type': 'fill-extrusion',
+	'filter': ['==', 'USAGE1', 'Résidentiel'],
+	'minzoom': 13.5,
+	'paint': {
+		'fill-extrusion-color': '#e06666',
+		'fill-extrusion-height': ["*", 1.5, ['get', 'HAUTEUR']],
+		'fill-extrusion-base': ['get', 'Z_MIN_SOL'],
 		'fill-extrusion-opacity': 0.6,
 	},
 }
