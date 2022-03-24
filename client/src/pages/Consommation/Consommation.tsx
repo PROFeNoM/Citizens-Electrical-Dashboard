@@ -2,13 +2,10 @@ import './Consommation.css';
 import React from 'react';
 import { Col, Container, Row } from 'react-bootstrap';
 import { ChoroplethMap, HorizontalSlider, TypicalConsumptionDay } from '../../components';
-import DropMenu from '../../components/DropMenu/DropMenu';
 import { TotalConsumption } from '../../components';
 import { useParams } from 'react-router-dom';
 import {Building} from "../../scripts/dbUtils";
 import HeaderDropDown from "../../containers/HeaderDropDown/HeaderDropDown";
-import {Link, useLocation} from "react-router-dom";
-import {IoIosArrowDown} from "react-icons/io";
 import {useState} from "react"
 import Button from '@mui/material/Button';
 import Menu from '@mui/material/Menu';
@@ -106,77 +103,8 @@ function Consommation() {
 										)
 									})
 								}
-								{/*<MenuItem onClick={handleClose}>2</MenuItem>
-								<MenuItem onClick={handleClose}>3</MenuItem>*/}
 							</Menu>
 						</div>
-
-						{/* <div className='dropmenu-page-wrapper'>	
-							<div className='dropButton'>
-								<IoIosArrowDown onClick={showDropmenu} />
-							</div>
-							<div className='dropmenu-page-title'>{currentChart}</div>
-							<div className='dropmenu-wrapper'>
-								<nav className={dropmenu ? 'dropmenu active' : 'dropmenu'}>
-									<ul className='dropmenu-items' onClick={showDropmenu}>
-										{(Object.keys(Building) as Array<String>).map((item) => {
-											return (
-												<div >
-													<span className='item-title-dd' onClick={showChart}>{item}</span>
-												</div>
-											)
-										})}
-									</ul>
-								</nav>
-							</div>
-						</div> */}
-
-
-						{/* <Row>
-							<Col sm={12} md={12} lg={12} xl={6}>
-
-							</Col>
-							<Col sm={12} md={12} lg={12} xl={6}>
-								<TypicalConsumptionDay
-									t1={t1}
-									t2={t2}
-									urbanZone={params.zoneName}
-									buildingType={Building.Residential}
-									title={"Consommation quotidienne moyenne résidentielle de la zone urbaine par rapport au quartier"}
-								/>
-							</Col>
-						</Row>
-						<Row>
-							<Col sm={12} md={12} lg={12} xl={6}>
-								<TypicalConsumptionDay
-									t1={t1}
-									t2={t2}
-									urbanZone={params.zoneName}
-									buildingType={Building.Tertiary}
-									title={"Consommation quotidienne moyenne tertiare de la zone urbaine par rapport au quartier"}
-								/>
-							</Col>
-							<Col sm={12} md={12} lg={12} xl={6}>
-								<TypicalConsumptionDay
-									t1={t1}
-									t2={t2}
-									urbanZone={params.zoneName}
-									buildingType={Building.Professional}
-									title={"Consommation quotidienne moyenne professionelle de la zone urbaine par rapport au quartier","Consommation quotidienne moyenne tertiare de la zone urbaine par rapport au quartier",}
-								/>
-							</Col>
-						</Row>
-						<Row>
-							<Col sm={12} md={12} lg={12} xl={6}>
-								<TypicalConsumptionDay
-									t1={t1}
-									t2={t2}
-									urbanZone={params.zoneName}
-									buildingType={Building.Lighting}
-									title={"Consommation quotidienne moyenne des dispositifs d'éclairage public de la zone urbaine par rapport au quartier"}
-								/>
-							</Col>
-						</Row> */}
 					</Container>
 				)} />
 			</div>
