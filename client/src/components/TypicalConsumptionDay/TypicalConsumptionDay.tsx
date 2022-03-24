@@ -124,13 +124,6 @@ export default class TypicalConsumptionDay extends React.Component<Props, State>
 				xValueFormatString: "HH:mm",
 				dataPoints: this.state.urbanZoneConsumptionData,
 				color: '#e63b11'
-			}, {
-				type: "line",
-				name: "Auto-consommation (%)",
-				axisYType: "secondary",
-				xValueFormatString: "HH:mm",
-				dataPoints: this.state.selfConsumptionData,
-				color: '#93c90e'
 			}]
 		}
 
@@ -151,10 +144,6 @@ export default class TypicalConsumptionDay extends React.Component<Props, State>
 					<div className='typical-c-day-district-legend-wrapper'>
 						<div className='typical-c-day-district-color'/>
 						<p className='typical-c-day-district-text'>Consommation moyenne du quartier</p>
-					</div>
-					<div className='typical-c-day-selfCons-legend-wrapper'>
-						<div className='typical-c-day-selfCons-color'/>
-						<p className='typical-c-day-selfCons-text'>Autoconsommation moyenne de la zone urbaine</p>
 					</div>
 				</div>
 			</div>
