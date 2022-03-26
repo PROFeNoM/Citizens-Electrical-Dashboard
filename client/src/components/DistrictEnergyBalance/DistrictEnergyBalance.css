@@ -69,6 +69,7 @@
 
 #district-info #controls > *:hover {
     background-color: #06b8237c;
+    transition: .5s;
 }
 
 #district-info #controls > *:not(:first-child) {
