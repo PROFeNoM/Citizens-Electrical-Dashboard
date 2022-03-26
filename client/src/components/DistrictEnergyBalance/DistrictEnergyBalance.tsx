@@ -33,7 +33,7 @@ interface State {
 }
 
 export default class DistrictEnergyBalance extends React.Component<Props, State> {
-	constructor(props) {
+	constructor(props: Props) {
 		super(props);
 		this.state = {
 			districtData: {
@@ -124,8 +124,10 @@ export default class DistrictEnergyBalance extends React.Component<Props, State>
 							<div id="zone-hint">Cliquez sur une zone urbaine pour en savoir plus.</div>
 						) : (
 							<div id="controls">
-								<div onClick={this.props.onCancel}>retour</div>
-								<a href={'/balance/' + this.props.selectedZoneName}>plus de détails</a>
+								{/*<div onClick={this.props.onCancel}>retour</div>-->*/}
+								<a href={'/consommation/' + this.props.selectedZoneName}>consommation</a>
+								<a href={'/production/' + this.props.selectedZoneName}>production</a>
+								<a href={'/bornes/' + this.props.selectedZoneName}>bornes de recharges</a>
 							</div>
 						)
 					}
