@@ -18,8 +18,8 @@ function App() {
                     <Route path='/connection' element={<Connection />}/>
                     <Route path='/about' element={<About />}/>
                     <Route path='/legal' element={<Legal />}/>
-                    <Route path='/consommation/:zoneName' element={<Consommation />}/>
-                    <Route path='/production/:zoneName' element={<Production />}/>
+                    <Route path='/consommation/:zoneName/:build' element={<Consommation />}/>
+                    <Route path='/production/:zoneName/:build' element={<Production />}/>
                     <Route path='/bornes/:zoneName' element={<Bornes />}/>
                     <Route path='*' element={<Error />}/>
                 </Routes>

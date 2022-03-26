@@ -67,6 +67,7 @@ function getUrbanZoneFeatures(urbanZone: string, json: { features: [] }): UrbanZ
 }
 
 
+
 /**
  * Returns all urban zone features in La Bastide
  *
@@ -88,6 +89,7 @@ export function getAllUrbanZone(): Array<UrbanZoneFeature> {
 export function getAllUrbanZonesName(): string[] {
 	return json_Decoupage_urbain.features.map(zone => zone.properties.libelle);
 }
+
 
 /**
  * Returns the coordinates of each vertex bounding an urban area

@@ -1,7 +1,7 @@
 import React from "react"
 import {getAllUrbanZonesName} from "../../scripts/dbUtils";
-
-export const DropMenuData = [
+import { Building } from "../../scripts/dbUtils";
+export const DropMenuData1 = [
     {
         title: 'Production',
         path: '/production',
@@ -20,6 +20,21 @@ export const DropMenuData = [
 ];
 
 export const DropMenuData2 = getAllUrbanZonesName()
+        .map(name => {
+           return {
+               title: name,
+               path: name,
+               cName: 'nav-text'
+           }
+        });
+
+export const DropMenuData3 = [
+           "Residentiel",
+           "Professionnel",
+           "Tertiaire",
+           "Eclairage",
+           "Producteur",
+           "Total"]
         .map(name => {
            return {
                title: name,

@@ -130,8 +130,8 @@ export default class DistrictEnergyBalance extends React.Component<Props, State>
 								<div id="controls">
 									{/*<div onClick={this.props.onCancel}>retour</div>-->*/}
 									<img id="icons" src={chart_ic}></img>
-									<Link to={'/consommation/' + this.props.selectedZoneName}>consommation</Link>
-									<Link to={'/production/' + this.props.selectedZoneName}>production</Link>
+									<Link to={'/consommation/' + this.props.selectedZoneName + "/Total"}>consommation</Link>
+									<Link to={'/production/' + this.props.selectedZoneName + "/Total"}>production</Link>
 								</div>
 								<div id="controls">
 									<img id="icons" src={i_ic}></img>
