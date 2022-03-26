@@ -10,6 +10,9 @@ import {
 	getZoneConsumption
 } from '../../scripts/dbUtils';
 import copy from 'fast-copy';
+import {Link} from 'react-router-dom';
+import chart_ic from '../../images/chart_icon.png'
+import i_ic from '../../images/i_icon.png'
 
 const formatter = new Intl.NumberFormat();
 
@@ -123,12 +126,18 @@ export default class DistrictEnergyBalance extends React.Component<Props, State>
 						this.props.selectedZoneName === null ? (
 							<div id="zone-hint">Cliquez sur une zone urbaine pour en savoir plus.</div>
 						) : (
-							<div id="controls">
-								{/*<div onClick={this.props.onCancel}>retour</div>-->*/}
-								<a href={'/consommation/' + this.props.selectedZoneName}>consommation</a>
-								<a href={'/production/' + this.props.selectedZoneName}>production</a>
-								<a href={'/bornes/' + this.props.selectedZoneName}>bornes de recharges</a>
-							</div>
+							<>
+								<div id="controls">
+									{/*<div onClick={this.props.onCancel}>retour</div>-->*/}
+									<img id="icons" src={chart_ic}></img>
+									<Link to={'/consommation/' + this.props.selectedZoneName}>consommation</Link>
+									<Link to={'/production/' + this.props.selectedZoneName}>production</Link>
+								</div>
+								<div id="controls">
+									<img id="icons" src={i_ic}></img>
+									<Link to={'/bornes/' + this.props.selectedZoneName}>bornes de recharges</Link>
+								</div>
+							</>
 						)
 					}
 				</div>
