@@ -90,7 +90,9 @@
     justify-content: flex-start;
     align-items: center;
 }
-
+.icons {
+    height: 1.8em;
+}
 .item-title-dd {
     font-size: 0.8rem;
     text-overflow: ellipsis;
@@ -105,7 +107,7 @@
 }
 
 .dropmenu-page-wrapper {
-    width: 14em;
+    width: 18em;
     position: relative;
     margin-left: 10vw;
     float: left;
@@ -178,18 +180,18 @@
 
 @media (max-width: 800px) {
     .dropmenu-page-title, .dropmenu-urbanZone-title, .dropmenu-buildings-title {
-        width: 20ch;
+        width: 10ch;
     }
 }
 
 @media (max-width: 500px) {
     .dropmenu-page-title, .dropmenu-urbanZone-title, .dropmenu-buildings-title {
-        width: 15ch;
+        width: 10ch;
     }
 }
 
 @media (max-width: 400px) {
     .dropmenu-page-title, .dropmenu-urbanZone-title, .dropmenu-buildings-title {
-        width: 6ch;
+        width: 3ch;
     }
 }

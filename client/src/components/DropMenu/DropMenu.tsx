@@ -5,6 +5,7 @@ import {Link, useLocation} from "react-router-dom";
 import {IoIosArrowDown} from "react-icons/io";
 import {useState} from "react"
 
+
 function DropMenu() {
 	const [dropmenu1, setDropmenu1] = useState(false)
 
@@ -37,6 +38,7 @@ function DropMenu() {
 									return (
 										<li key={index} className={item.cName}>
 											<Link to={`${item.path}/${currentUrbanZone}/${currentBuilding}`}>
+												<img className="icons" src={item.icon}></img>
 												<span className='item-title-dd'>{item.title}</span>
 											</Link>
 										</li>
