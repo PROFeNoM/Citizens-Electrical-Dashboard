@@ -50,8 +50,10 @@
     display: flex;
     height: 3em;
     background-color: rgb(0, 0, 0, 0);
+    cursor: default;
 
 }
+
 
 
 #district-info #controls > * {
