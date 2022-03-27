@@ -2,11 +2,11 @@ import React from 'react';
 import './DistrictEnergyBalance.css';
 import {
 	Building,
-	getAllUrbanZonesName,
+	getZonesName,
 	getUrbanZoneArea,
 	getUrbanZoneElectricityProduction,
-	getUrbanZoneNumberOfBuildings,
-	getUrbanZoneNumberOfSites,
+	getZoneNbOfBuildings,
+	getZoneNbOfCollectionSites,
 	getZoneConsumption
 } from '../../scripts/dbUtils';
 import copy from 'fast-copy';
@@ -47,13 +47,13 @@ export default class DistrictEnergyBalance extends React.Component<Props, State>
 			zonesData: {},
 		};
 
-		for (const zoneName of getAllUrbanZonesName()) {
+		for (const zoneName of getZonesName()) {
 			this.state.zonesData[zoneName] = {
-				nbOfBuildings: getUrbanZoneNumberOfBuildings(zoneName),
+				nbOfBuildings: getZoneNbOfBuildings(zoneName),
 				area: getUrbanZoneArea(zoneName),
-				nbOfConsumers: getUrbanZoneNumberOfSites(zoneName, Building.Residential)
-					+ getUrbanZoneNumberOfSites(zoneName, Building.Professional)
-					+ getUrbanZoneNumberOfSites(zoneName, Building.Tertiary),
+				nbOfConsumers: getZoneNbOfCollectionSites(zoneName, Building.Residential)
+					+ getZoneNbOfCollectionSites(zoneName, Building.Professional)
+					+ getZoneNbOfCollectionSites(zoneName, Building.Tertiary),
 			};
 
 			this.state.districtData.nbOfBuildings += this.state.zonesData[zoneName].nbOfBuildings;
@@ -69,7 +69,7 @@ export default class DistrictEnergyBalance extends React.Component<Props, State>
 		let districtConsumption = 0;
 		let districtProduction = 0;
 
-		await Promise.all(getAllUrbanZonesName().map(async zoneName => {
+		await Promise.all(getZonesName().map(async zoneName => {
 			const [zoneConsumption, zoneProduction] = await Promise.all([
 				getZoneConsumption(t1, Building.All, zoneName, t2),
 				getUrbanZoneElectricityProduction(t1, zoneName, t2),

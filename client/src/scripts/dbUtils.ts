@@ -1,8 +1,6 @@
 import * as turf from '@turf/turf';
-
-const json_Decoupage_urbain = require("../map/layers/Decoupage_urbain.json");
-const json_eclairage_public_features = require("../map/bor_ptlum.json");
-const json_Batiment_Bordeaux_Bastide_TEC = require("../map/layers/Batiment_Bordeaux_Bastide_TEC.json");
+import { buildings, zones, publicLighting, ZoneFeatureProperties } from '../geodata';
+import { Feature, MultiPolygon } from 'geojson';
 
 export enum Building {
 	Residential,
@@ -11,187 +9,96 @@ export enum Building {
 	Lighting,
 	Producer,
 	All,
-	Residential1,
-	Residential2,
-	Professional1,
-	Professional2,
 }
 
-export interface UrbanZoneFeature {
-	type: string;
-	properties: {
-		gid: number;
-		libelle: string;
-		RES1: number;
-		RES2: number;
-		PRO1: number;
-		PRO2: number;
-		ENT: number;
-		PROD_F5: number;
-	};
-	geometry: {
-		type: string;
-		coordinates: [number, number][][][];
+/** Exactly like booleanContains of @turf/turf, but it works with MultiPolygon. */
+function isContained(feature1: Feature<MultiPolygon, any>, feature2: Feature<MultiPolygon, any>) {
+	// each "for" will loop only once if the given features are made of only one polygon each (which is most likely the case)
+	for (const polygon1 of feature1.geometry.coordinates) {
+		for (const polygon2 of feature2.geometry.coordinates) {
+			if (turf.booleanContains(
+				{ type: 'Polygon', coordinates: polygon1 },
+				{ type: 'Polygon', coordinates: polygon1 },
+			)) {
+				return true;
+			}
+		}
 	}
+	return false;
 }
 
-interface LightingFeature {
-	dataset: string;
-	recordid: string;
-	fields: {
-		x_long: string;
-		rowkey: string;
-		geometrie: [number, number];
-		partitionKey: string;
-		timestamp: string;
-		y_lat: string;
-		code_pl: string;
-		entityid: string;
-		categorie: string;
-		domaine: string;
-	};
-	geometry: {
-		type: string;
-		coordinates: [number, number];
-	};
-	record_timestamp: string;
+const zonesNbOfBuildings: Record<string, number> = {};
+for (const zone of zones.features) {
+	zonesNbOfBuildings[zone.properties.libelle] = buildings.features.filter(building => isContained(zone, building)).length;
+}
+
+const zonesArea: Record<string, number> = {};
+for (const zone of zones.features) {
+	zonesArea[zone.properties.libelle] = turf.area(zone);
 }
 
 /**
  * Return the features section of an urban zone
- * @param urbanZone Urban Zone for which the feature section shall be returned
- * @param json JSON to search from
+ * @param zoneName Urban Zone for which the feature section shall be returned
  */
-function getUrbanZoneFeatures(urbanZone: string, json: { features: [] }): UrbanZoneFeature {
-	return json.features.filter((data: UrbanZoneFeature) => data.properties.libelle === urbanZone)[0];
+function getZone(zoneName: string): Feature<MultiPolygon, ZoneFeatureProperties> {
+	return zones.features.filter(data => data.properties.libelle === zoneName)[0];
 }
 
-
-
-/**
- * Returns all urban zone features in La Bastide
- *
- */
-export function getAllUrbanZone(): Array<UrbanZoneFeature> {
-	const UrbanZones = json_Decoupage_urbain.features;
-	//Reorder coordinates
-	UrbanZones.forEach((item: UrbanZoneFeature) => {
-		item.geometry.coordinates[0][0].forEach((item: [number, number]) => {
-			const tmp = item[0];
-			item[0] = item[1];
-			item[1] = tmp;
-		})
-	})
-
-	return UrbanZones;
+export function getZonesName(): string[] {
+	return zones.features.map(zone => zone.properties.libelle);
 }
-
-export function getAllUrbanZonesName(): string[] {
-	return json_Decoupage_urbain.features.map(zone => zone.properties.libelle);
-}
-
-
-/**
- * Returns the coordinates of each vertex bounding an urban area
- * @param zone Zone for which we want the coordinates
- */
-export function getUrbanZoneCoordinates(zone: UrbanZoneFeature): [number, number][] {
-	return zone.geometry.coordinates[0][0];
-}
-
-
-export function getUrbanZoneLibelle(zone: UrbanZoneFeature): string {
-	return zone.properties.libelle;
-}
-
-let urbanZoneNumberOfBuildings: { [urbanZone: string]: number } = {};
 
 /**
  * Return the number of buildings in an urban zone
- * @param urbanZone Urban zone to search into
+ * @param zoneName Urban zone to search into
  */
-export function getUrbanZoneNumberOfBuildings(urbanZone: string): number {
-	if (urbanZoneNumberOfBuildings[urbanZone])
-		return urbanZoneNumberOfBuildings[urbanZone];
-
-	const searchWithin = turf.polygon(getUrbanZoneFeatures(urbanZone, json_Decoupage_urbain).geometry.coordinates[0]);
-	const buildings = json_Batiment_Bordeaux_Bastide_TEC
-		.features
-		.map((f: { geometry: { coordinates: turf.helpers.Position[][][]; }; }) => turf.booleanContains(searchWithin, turf.polygon(f.geometry.coordinates[0])))
-		.filter(Boolean)
-		.length;
-
-	urbanZoneNumberOfBuildings[urbanZone] = buildings;
-	return buildings;
-}
-
-/**
- * Return the number of buildings in La Bastide
- */
-export function getDistrictNumberOfBuildings(): number {
-	return json_Decoupage_urbain.features.reduce((prev: number, curr: UrbanZoneFeature) => prev + getUrbanZoneNumberOfBuildings(curr.properties.libelle), 0);
+export function getZoneNbOfBuildings(zoneName: string): number {
+	return zonesNbOfBuildings[zoneName];
 }
 
 /**
  * Return the number of sites in an urban zone
- * @param urbanZone Urban zone to search into
+ * @param zoneName Urban zone to search into
  * @param buildingType Building type searched
  */
-export function getUrbanZoneNumberOfSites(urbanZone: string, buildingType: Building): number {
-	const data: UrbanZoneFeature = getUrbanZoneFeatures(urbanZone, json_Decoupage_urbain);
+export function getZoneNbOfCollectionSites(zoneName: string, buildingType: Building): number {
+	const zone = getZone(zoneName);
+	const zoneProperties = zone.properties;
 
-	if (data) {
-		const dataProperties: UrbanZoneFeature["properties"] = data.properties;
-		switch (buildingType) {
-			case Building.Residential:
-				return dataProperties.RES1 + dataProperties.RES2;
-			case Building.Residential1:
-				return dataProperties.RES1;
-			case Building.Residential2:
-				return dataProperties.RES2;
-			case Building.Professional:
-				return dataProperties.PRO1 + dataProperties.PRO2;
-			case Building.Professional1:
-				return dataProperties.PRO1;
-			case Building.Professional2:
-				return dataProperties.PRO2;
-			case Building.Tertiary:
-				return dataProperties.ENT;
-			case Building.Lighting:
-				const searchWithin = turf.polygon(data.geometry.coordinates[0]);
-				const ptsWithin: LightingFeature[] = json_eclairage_public_features.filter((feature: LightingFeature) => turf.booleanWithin(turf.point(feature.geometry.coordinates), searchWithin));
-				return ptsWithin.length;
-			case Building.Producer:
-				return dataProperties.PROD_F5;
-		}
+	switch (buildingType) {
+		case Building.Residential:
+			return zoneProperties.RES1 + zoneProperties.RES2;
+		case Building.Professional:
+			return zoneProperties.PRO1 + zoneProperties.PRO2;
+		case Building.Tertiary:
+			return zoneProperties.ENT;
+		case Building.Lighting:
+			return publicLighting.filter(pl => turf.booleanWithin(turf.point(pl.geometry.coordinates), zone)).length;
+		case Building.Producer:
+			return zoneProperties.PROD_F5;
+		case Building.All:
+			return getZoneNbOfCollectionSites(zoneName, Building.Residential)
+				+ getZoneNbOfCollectionSites(zoneName, Building.Professional)
+				+ getZoneNbOfCollectionSites(zoneName, Building.Tertiary)
+				+ getZoneNbOfCollectionSites(zoneName, Building.Lighting)
 	}
-
-	return 0;
 }
 
 /**
  * Return the area in square meters of the urban zone
- * @param urbanZone Urban zone for which the area should be computed
+ * @param zoneName Urban zone for which the area should be computed
  */
-export function getUrbanZoneArea(urbanZone: string): number {
-	const data: UrbanZoneFeature = getUrbanZoneFeatures(urbanZone, json_Decoupage_urbain);
-
-	return data ? turf.area(turf.polygon(data.geometry.coordinates[0])) : 0;
+export function getUrbanZoneArea(zoneName: string): number {
+	return zonesArea[zoneName];
 }
 
 /**
  * Return the number of sites in La Bastide
  * @param buildingType
  */
-export function getDistrictNumberOfSites(buildingType: Building): number {
-	return json_Decoupage_urbain.features.reduce((prev: number, curr: UrbanZoneFeature) => prev + getUrbanZoneNumberOfSites(curr.properties.libelle, buildingType), 0);
-}
-
-/**
- * Return the area of La Bastide
- */
-export function getDistrictArea(): number {
-	return json_Decoupage_urbain.features.reduce((prev: number, curr: UrbanZoneFeature) => prev + getUrbanZoneArea(curr.properties.libelle), 0);
+export function getDistrictNbOfCollectionSites(buildingType: Building): number {
+	return getZonesName().map(name => getZoneNbOfCollectionSites(name, buildingType)).reduce((a, b) => a + b);
 }
 
 async function runQuery(queryLink: string) {
@@ -222,7 +129,7 @@ let queried: QueriedData[] = [];
 async function getZoneElectricityConsumption(t1: number, buildingType: Building, zoneName: string, t2: number, returnRaw=false): Promise<number | any[]> {
 	let queryResults: [Promise<any>, number][] = [];
 
-	const getFn = zoneName === 'La Bastide' ? getDistrictNumberOfSites : (bType: Building) => getUrbanZoneNumberOfSites(zoneName, bType);
+	const getFn = zoneName === 'La Bastide' ? getDistrictNbOfCollectionSites : (bType: Building) => getZoneNbOfCollectionSites(zoneName, bType);
 
 	async function _addQuery(t1: number, t2: number, profiles: string[], nbBuilding: number) {
 		const timestamps = [t1, t2];
@@ -321,7 +228,7 @@ export async function getDistrictElectricityConsumption(t1: number, buildingType
 }
 
 async function getZoneElectricityProduction(t1: number, zoneName: string, t2: number, returnRaw=false): Promise<number | any[]> {
-	const getFn = zoneName === 'La Bastide' ? () => getDistrictNumberOfSites(Building.Producer) : () => getUrbanZoneNumberOfSites(zoneName, Building.Producer);
+	const getFn = zoneName === 'La Bastide' ? () => getDistrictNbOfCollectionSites(Building.Producer) : () => getZoneNbOfCollectionSites(zoneName, Building.Producer);
 	let rawRes;
 
 	const timestamps = [t1, t2];

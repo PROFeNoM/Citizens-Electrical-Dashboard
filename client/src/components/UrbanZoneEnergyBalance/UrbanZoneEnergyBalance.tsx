@@ -5,8 +5,8 @@ import {
 	getUrbanZoneArea,
 	getZoneConsumption,
 	getUrbanZoneElectricityProduction,
-	getUrbanZoneNumberOfBuildings,
-	getUrbanZoneNumberOfSites,
+	getZoneNbOfBuildings,
+	getZoneNbOfCollectionSites,
 } from '../../scripts/dbUtils';
 
 interface Props {
@@ -14,10 +14,10 @@ interface Props {
 }
 
 function UrbanZoneEnergyBalance(props: Props) {
-	const nbSites: number = getUrbanZoneNumberOfSites(props.name, Building.Residential)
-		+ getUrbanZoneNumberOfSites(props.name, Building.Professional)
-		+ getUrbanZoneNumberOfSites(props.name, Building.Tertiary);
-	const nbBuildings: number = getUrbanZoneNumberOfBuildings(props.name);
+	const nbSites: number = getZoneNbOfCollectionSites(props.name, Building.Residential)
+		+ getZoneNbOfCollectionSites(props.name, Building.Professional)
+		+ getZoneNbOfCollectionSites(props.name, Building.Tertiary);
+	const nbBuildings: number = getZoneNbOfBuildings(props.name);
 	const area: string = new Intl.NumberFormat().format(Math.round(getUrbanZoneArea(props.name)));
 	
 	const [elecCons, setElecCons] = useState(0);

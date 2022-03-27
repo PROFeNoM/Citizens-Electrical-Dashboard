@@ -2,9 +2,7 @@ import React from 'react';
 import BaseMap, { BaseMapProps } from '../BaseMap/BaseMap';
 import { FeatureCollection } from 'geojson';
 import { buildings3D, FillColor, zonesBorder, zonesFill } from '../layers';
-
-const zones = require('../../../map/layers/Decoupage_urbain.json') as FeatureCollection;
-const buildings = require('../../../map/layers/Batiment_Bordeaux_Bastide_TEC.json') as FeatureCollection;
+import { zones, buildings } from '../../../geodata';
 
 interface Props extends BaseMapProps {
 	zonesTransformer?: (zones: FeatureCollection) => Promise<FeatureCollection>,

@@ -1,5 +1,5 @@
 import React from "react"
-import {getAllUrbanZonesName} from "../../scripts/dbUtils";
+import {getZonesName} from "../../scripts/dbUtils";
 import chart_ic from '../../images/chart_icon.png'
 import i_ic from '../../images/i_icon.png'
 
@@ -24,7 +24,7 @@ export const DropMenuData1 = [
     },
 ];
 
-export const DropMenuData2 = getAllUrbanZonesName()
+export const DropMenuData2 = getZonesName()
         .map(name => {
            return {
                title: name,
