@@ -8,7 +8,7 @@ import {
 } from "../../components";
 import { TotalConsumption } from "../../components";
 import { useParams } from "react-router-dom";
-import { Building } from "../../scripts/dbUtils";
+import { Profile } from "../../scripts/dbUtils";
 import HeaderDropDown from "../../containers/HeaderDropDown/HeaderDropDown";
 import { useState } from "react";
 import Button from "@mui/material/Button";
@@ -19,11 +19,11 @@ function Consommation() {
   const [currentChart, setCurrentChart] = useState(0);
 
   const buildingTypes = [
-    Building.All,
-    Building.Residential,
-    Building.Tertiary,
-    Building.Professional,
-    Building.Lighting,
+    Profile.ALL,
+    Profile.RESIDENTIAL,
+    Profile.TERTIARY,
+    Profile.PROFESSIONAL,
+    Profile.PUBLIC_LIGHTING,
   ];
   const labels = [
     "Total",

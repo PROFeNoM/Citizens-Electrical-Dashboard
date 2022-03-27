@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import './UrbanZoneEnergyBalance.css';
 import {
-	Building,
+	Profile,
 	getUrbanZoneArea,
 	getZoneConsumption,
 	getUrbanZoneElectricityProduction,
@@ -14,9 +14,9 @@ interface Props {
 }
 
 function UrbanZoneEnergyBalance(props: Props) {
-	const nbSites: number = getZoneNbOfCollectionSites(props.name, Building.Residential)
-		+ getZoneNbOfCollectionSites(props.name, Building.Professional)
-		+ getZoneNbOfCollectionSites(props.name, Building.Tertiary);
+	const nbSites: number = getZoneNbOfCollectionSites(props.name, Profile.RESIDENTIAL)
+		+ getZoneNbOfCollectionSites(props.name, Profile.PROFESSIONAL)
+		+ getZoneNbOfCollectionSites(props.name, Profile.TERTIARY);
 	const nbBuildings: number = getZoneNbOfBuildings(props.name);
 	const area: string = new Intl.NumberFormat().format(Math.round(getUrbanZoneArea(props.name)));
 	
@@ -27,7 +27,7 @@ function UrbanZoneEnergyBalance(props: Props) {
 		(async () => {
 			const t1 = new Date('2021-12-01T00:30:00').getTime();
 			const t2 = new Date('2021-12-31T23:30:00').getTime();
-			const r = Math.round(await getZoneConsumption(t1, Building.All, props.name, t2) / 1000 / 1000);
+			const r = Math.round(await getZoneConsumption(t1, Profile.ALL, props.name, t2) / 1000 / 1000);
 			setElecCons(r);
 		})();
 	});

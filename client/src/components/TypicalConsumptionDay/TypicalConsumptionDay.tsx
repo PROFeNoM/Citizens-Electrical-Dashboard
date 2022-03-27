@@ -2,7 +2,7 @@ import "./TypicalConsumptionDay.css";
 import React from "react";
 import { CanvasJSChart } from "canvasjs-react-charts";
 import {
-  Building,
+  Profile,
   getMeanUrbanZoneElectricityConsumption,
   getMeanUrbanZoneElectricityProduction,
 } from "../../scripts/dbUtils";
@@ -18,7 +18,7 @@ interface Props {
   t1: number;
   t2: number;
   urbanZone: string;
-  buildingType: Building;
+  buildingType: Profile;
   title: string;
 }
 

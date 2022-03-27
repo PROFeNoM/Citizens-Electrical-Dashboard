@@ -2,7 +2,7 @@ import './TotalConsumption.css';
 import React from 'react';
 import {CanvasJSChart} from 'canvasjs-react-charts';
 import {
-	Building,
+	Profile,
 	getDistrictElectricityConsumption,
 	getMeanUrbanZoneElectricityConsumption,
 	getMeanUrbanZoneElectricityProduction,
@@ -34,11 +34,11 @@ export default class TotalConsumption extends React.Component<Props, State> {
 	private async getDistrictConsumptionData() {
 		return (
 			[
-				{label: "Total", y: Math.round(await getDistrictElectricityConsumption(this.props.t1, Building.All, this.props.t2)/1000)},
-				{label: "Residentiels", y: Math.round(await getDistrictElectricityConsumption(this.props.t1, Building.Residential, this.props.t2)/1000)},
-				{label: "Tertiaires", y: Math.round(await getDistrictElectricityConsumption(this.props.t1, Building.Tertiary, this.props.t2)/1000)},
-				{label: "Professionnels", y: Math.round(await getDistrictElectricityConsumption(this.props.t1, Building.Professional, this.props.t2)/1000)},
-				{label: "Eclairage", y: Math.round(await getDistrictElectricityConsumption(this.props.t1, Building.Lighting, this.props.t2)/1000)}
+				{label: "Total", y: Math.round(await getDistrictElectricityConsumption(this.props.t1, Profile.ALL, this.props.t2)/1000)},
+				{label: "Residentiels", y: Math.round(await getDistrictElectricityConsumption(this.props.t1, Profile.RESIDENTIAL, this.props.t2)/1000)},
+				{label: "Tertiaires", y: Math.round(await getDistrictElectricityConsumption(this.props.t1, Profile.TERTIARY, this.props.t2)/1000)},
+				{label: "Professionnels", y: Math.round(await getDistrictElectricityConsumption(this.props.t1, Profile.PROFESSIONAL, this.props.t2)/1000)},
+				{label: "Eclairage", y: Math.round(await getDistrictElectricityConsumption(this.props.t1, Profile.PUBLIC_LIGHTING, this.props.t2)/1000)}
 			]);
 	}
 	
@@ -46,11 +46,11 @@ export default class TotalConsumption extends React.Component<Props, State> {
 
 		return (
 		[
-			{label: "Total", y: Math.round(await getZoneConsumption(this.props.t1, Building.All, this.props.urbanZone, this.props.t2)/1000)},
-			{label: "Residentiels", y: Math.round(await getZoneConsumption(this.props.t1, Building.Residential, this.props.urbanZone, this.props.t2)/1000)},
-			{label: "Tertiaires", y: Math.round(await getZoneConsumption(this.props.t1, Building.Tertiary, this.props.urbanZone, this.props.t2)/1000)},
-			{label: "Professionnels", y: Math.round(await getZoneConsumption(this.props.t1, Building.Professional, this.props.urbanZone, this.props.t2)/1000)},
-			{label: "Eclairage", y: Math.round(await getZoneConsumption(this.props.t1, Building.Lighting, this.props.urbanZone, this.props.t2)/1000)}
+			{label: "Total", y: Math.round(await getZoneConsumption(this.props.t1, Profile.ALL, this.props.urbanZone, this.props.t2)/1000)},
+			{label: "Residentiels", y: Math.round(await getZoneConsumption(this.props.t1, Profile.RESIDENTIAL, this.props.urbanZone, this.props.t2)/1000)},
+			{label: "Tertiaires", y: Math.round(await getZoneConsumption(this.props.t1, Profile.TERTIARY, this.props.urbanZone, this.props.t2)/1000)},
+			{label: "Professionnels", y: Math.round(await getZoneConsumption(this.props.t1, Profile.PROFESSIONAL, this.props.urbanZone, this.props.t2)/1000)},
+			{label: "Eclairage", y: Math.round(await getZoneConsumption(this.props.t1, Profile.PUBLIC_LIGHTING, this.props.urbanZone, this.props.t2)/1000)}
 		]);
 	}
 
