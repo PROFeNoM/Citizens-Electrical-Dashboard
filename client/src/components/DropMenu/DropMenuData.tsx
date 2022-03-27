@@ -1,7 +1,6 @@
-import React from "react"
-import {getZonesName} from "../../scripts/dbUtils";
-import chart_ic from '../../images/chart_icon.png'
-import i_ic from '../../images/i_icon.png'
+import { getZonesName } from '../../scripts/dbUtils';
+import chart_ic from '../../images/chart_icon.png';
+import i_ic from '../../images/i_icon.png';
 
 export const DropMenuData1 = [
     {
@@ -25,25 +24,25 @@ export const DropMenuData1 = [
 ];
 
 export const DropMenuData2 = getZonesName()
-        .map(name => {
-           return {
-               title: name,
-               path: name,
-               cName: 'nav-text'
-           }
-        });
+    .map(name => (
+        {
+            title: name,
+            path: name,
+            cName: 'nav-text'
+        }
+    ));
 
 export const DropMenuData3 = [
-           "Residentiel",
-           "Professionnel",
-           "Tertiaire",
-           "Eclairage",
-           "Producteur",
-           "Total"]
-        .map(name => {
-           return {
-               title: name,
-               path: name,
-               cName: 'nav-text'
-           }
-        });
+    'Residentiel',
+    'Professionnel',
+    'Tertiaire',
+    'Eclairage',
+    'Producteur',
+    'Total']
+    .map(name => (
+        {
+            title: name,
+            path: name,
+            cName: 'nav-text'
+        }
+    ));

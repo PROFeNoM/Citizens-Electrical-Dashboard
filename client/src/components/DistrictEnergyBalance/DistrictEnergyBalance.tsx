@@ -11,8 +11,8 @@ import {
 } from '../../scripts/dbUtils';
 import copy from 'fast-copy';
 import {Link} from 'react-router-dom';
-import chart_ic from '../../images/chart_icon.png'
-import i_ic from '../../images/i_icon.png'
+import chart_ic from '../../images/chart_icon.png';
+import i_ic from '../../images/i_icon.png';
 
 const formatter = new Intl.NumberFormat();
 
@@ -129,12 +129,12 @@ export default class DistrictEnergyBalance extends React.Component<Props, State>
 							<>
 								<div id="controls">
 									{/*<div onClick={this.props.onCancel}>retour</div>-->*/}
-									<img id="icons" src={chart_ic}></img>
+									<img id="icons" src={chart_ic} alt="Pictogramme de graphique"></img>
 									<Link to={'/consommation/' + this.props.selectedZoneName + "/Total"}>consommation</Link>
 									<Link to={'/production/' + this.props.selectedZoneName + "/Total"}>production</Link>
 								</div>
 								<div id="controls">
-									<img id="icons" src={i_ic}></img>
+									<img id="icons" src={i_ic} alt="Pictogramme d'information"></img>
 									<Link to={'/bornes/' + this.props.selectedZoneName}>bornes de recharges</Link>
 								</div>
 							</>
