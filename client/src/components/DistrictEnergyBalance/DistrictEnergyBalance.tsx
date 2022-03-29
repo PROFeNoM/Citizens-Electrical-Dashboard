@@ -1,18 +1,11 @@
 import React from 'react';
 import './DistrictEnergyBalance.css';
-import {
-	Profile,
-	getZonesName,
-	getUrbanZoneArea,
-	getUrbanZoneElectricityProduction,
-	getZoneNbOfBuildings,
-	getZoneNbOfCollectionSites,
-	getZoneConsumption
-} from '../../scripts/dbUtils';
+import { getZoneArea, getZoneNbOfBuildings, getZoneNbOfCollectionSites, getZonesName } from '../../scripts/dbUtils';
 import copy from 'fast-copy';
-import {Link} from 'react-router-dom';
-import chart_ic from '../../images/chart_icon.png'
-import i_ic from '../../images/i_icon.png'
+import { Link } from 'react-router-dom';
+import chart_ic from '../../images/chart_icon.png';
+import i_ic from '../../images/i_icon.png';
+import { ConsumerProfile, getTotalConsumption, getTotalProduction } from '../../scripts/api';
 
 const formatter = new Intl.NumberFormat();
 
@@ -50,10 +43,10 @@ export default class DistrictEnergyBalance extends React.Component<Props, State>
 		for (const zoneName of getZonesName()) {
 			this.state.zonesData[zoneName] = {
 				nbOfBuildings: getZoneNbOfBuildings(zoneName),
-				area: getUrbanZoneArea(zoneName),
-				nbOfConsumers: getZoneNbOfCollectionSites(zoneName, Profile.RESIDENTIAL)
-					+ getZoneNbOfCollectionSites(zoneName, Profile.PROFESSIONAL)
-					+ getZoneNbOfCollectionSites(zoneName, Profile.TERTIARY),
+				area: getZoneArea(zoneName),
+				nbOfConsumers: getZoneNbOfCollectionSites(zoneName, ConsumerProfile.RESIDENTIAL)
+					+ getZoneNbOfCollectionSites(zoneName, ConsumerProfile.PROFESSIONAL)
+					+ getZoneNbOfCollectionSites(zoneName, ConsumerProfile.TERTIARY),
 			};
 
 			this.state.districtData.nbOfBuildings += this.state.zonesData[zoneName].nbOfBuildings;
@@ -71,8 +64,8 @@ export default class DistrictEnergyBalance extends React.Component<Props, State>
 
 		await Promise.all(getZonesName().map(async zoneName => {
 			const [zoneConsumption, zoneProduction] = await Promise.all([
-				getZoneConsumption(t1, Profile.ALL, zoneName, t2),
-				getUrbanZoneElectricityProduction(t1, zoneName, t2),
+				getTotalConsumption(t1, t2, undefined, zoneName),
+				getTotalProduction(t1, t2, undefined, zoneName),
 			]);
 
 			this.setState(oldState => {

@@ -2,6 +2,10 @@ import { NextFunction, Request, Response } from 'express';
 import { ProducerProfile, Production } from './db/entities/Production';
 import { ConsumerProfile, Consumption } from './db/entities/Consumption';
 
+// TODO clean that
+export type Zone = 'Bastide Niel' | 'Quartier historique Nord Thiers' | 'Coeur de Bastide' | 'sieges sociaux' | 'residence autre quai' | 'batiments publics' | 'batiments professionnels et residentiels' | 'mixte urbain' | 'quartier historique sud avenue thiers';
+const zones: Zone[] = ['Bastide Niel', 'Quartier historique Nord Thiers', 'Coeur de Bastide', 'sieges sociaux', 'residence autre quai', 'batiments publics', 'batiments professionnels et residentiels', 'mixte urbain', 'quartier historique sud avenue thiers'];
+
 // the apiReqCheckerParser middleware will create the following fields by side effect
 declare global {
 	namespace Express {
@@ -11,6 +15,7 @@ declare global {
 			minDate: Date,
 			maxDate: Date,
 			profiles: (ProducerProfile | ConsumerProfile)[],
+			zone: Zone | undefined,
 		}
 	}
 }
@@ -36,7 +41,7 @@ export function apiReqCheckerParser(req: Request, res: Response, next: NextFunct
 		return;
 	}
 
-	const maxDate = checkAndParseDate(req.query.minDate);
+	const maxDate = checkAndParseDate(req.query.maxDate);
 	if (maxDate === null) {
 		res.status(400).send('maxDate is missing from query or is invalid');
 		return;
@@ -48,11 +53,19 @@ export function apiReqCheckerParser(req: Request, res: Response, next: NextFunct
 		return;
 	}
 
+	const zone = req.query.zone;
+	// zone isn't required but if it's defined it must be valid
+	if (zone !== undefined && !zones.includes(zone as any)) {
+		res.status(400).send('zone is invalid');
+		return;
+	}
+
 	req.entity = entity;
 	req.profileEnum = profileEnum;
 	req.minDate = minDate;
 	req.maxDate = maxDate;
 	req.profiles = profiles;
+	req.zone = zone as Zone;
 
 	next();
 }
