@@ -1,24 +1,18 @@
 import { useEffect, useState } from 'react';
 import './UrbanZoneEnergyBalance.css';
-import {
-	Building,
-	getUrbanZoneArea,
-	getZoneConsumption,
-	getUrbanZoneElectricityProduction,
-	getZoneNbOfBuildings,
-	getZoneNbOfCollectionSites,
-} from '../../scripts/dbUtils';
+import { getZoneArea, getZoneNbOfBuildings, getZoneNbOfCollectionSites, } from '../../scripts/dbUtils';
+import { ConsumerProfile, getTotalConsumption, getTotalProduction } from '../../scripts/api';
 
 interface Props {
 	name: string;
 }
 
 function UrbanZoneEnergyBalance(props: Props) {
-	const nbSites: number = getZoneNbOfCollectionSites(props.name, Building.Residential)
-		+ getZoneNbOfCollectionSites(props.name, Building.Professional)
-		+ getZoneNbOfCollectionSites(props.name, Building.Tertiary);
+	const nbSites: number = getZoneNbOfCollectionSites(props.name, ConsumerProfile.RESIDENTIAL)
+		+ getZoneNbOfCollectionSites(props.name, ConsumerProfile.PROFESSIONAL)
+		+ getZoneNbOfCollectionSites(props.name, ConsumerProfile.TERTIARY);
 	const nbBuildings: number = getZoneNbOfBuildings(props.name);
-	const area: string = new Intl.NumberFormat().format(Math.round(getUrbanZoneArea(props.name)));
+	const area: string = new Intl.NumberFormat().format(Math.round(getZoneArea(props.name)));
 	
 	const [elecCons, setElecCons] = useState(0);
 	const [elecProd, setElecProd] = useState(0);
@@ -27,7 +21,7 @@ function UrbanZoneEnergyBalance(props: Props) {
 		(async () => {
 			const t1 = new Date('2021-12-01T00:30:00').getTime();
 			const t2 = new Date('2021-12-31T23:30:00').getTime();
-			const r = Math.round(await getZoneConsumption(t1, Building.All, props.name, t2) / 1000 / 1000);
+			const r = Math.round(await getTotalConsumption(t1, t2, undefined, props.name) / 1000 / 1000);
 			setElecCons(r);
 		})();
 	});
@@ -36,7 +30,7 @@ function UrbanZoneEnergyBalance(props: Props) {
 		(async () => {
 			const t1 = new Date('2021-12-01T00:30:00').getTime();
 			const t2 = new Date('2021-12-31T23:30:00').getTime();
-			const r = Math.round(await getUrbanZoneElectricityProduction(t1, props.name, t2) / 1000 / 1000);
+			const r = Math.round(await getTotalProduction(t1, t2, undefined, props.name) / 1000 / 1000);
 			setElecProd(r);
 		})();
 	});

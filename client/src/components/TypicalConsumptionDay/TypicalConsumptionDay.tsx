@@ -1,11 +1,7 @@
-import "./TypicalConsumptionDay.css";
-import React from "react";
-import { CanvasJSChart } from "canvasjs-react-charts";
-import {
-  Building,
-  getMeanUrbanZoneElectricityConsumption,
-  getMeanUrbanZoneElectricityProduction,
-} from "../../scripts/dbUtils";
+import './TypicalConsumptionDay.css';
+import React from 'react';
+import { CanvasJSChart } from 'canvasjs-react-charts';
+import { ConsumerProfile, getHourlyMeanConsumption, getHourlyMeanProduction } from '../../scripts/api';
 
 const tmpPoints = Array.from(Array(24).keys()).map((h) => {
   return {
@@ -18,7 +14,7 @@ interface Props {
   t1: number;
   t2: number;
   urbanZone: string;
-  buildingType: Building;
+  buildingType: ConsumerProfile;
   title: string;
 }
 
@@ -44,16 +40,17 @@ export default class TypicalConsumptionDay extends React.Component<
   }
 
   private async getSelfConsumptionData() {
-    const meanCons = await getMeanUrbanZoneElectricityConsumption(
+    const meanCons = await getHourlyMeanConsumption(
       this.props.t1,
-      this.props.buildingType,
-      this.props.urbanZone,
-      this.props.t2
+      this.props.t2,
+      [this.props.buildingType],
+      this.props.urbanZone
     );
-    const meanProd = await getMeanUrbanZoneElectricityProduction(
+    const meanProd = await getHourlyMeanProduction(
       this.props.t1,
-      this.props.urbanZone,
-      this.props.t2
+      this.props.t2,
+      undefined,
+      this.props.urbanZone
     );
 
     return meanCons.map((el, index) => {
@@ -65,11 +62,11 @@ export default class TypicalConsumptionDay extends React.Component<
   }
 
   private async getDistrictConsumptionData() {
-    const meanCons = await getMeanUrbanZoneElectricityConsumption(
+    const meanCons = await getHourlyMeanConsumption(
       this.props.t1,
-      this.props.buildingType,
-      "La Bastide",
-      this.props.t2
+      this.props.t2,
+      [this.props.buildingType],
+      "La Bastide"
     );
 
     return meanCons.map((el) => {
@@ -81,11 +78,11 @@ export default class TypicalConsumptionDay extends React.Component<
   }
 
   private async getUrbanZoneConsumptionData() {
-    const meanCons = await getMeanUrbanZoneElectricityConsumption(
+    const meanCons = await getHourlyMeanConsumption(
       this.props.t1,
-      this.props.buildingType,
-      this.props.urbanZone,
-      this.props.t2
+      this.props.t2,
+      [this.props.buildingType],
+      this.props.urbanZone
     );
 
     return meanCons.map((el) => {

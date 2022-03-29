@@ -1,29 +1,23 @@
 import './Consommation.css';
-import React from 'react';
+import React, { useState } from 'react';
 import { Col, Container, Row } from 'react-bootstrap';
-import {
-	ChoroplethMap,
-	HorizontalSlider,
-	TypicalConsumptionDay,
-} from '../../components';
-import { TotalConsumption } from '../../components';
+import { ChoroplethMap, HorizontalSlider, TotalConsumption, TypicalConsumptionDay, } from '../../components';
 import { useParams } from 'react-router-dom';
-import { Building } from '../../scripts/dbUtils';
 import HeaderDropDown from '../../containers/HeaderDropDown/HeaderDropDown';
-import { useState } from 'react';
 import Button from '@mui/material/Button';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
+import { ConsumerProfile } from '../../scripts/api';
 
 function Consommation() {
 	const [currentChart, setCurrentChart] = useState(0);
 
 	const buildingTypes = [
-		Building.All,
-		Building.Residential,
-		Building.Tertiary,
-		Building.Professional,
-		Building.Lighting,
+		undefined,
+		ConsumerProfile.RESIDENTIAL,
+		ConsumerProfile.TERTIARY,
+		ConsumerProfile.PROFESSIONAL,
+		ConsumerProfile.PUBLIC_LIGHTING,
 	];
 
 	const labels = [
