@@ -15,16 +15,37 @@ export enum ProducerProfile {
 	TOTAL = 'TOTAL',
 }
 
+/**
+ * Get the total consumption in Wh on the given time period.
+ * @param t1 start of the time period (Unix epoch millis)
+ * @param t2 end of the time period (Unix epoch millis)
+ * @param profiles list of profiles to consider. If nullish or empty, all profile are considered
+ * @param zoneName the urban zone to consider. If nullish the whole district is considered
+ */
 export async function getTotalConsumption(t1: number, t2: number, profiles?: ConsumerProfile[], zoneName?: string): Promise<number> {
 	const result = await apiCall('consumption/total', t1, t2, profiles, zoneName) as { total: number };
 	return result.total;
 }
 
+/**
+ * Get the total production in Wh on the given time period.
+ * @param t1 start of the time period (Unix epoch millis)
+ * @param t2 end of the time period (Unix epoch millis)
+ * @param profiles list of profiles to consider. If nullish or empty, all profile are considered
+ * @param zoneName the urban zone to consider. If nullish the whole district is considered
+ */
 export async function getTotalProduction(t1: number, t2: number, profiles?: ProducerProfile[], zoneName?: string): Promise<number> {
 	const result = await apiCall('production/total', t1, t2, profiles, zoneName) as { total: number };
 	return result.total;
 }
 
+/**
+ * Get the average consumption in Wh for each hour of the day on the given time period.
+ * @param t1 start of the time period (Unix epoch millis)
+ * @param t2 end of the time period (Unix epoch millis)
+ * @param profiles list of profiles to consider. If nullish or empty, all profile are considered
+ * @param zoneName the urban zone to consider. If nullish the whole district is considered
+ */
 export async function getHourlyMeanConsumption(t1: number, t2: number, profiles?: ConsumerProfile[], zoneName?: string): Promise<{ hour: Date; mean: number }[]> {
 	const result = await apiCall('consumption/hourly-mean', t1, t2, profiles, zoneName) as { hour: number; mean: number }[];
 	// FIXME wtf
@@ -34,6 +55,13 @@ export async function getHourlyMeanConsumption(t1: number, t2: number, profiles?
 	}))
 }
 
+/**
+ * Get the average production in Wh for each hour of the day on the given time period.
+ * @param t1 start of the time period (Unix epoch millis)
+ * @param t2 end of the time period (Unix epoch millis)
+ * @param profiles list of profiles to consider. If nullish or empty, all profile are considered
+ * @param zoneName the urban zone to consider. If nullish the whole district is considered
+ */
 export async function getHourlyMeanProduction(t1: number, t2: number, profiles?: ProducerProfile[], zoneName?: string): Promise<{ hour: Date; mean: number }[]> {
 	const result = await apiCall('production/hourly-mean', t1, t2, profiles, zoneName) as { hour: number; mean: number }[];
 	// FIXME wtf
