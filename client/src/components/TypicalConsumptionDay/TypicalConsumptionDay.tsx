@@ -1,7 +1,11 @@
-import './TypicalConsumptionDay.css';
-import React from 'react';
-import { CanvasJSChart } from 'canvasjs-react-charts';
-import { ConsumerProfile, getHourlyMeanConsumption, getHourlyMeanProduction } from '../../scripts/api';
+import "./TypicalConsumptionDay.css";
+import React from "react";
+import { CanvasJSChart } from "canvasjs-react-charts";
+import {
+  ConsumerProfile,
+  getHourlyMeanConsumption,
+  getHourlyMeanProduction,
+} from "../../scripts/api";
 
 const tmpPoints = Array.from(Array(24).keys()).map((h) => {
   return {
@@ -152,9 +156,6 @@ export default class TypicalConsumptionDay extends React.Component<
           <div className="typical-c-day-title-wrapper">{this.props.title}</div>
           <div className="typical-consumption-day-graph-wrapper">
             <CanvasJSChart options={chartOptions} />
-            <button onClick={CanvasJSChart.exportChart({format: "png"})}>
-              {"Export Chart"}
-            </button>
           </div>
           <div className="typical-c-day-legend-wrapper">
             <div className="typical-c-day-urbanZone-legend-wrapper">
