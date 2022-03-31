@@ -9,6 +9,7 @@ header {
     place-self: center;
     color: #fff;
     font-size: 2rem;
+    text-transform: uppercase;
 }
 
 .logo {

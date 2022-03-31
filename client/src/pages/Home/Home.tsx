@@ -10,7 +10,7 @@ interface State {
 export default class Home extends React.Component<{}, State>{
     private mapRef = React.createRef<HomeMap>();
 
-    constructor(props) {
+    constructor(props: {}) {
         super(props);
         this.state = {
             selectedZoneName: null,
@@ -20,7 +20,7 @@ export default class Home extends React.Component<{}, State>{
     render() {
         return (
             <div id='home-container'>
-                <Header title='ACCUEIL'/>
+                <Header title='ACCUEIL' />
                 <main>
                     <HomeMap
                         ref={this.mapRef}
