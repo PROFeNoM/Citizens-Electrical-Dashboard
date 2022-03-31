@@ -20,7 +20,7 @@ function isContained(feature1: Feature<MultiPolygon, any>, feature2: Feature<Mul
 		for (const polygon2 of feature2.geometry.coordinates) {
 			if (turf.booleanContains(
 				{ type: 'Polygon', coordinates: polygon1 },
-				{ type: 'Polygon', coordinates: polygon1 },
+				{ type: 'Polygon', coordinates: polygon2 },
 			)) {
 				return true;
 			}
