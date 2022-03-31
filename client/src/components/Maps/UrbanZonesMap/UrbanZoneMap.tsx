@@ -120,6 +120,7 @@ export default class UrbanZoneMap extends React.Component<Props, State> {
 			<div
 				style={{
 					cursor: this.cursorStyle(),
+					height: '100%',
 				}}
 			>
 				<BaseMap

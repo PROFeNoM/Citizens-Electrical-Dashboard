@@ -40,6 +40,13 @@ export default class ChoroplethMap extends React.Component<Props, {}> {
 
 				<div id="urbanZoneComparisonMap" className="choropleth-map">
 					<UrbanZoneMap
+						center={[-0.5564, 44.8431]}
+						bounds={[
+							[-0.5463, 44.8522],
+							[-0.5665, 44.8382],
+						]}
+						zoom={15.5}
+						pitch={42}
 						zonesTransformer={zones => this.zoneTransformer(zones)}
 						zonesFillColor={{
 							property: 'choroplethValue',
@@ -50,11 +57,11 @@ export default class ChoroplethMap extends React.Component<Props, {}> {
 
 				<div className="color-wrapper">
 					<div className="high-end-color-wrapper">
-						<div className="high-end-color"/>
+						<div className="high-end-color" />
 						<p className="high-end-text">Forte consommation</p>
 					</div>
 					<div className="low-end-color-wrapper">
-						<div className="low-end-color"/>
+						<div className="low-end-color" />
 						<p className="low-end-text">Faible consommation</p>
 					</div>
 				</div>

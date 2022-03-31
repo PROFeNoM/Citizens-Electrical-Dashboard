@@ -6,12 +6,16 @@
 
 .choropleth-map-wrapper {
     width: 100%;
-    height: auto;
+    height: 100%;
 }
 
 .choropleth-map {
     width: 100%;
-    height: 400px;
+    height: 90%;
+}
+
+.map-container {
+    height: 100%;
 }
 
 .mapboxgl-canvas {
@@ -29,7 +33,8 @@
 }
 
 .choropleth-map-title-wrapper {
-    background-color: white;
+    background-color: #005eb8;
+    color: white;
     margin-bottom: 5px;
     padding: 10px;
     text-align: center;
