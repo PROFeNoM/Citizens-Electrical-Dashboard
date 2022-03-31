@@ -1,8 +1,8 @@
 import React from 'react';
 import BaseMap, { BaseMapProps } from '../BaseMap/BaseMap';
 import { FeatureCollection } from 'geojson';
-import { buildings3D, FillColor, zonesBorder, zonesFill } from '../layers';
-import { zones, buildings } from '../../../geodata';
+import { lightingPoints, allBuildings3D,professionalBuildings3D, residentialBuildings3D, FillColor, zonesBorder, zonesFill} from '../layers';
+import { zones, buildings, Lighting } from '../../../geodata';
 
 interface Props extends BaseMapProps {
 	zonesTransformer?: (zones: FeatureCollection) => Promise<FeatureCollection>,
@@ -43,9 +43,15 @@ export default class UrbanZoneMap extends React.Component<Props, State> {
 				data: buildings,
 				generateId: true,
 			})
+			.addSource('Lighting-source', {
+				type: 'geojson',
+				data: Lighting,
+				generateId: true,
+			})
 			.addLayer(zonesFill(this.props.zonesFillColor ?? '#7fd1ef'))
 			.addLayer(zonesBorder)
-			.addLayer(buildings3D)
+			.addLayer(allBuildings3D)
+			.addLayer(lightingPoints)
 			.on('mouseenter', 'data', e => this.hoverZone(e.features[0].id))
 			.on('mousemove', 'data', e => this.hoverZone(e.features[0].id))
 			.on('mouseleave', 'data', () => this.cancelZoneHover());
