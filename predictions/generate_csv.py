@@ -1,4 +1,4 @@
-# Example  command line arguments: -p models/res.pickle -d 2022-01-01 -e 2022-03-31 -o test -f 0 -c 4.23495
+# Example command line arguments: -p models/res.pickle -d 2022-01-01 -e 2022-03-31 -o test.csv -t RES
 
 import csv
 import sys
@@ -14,9 +14,26 @@ from datetime import datetime, timedelta
 from prophet import Prophet
 
 FLOOR = 0
-CAPACITY = 4.23495
-STD = 6008.733365479282
-MEAN = 17767.7300501596
+CAPACITY = {
+    "RES": 4.338139563583263,
+    "PRO": 4.805705472720941,
+    "ENT": 4.915918212083008
+}
+STD = {
+    "RES": 6008.733365479282,
+    "PRO": 5837.368867533356,
+    "ENT": 262.8963698897594
+}
+MEAN = {
+    "RES": 17767.7300501596,
+    "PRO": 28828.770405836753,
+    "ENT": 1684.0191228070175
+}
+NB_SOUTIRAGE = {
+    "RES": 6336730,
+    "PRO": 895700,
+    "ENT": 1387
+}
 
 
 def unstandardize(yhat, std, mean):
@@ -30,16 +47,14 @@ def load_model(model):
 def parse_arguments():
     parser = argparse.ArgumentParser(description='Generate a CSV file for a given model between two dates')
     parser.add_argument('-p', '--prophet', help='Prophet model path', required=True)
-    parser.add_argument('-c', '--cap', help='Capacity of the model', required=True)
-    parser.add_argument('-f', '--floor', help='Floor of the model', required=True)
+    parser.add_argument('-t', '--type', help='Type of model', required=True)
     parser.add_argument('-d', '--date_start', help='Start date', required=True)
     parser.add_argument('-e', '--date_end', help='End date', required=True)
     parser.add_argument('-o', '--output', help='Output file name', required=True)
     args = parser.parse_args()
 
     model = args.prophet
-    capacity = args.cap
-    floor = args.floor
+    profile = args.type
     date_start = args.date_start
     date_end = args.date_end
     output = args.output
@@ -49,12 +64,9 @@ def parse_arguments():
         print('Model path does not exist')
         sys.exit(1)
 
-    # Transform capacity and floor to float
-    try:
-        capacity = float(capacity)
-        floor = float(floor)
-    except ValueError:
-        print('Capacity and floor must be a float')
+    # Type can either be 'RES', 'PRO' or 'ENT'
+    if profile not in ['RES', 'PRO', 'ENT']:
+        print('Type should either be RES, PRO or ENT')
         sys.exit(1)
 
     # Check if the dates format are valid
@@ -76,7 +88,7 @@ def parse_arguments():
         print('Date does not exist')
         sys.exit(1)
 
-    return model, capacity, floor, date_start, date_end, output
+    return model, profile, date_start, date_end, output
 
 
 def make_df(date_start, date_end, capacity, floor):
@@ -90,31 +102,42 @@ def make_df(date_start, date_end, capacity, floor):
     return df
 
 
-def make_forecast(model, df):
+def make_forecast(model, df, profile):
     # Make a prediction
     forecast = model.predict(df)
-    forecast['yhat'] = unstandardize(forecast['yhat'], STD, MEAN)
+    forecast['yhat'] = unstandardize(forecast['yhat'], STD[profile], MEAN[profile])
     return forecast
 
 
 # TODO: Don't use mean_curve, but actual energy load instead
 # TODO: Fix newlines in the output file (they are not being removed)
-def make_csv(forecast, output):
+def make_csv(forecast, output, profile):
     # Create a csv file with the predictions
     # The output will be a csv file with the following columns:
     # timestamp, mean_curve
     # timestamp is in the format YYYY-MM-DDTHH:MM:SS+01:00
-    # Don't make new lines in the csv file
 
-    with open(output, 'w') as csvfile:
+    with open(output, 'w', newline='', encoding='utf-8') as csvfile:
         writer = csv.writer(csvfile)
-        writer.writerow(['timestamp', 'mean_curve'])
+        writer.writerow([
+            'Horodate',
+            'Total énergie soutirée (Wh)',
+            'Nb points soutirage',
+            'Courbe Moyenne n°1 + n°2 (Wh)',
+            'Profil'
+        ])
         for i in range(len(forecast)):
-            writer.writerow([forecast['ds'][i].strftime('%Y-%m-%dT%H:%M:%S+01:00'), forecast['yhat'][i]])
+            writer.writerow([
+                forecast['ds'][i].strftime('%Y-%m-%dT%H:%M:%S+01:00'),
+                forecast['yhat'][i] * NB_SOUTIRAGE[profile],
+                NB_SOUTIRAGE[profile],
+                forecast['yhat'][i],
+                profile
+            ])
 
 
 def main():
-    model_path, capacity, floor, date_start, date_end, output = parse_arguments()
+    model_path, profile, date_start, date_end, output = parse_arguments()
 
     print(f"Generating CSV file for {model_path} between {date_start} and {date_end}")
     print(f"Output file: {output}")
@@ -124,17 +147,15 @@ def main():
     print(f"Model loaded")
 
     # Create a dataframe with the dates and the corresponding predictions
-    df = make_df(date_start, date_end, capacity, floor)
+    df = make_df(date_start, date_end, CAPACITY[profile], FLOOR)
     print(f"Dataframe created")
-    print(df)
 
     # Make a prediction
-    forecast = make_forecast(model, df)
+    forecast = make_forecast(model, df, profile)
     print(f"Prediction made")
-    print(forecast)
 
     # Create a csv file with the predictions
-    make_csv(forecast, output)
+    make_csv(forecast, output, profile)
     print("CSV file created")
 
 
