@@ -1,4 +1,4 @@
-# Take three arguments from the command line
+# Example  command line arguments: -p models/res.pickle -d 2022-01-01 -e 2022-03-31 -o test -f 0 -c 4.23495
 
 import csv
 import sys
@@ -12,6 +12,15 @@ import pandas as pd
 
 from datetime import datetime, timedelta
 from prophet import Prophet
+
+FLOOR = 0
+CAPACITY = 4.23495
+STD = 6008.733365479282
+MEAN = 17767.7300501596
+
+
+def unstandardize(yhat, std, mean):
+    return yhat * std + mean
 
 
 def load_model(model):
@@ -40,12 +49,12 @@ def parse_arguments():
         print('Model path does not exist')
         sys.exit(1)
 
-    # Check if capacity and floor are numbers
-    if not re.match(r'^[0-9]+$', capacity):
-        print('Capacity is not a number')
-        sys.exit(1)
-    if not re.match(r'^[0-9]+$', floor):
-        print('Floor is not a number')
+    # Transform capacity and floor to float
+    try:
+        capacity = float(capacity)
+        floor = float(floor)
+    except ValueError:
+        print('Capacity and floor must be a float')
         sys.exit(1)
 
     # Check if the dates format are valid
@@ -71,13 +80,11 @@ def parse_arguments():
 
 
 def make_df(date_start, date_end, capacity, floor):
-    # Create a list of dates from date_start to date_end with a frequency of 30 minutes
+    # Create a list of utc+01 dates from date_start to date_end with a frequency of 30 minutes
     # date_start and date_end are datetime objects
-    dates = [date_start + timedelta(minutes=30 * x)
-             for x in range(0, int((date_end - date_start).total_seconds() // 1800))]
-
-    # Create a dataframe with the dates and the corresponding predictions
-    df = pd.DataFrame({'ds': dates})
+    df = pd.date_range(date_start, date_end, freq='30min')
+    # Convert the list to a dataframe with a column called 'ds'
+    df = pd.DataFrame({'ds': df})
     df['cap'] = capacity
     df['floor'] = floor
     return df
@@ -86,19 +93,24 @@ def make_df(date_start, date_end, capacity, floor):
 def make_forecast(model, df):
     # Make a prediction
     forecast = model.predict(df)
+    forecast['yhat'] = unstandardize(forecast['yhat'], STD, MEAN)
     return forecast
 
 
 # TODO: Don't use mean_curve, but actual energy load instead
+# TODO: Fix newlines in the output file (they are not being removed)
 def make_csv(forecast, output):
     # Create a csv file with the predictions
     # The output will be a csv file with the following columns:
     # timestamp, mean_curve
+    # timestamp is in the format YYYY-MM-DDTHH:MM:SS+01:00
+    # Don't make new lines in the csv file
+
     with open(output, 'w') as csvfile:
         writer = csv.writer(csvfile)
         writer.writerow(['timestamp', 'mean_curve'])
         for i in range(len(forecast)):
-            writer.writerow([forecast['ds'][i], forecast['yhat'][i]])
+            writer.writerow([forecast['ds'][i].strftime('%Y-%m-%dT%H:%M:%S+01:00'), forecast['yhat'][i]])
 
 
 def main():
@@ -112,7 +124,7 @@ def main():
     print(f"Model loaded")
 
     # Create a dataframe with the dates and the corresponding predictions
-    df = make_df(date_start, date_end)
+    df = make_df(date_start, date_end, capacity, floor)
     print(f"Dataframe created")
     print(df)
 
@@ -120,6 +132,10 @@ def main():
     forecast = make_forecast(model, df)
     print(f"Prediction made")
     print(forecast)
+
+    # Create a csv file with the predictions
+    make_csv(forecast, output)
+    print("CSV file created")
 
 
 if __name__ == "__main__":
