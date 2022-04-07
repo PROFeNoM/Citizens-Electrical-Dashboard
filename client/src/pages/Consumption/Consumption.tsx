@@ -6,6 +6,9 @@ import { useParams } from 'react-router-dom';
 import HeaderDropDown from '../../containers/HeaderDropDown/HeaderDropDown';
 import { Menu, MenuItem, Button } from '@mui/material';
 import { ConsumerProfile } from '../../scripts/api';
+import { Link } from 'react-router-dom';
+import chart_ic from '../../images/chart_icon.png';
+import i_ic from '../../images/i_icon.png';
 
 function Consumption() {
 	const buildingTypes = [
@@ -54,44 +57,7 @@ function Consumption() {
 		<>
 			<HeaderDropDown />
 			<div id="consumption-content" key={window.location.pathname}>
-				<div id="graphs-menus">
-					<Button
-						sx={{
-							backgroundColor: '#FFFFFF',
-						}}
-						className="basic-button"
-						aria-controls={open ? 'basic-menu' : undefined}
-						aria-haspopup='true'
-						aria-expanded={open ? 'true' : undefined}
-						onClick={handleClick}
-					>
-						CHOISISSEZ UNE FILIERE
-					</Button>
-					<Menu
-						id="basic-menu"
-						anchorEl={dropmenu}
-						open={open}
-						onClose={() => handleClose(currentChart)}
-						MenuListProps={{
-							'aria-labelledby': 'basic-button',
-						}}
-					>
-						{labels.map((item, index) => {
-							return (
-								<div>
-									<MenuItem
-										onClick={() => handleClose(index)}
-										sx={{
-											color: '#00A3E0',
-										}}
-									>
-										{item}
-									</MenuItem>
-								</div>
-							);
-						})}
-					</Menu>
-				</div>
+				
 			</div>
 			<div id="graph-container">
 				<div id="chropleth-map-wrapper">
@@ -105,6 +71,44 @@ function Consumption() {
 				/> */}
 
 				<div key={currentChart} id="chart-wrapper">
+					<div id="graphs-menus">
+						<Button
+							sx={{
+								backgroundColor: '#FFFFFF',
+							}}
+							className="basic-button"
+							aria-controls={open ? 'basic-menu' : undefined}
+							aria-haspopup='true'
+							aria-expanded={open ? 'true' : undefined}
+							onClick={handleClick}
+						>
+							CHOISISSEZ UNE FILIERE
+						</Button>
+						<Menu
+							id="basic-menu"
+							anchorEl={dropmenu}
+							open={open}
+							onClose={() => handleClose(currentChart)}
+							MenuListProps={{
+								'aria-labelledby': 'basic-button',
+							}}
+						>
+							{labels.map((item, index) => {
+								return (
+									<div>
+										<MenuItem
+											onClick={() => handleClose(index)}
+											sx={{
+												color: '#00A3E0',
+											}}
+										>
+											{item}
+										</MenuItem>
+									</div>
+								);
+							})}
+						</Menu>
+					</div>
 					<TypicalConsumptionDay
 						t1={t1}
 						t2={t2}
@@ -112,6 +116,18 @@ function Consumption() {
 						buildingType={buildingTypes[currentChart]}
 						title={titles[currentChart]}
 					/>
+					<>
+						<div className="controls">
+							{/*<div onClick={this.props.onCancel}>retour</div>-->*/}
+							<img id="icons" src={chart_ic} alt="Pictogramme de graphique"></img>
+							<Link to={'/consommation/'}>consommation</Link>
+							<Link to={'/production/'}>production</Link>
+						</div>
+						<div className="controls">
+							<img id="icons" src={i_ic} alt="Pictogramme d'information"></img>
+							<Link to={'/bornes/'}>bornes de recharges</Link>
+						</div>
+					</>
 				</div>
 			</div>
 		</>

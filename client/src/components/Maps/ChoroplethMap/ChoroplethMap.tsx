@@ -34,9 +34,9 @@ export default class ChoroplethMap extends React.Component<Props, {}> {
 	render() {
 		return (
 			<div className="choropleth-map-wrapper">
-				<div className="choropleth-map-title-wrapper">
+				{/* <div className="choropleth-map-title-wrapper">
 					Comparaison du taux de consommation entre chaque zone urbaine du quartier
-				</div>
+				</div> */}
 
 				<div id="urbanZoneComparisonMap" className="choropleth-map">
 					<UrbanZoneMap
