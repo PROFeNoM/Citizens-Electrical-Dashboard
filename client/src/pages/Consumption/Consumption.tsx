@@ -1,4 +1,4 @@
-import './Consommation.css';
+import './Consumption.css';
 import React, { useState } from 'react';
 import { Col, Container, Row } from 'react-bootstrap';
 import { ChoroplethMap, TotalConsumption, TypicalConsumptionDay, } from '../../components';
@@ -7,7 +7,7 @@ import HeaderDropDown from '../../containers/HeaderDropDown/HeaderDropDown';
 import { Menu, MenuItem, Button } from '@mui/material';
 import { ConsumerProfile } from '../../scripts/api';
 
-function Consommation() {
+function Consumption() {
 	const buildingTypes = [
 		undefined,
 		ConsumerProfile.RESIDENTIAL,
@@ -118,4 +118,4 @@ function Consommation() {
 	);
 }
 
-export default Consommation;
+export default Consumption;
