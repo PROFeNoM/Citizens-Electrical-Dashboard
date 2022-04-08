@@ -2,6 +2,9 @@ import './Home.css';
 import { Header } from '../../containers';
 import { DistrictEnergyBalance, HomeMap } from '../../components';
 import React from 'react';
+import Select from 'react-dropdown-select';
+import { positions } from '.pnpm/@mui+system@5.5.0_90c7e6d8a03435f34011095a078b387f/node_modules/@mui/system';
+
 
 interface State {
     selectedZoneName: string | null,
@@ -17,7 +20,33 @@ export default class Home extends React.Component<{}, State>{
         };
     }
 
+
     render() {
+
+        const dropdownStyleBuild = {
+            width: 200,
+            'display': 'flex',
+            'text-transform': 'uppercase'
+        };
+
+        const dropdownStyleDist = {
+            width: 200,
+            'display': 'flex',
+            'text-transform': 'uppercase'
+        };
+
+        const selectOptionsBuild = [
+            { value: 1, label: "Résidentiels"},
+            { value: 2, label: "Tertiaires"},
+            { value: 3, label: "Professionnels"},
+        ];
+
+        const selectOptionsDist = [
+            { value: 1, label: "Bastide Niel"},
+            { value: 2, label: "Historique"},
+            { value: 3, label: "Sud"},
+        ];
+
         return (
             <div id='home-container'>
                 <Header title='ACCUEIL' />
@@ -26,10 +55,16 @@ export default class Home extends React.Component<{}, State>{
                         ref={this.mapRef}
                         onZoneClick={zoneName => this.setState({ selectedZoneName: zoneName })}
                     />
-                    <DistrictEnergyBalance
-                        selectedZoneName={this.state.selectedZoneName}
-                        onCancel={() => this.mapRef.current.unselectZone()}
-                    />
+                    <div>
+                        <div className="dropdown-wrapper">
+                            <Select style={dropdownStyleBuild} multi={true} placeholder={"Type de batiment"} options={selectOptionsBuild} onChange={() => console.log("Hello")} values={[]}></Select>
+                            <Select style={dropdownStyleDist} multi={false} placeholder={"Quartier"} options={selectOptionsDist} onChange={() => console.log("Hello")} values={[]}></Select>
+                        </div>
+                        <DistrictEnergyBalance
+                            selectedZoneName={this.state.selectedZoneName}
+                            onCancel={() => this.mapRef.current.unselectZone()}
+                        />
+                    </div>
                 </main>
             </div>
         );
