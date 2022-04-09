@@ -1,4 +1,6 @@
 # Example command line arguments: -p models/res.pickle -d 2022-01-01 -e 2022-03-31 -o test.csv -t RES
+# Example command line arguments: -p models/pro.pickle -d 2022-01-01 -e 2022-03-31 -o test.csv -t PRO
+# Example command line arguments: -p models/ent.pickle -d 2022-01-01 -e 2022-03-31 -o test.csv -t ENT
 
 import csv
 import sys
@@ -12,6 +14,8 @@ import pandas as pd
 
 from datetime import datetime, timedelta
 from prophet import Prophet
+
+from df_utils import make_df_without_regressors, make_df_with_regressors
 
 FLOOR = 0
 CAPACITY = {
@@ -91,15 +95,10 @@ def parse_arguments():
     return model, profile, date_start, date_end, output
 
 
-def make_df(date_start, date_end, capacity, floor):
-    # Create a list of utc+01 dates from date_start to date_end with a frequency of 30 minutes
-    # date_start and date_end are datetime objects
-    df = pd.date_range(date_start, date_end, freq='30min')
-    # Convert the list to a dataframe with a column called 'ds'
-    df = pd.DataFrame({'ds': df})
-    df['cap'] = capacity
-    df['floor'] = floor
-    return df
+def make_df(date_start, date_end, capacity, floor, profile):
+    if profile == 'PRO':
+        return make_df_with_regressors(date_start, date_end, capacity, floor)
+    return make_df_without_regressors(date_start, date_end, capacity, floor)
 
 
 def make_forecast(model, df, profile):
@@ -109,8 +108,6 @@ def make_forecast(model, df, profile):
     return forecast
 
 
-# TODO: Don't use mean_curve, but actual energy load instead
-# TODO: Fix newlines in the output file (they are not being removed)
 def make_csv(forecast, output, profile):
     # Create a csv file with the predictions
     # The output will be a csv file with the following columns:
@@ -147,7 +144,7 @@ def main():
     print(f"Model loaded")
 
     # Create a dataframe with the dates and the corresponding predictions
-    df = make_df(date_start, date_end, CAPACITY[profile], FLOOR)
+    df = make_df(date_start, date_end, CAPACITY[profile], FLOOR, profile)
     print(f"Dataframe created")
 
     # Make a prediction
