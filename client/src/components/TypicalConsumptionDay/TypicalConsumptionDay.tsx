@@ -42,7 +42,7 @@ export default class TypicalConsumptionDay extends React.Component<Props, State>
 		const meanCons = await getHourlyMeanConsumption(
 			this.props.t1,
 			this.props.t2,
-			[this.props.buildingType],
+			this.props.buildingType ? [this.props.buildingType] : undefined,
 			this.props.urbanZone
 		);
 		const meanProd = await getHourlyMeanProduction(
@@ -64,8 +64,8 @@ export default class TypicalConsumptionDay extends React.Component<Props, State>
 		const meanCons = await getHourlyMeanConsumption(
 			this.props.t1,
 			this.props.t2,
-			[this.props.buildingType],
-			"La Bastide"
+			this.props.buildingType ? [this.props.buildingType] : undefined,
+			undefined,
 		);
 
 		return meanCons.map((el) => {
@@ -80,7 +80,7 @@ export default class TypicalConsumptionDay extends React.Component<Props, State>
 		const meanCons = await getHourlyMeanConsumption(
 			this.props.t1,
 			this.props.t2,
-			[this.props.buildingType],
+			this.props.buildingType ? [this.props.buildingType] : undefined,
 			this.props.urbanZone
 		);
 

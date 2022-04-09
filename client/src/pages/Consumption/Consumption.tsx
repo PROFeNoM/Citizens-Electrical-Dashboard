@@ -1,12 +1,11 @@
 import './Consumption.css';
 import React, { useState } from 'react';
-import { Col, Container, Row } from 'react-bootstrap';
-import { ChoroplethMap, TotalConsumption, TypicalConsumptionDay, } from '../../components';
+import { ChoroplethMap, TypicalConsumptionDay } from '../../components';
 import { useParams } from 'react-router-dom';
 import HeaderDropDown from '../../containers/HeaderDropDown/HeaderDropDown';
 import { Menu, MenuItem, Button } from '@mui/material';
 import { ConsumerProfile } from '../../scripts/api';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import chart_ic from '../../images/chart_icon.png';
 import i_ic from '../../images/i_icon.png';
 

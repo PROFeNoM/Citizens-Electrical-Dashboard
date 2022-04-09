@@ -3,7 +3,6 @@ import { Header } from '../../containers';
 import { DistrictEnergyBalance, HomeMap } from '../../components';
 import React from 'react';
 import Select from 'react-dropdown-select';
-import { positions } from '.pnpm/@mui+system@5.5.0_90c7e6d8a03435f34011095a078b387f/node_modules/@mui/system';
 
 
 interface State {
@@ -57,8 +56,8 @@ export default class Home extends React.Component<{}, State>{
                     />
                     <div>
                         <div className="dropdown-wrapper">
-                            <Select style={dropdownStyleBuild} multi={true} placeholder={"Type de batiment"} options={selectOptionsBuild} onChange={() => console.log("Hello")} values={[]}></Select>
-                            <Select style={dropdownStyleDist} multi={false} placeholder={"Quartier"} options={selectOptionsDist} onChange={() => console.log("Hello")} values={[]}></Select>
+                            <Select style={dropdownStyleBuild} multi={true} placeholder={"Type de batiment"} options={selectOptionsBuild} onChange={() => console.log("Hello")} values={[]}/>
+                            <Select style={dropdownStyleDist} multi={false} placeholder={"Quartier"} options={selectOptionsDist} onChange={() => console.log("Hello")} values={[]}/>
                         </div>
                         <DistrictEnergyBalance
                             selectedZoneName={this.state.selectedZoneName}
