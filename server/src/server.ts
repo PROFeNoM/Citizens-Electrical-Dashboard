@@ -1,6 +1,6 @@
 import * as express from 'express';
 import { resolve } from 'path';
-import { getConnection } from 'typeorm';
+import {getConnection, SelectQueryBuilder} from 'typeorm';
 import { logger } from './logger';
 import { config } from './config';
 import { apiReqCheckerParser } from './validation';
@@ -21,16 +21,38 @@ app.get('/api/v1/:entity/total', apiReqCheckerParser, async (req, res) => {
 		? 'drained_energy'
 		: 'injected_energy';
 
-	let query = await getConnection().createQueryBuilder()
-		.select(`sum(${field}) AS total`)
-		.from(req.entity, 'x')
-		.where('x.timestamp BETWEEN :minDate AND :maxDate', { minDate: req.minDate, maxDate: req.maxDate })
+	let query: SelectQueryBuilder<any>;
+	let result: { total: number };
+	if (new Date(req.maxDate) < new Date()) {
+		query = await getConnection().createQueryBuilder()
+			.select(`sum(${field}) AS total`)
+			.from(req.entity, 'x')
+			.where('x.isPrediction IS FALSE AND x.timestamp BETWEEN :minDate AND :maxDate', { minDate: req.minDate, maxDate: req.maxDate })
+		if (req.profiles.length > 0) {
+			query = query.andWhere('x.profile IN (:...profiles)', { profiles: req.profiles });
+		}
 
-	if (req.profiles.length > 0) {
-		query = query.andWhere('x.profile IN (:...profiles)', { profiles: req.profiles });
+		result = await query.getRawOne() as { total: number }
+	} else {
+		let actualRecordsQuery = await getConnection().createQueryBuilder()
+			.select(`sum(${field}) AS total`)
+			.from(req.entity, 'x')
+			.where('x.timestamp BETWEEN :minDate AND :maxDate', { minDate: req.minDate, maxDate: new Date().getTime() })
+			.andWhere('x.isPrediction IS FALSE', {});
+		let predictionRecordsQuery = await getConnection().createQueryBuilder()
+			.select(`sum(${field}) AS total`)
+			.from(req.entity, 'x')
+			.where('x.timestamp BETWEEN :minDate AND :maxDate', { minDate: new Date().getTime(), maxDate: req.maxDate })
+			.andWhere('x.isPrediction IS TRUE', {});
+		if (req.profiles.length > 0) {
+			actualRecordsQuery = actualRecordsQuery.andWhere('x.profile IN (:...profiles)', { profiles: req.profiles });
+			predictionRecordsQuery = predictionRecordsQuery.andWhere('x.profile IN (:...profiles)', { profiles: req.profiles });
+		}
+
+		result = {
+			total: (await actualRecordsQuery.getRawOne() as { total: number }).total + (await predictionRecordsQuery.getRawOne() as { total: number }).total
+		}
 	}
-
-	const result = await query.getRawOne() as { total: number }
 
 	// TODO don't use a mock
 	if (req.zone) {
@@ -48,18 +70,45 @@ app.get('/api/v1/:entity/hourly-mean', apiReqCheckerParser, async (req, res) => 
 		? 'drained_energy'
 		: 'injected_energy';
 
-	let query = await getConnection().createQueryBuilder()
-		.select(`extract(hour from timestamp)::int AS hour, avg(${field}) * 2 AS mean`)
-		.from(req.entity, 'x')
-		.groupBy('hour')
-		.where('x.timestamp BETWEEN :minDate AND :maxDate', { minDate: req.minDate, maxDate: req.maxDate })
-		.orderBy('hour');
+	let query: SelectQueryBuilder<any>;
+	let result: { hour: number, mean: number }[];
 
-	if (req.profiles.length > 0) {
-		query = query.andWhere('x.profile IN (:...profiles)', { profiles: req.profiles });
+	if (new Date(req.maxDate) < new Date()) {
+		query = await getConnection().createQueryBuilder()
+			.select(`extract(hour from timestamp)::int AS hour, avg(${field}) * 2 AS mean`)
+			.from(req.entity, 'x')
+			.groupBy('hour')
+			.where('x.timestamp BETWEEN :minDate AND :maxDate', { minDate: req.minDate, maxDate: req.maxDate })
+			.andWhere('x.isPrediction IS FALSE', {})
+			.orderBy('hour')
+		if (req.profiles.length > 0) {
+			query = query.andWhere('x.profile IN (:...profiles)', { profiles: req.profiles });
+		}
+
+		result = await query.getRawMany() as { hour: number, mean: number }[];
+	} else {
+		let actualRecordsQuery = await getConnection().createQueryBuilder()
+			.select(`extract(hour from timestamp)::int AS hour, avg(${field}) * 2 AS mean`)
+			.from(req.entity, 'x')
+			.groupBy('hour')
+			.where('x.timestamp BETWEEN :minDate AND :maxDate', {minDate: req.minDate, maxDate: new Date().getTime()})
+			.andWhere('x.isPrediction IS FALSE', {})
+			.orderBy('hour')
+		let predictionRecordsQuery = await getConnection().createQueryBuilder()
+			.select(`extract(hour from timestamp)::int AS hour, avg(${field}) * 2 AS mean`)
+			.from(req.entity, 'x')
+			.groupBy('hour')
+			.where('x.timestamp BETWEEN :minDate AND :maxDate', {minDate: new Date().getTime(), maxDate: req.maxDate})
+			.andWhere('x.isPrediction IS TRUE', {})
+			.orderBy('hour')
+		if (req.profiles.length > 0) {
+			actualRecordsQuery = actualRecordsQuery.andWhere('x.profile IN (:...profiles)', {profiles: req.profiles});
+			predictionRecordsQuery = predictionRecordsQuery.andWhere('x.profile IN (:...profiles)', {profiles: req.profiles});
+		}
+
+		result = (await actualRecordsQuery.getRawMany() as { hour: number, mean: number }[])
+			.concat(await predictionRecordsQuery.getRawMany() as { hour: number, mean: number }[])
 	}
-
-	let result = await query.getRawMany() as { hour: number, mean: number }[]
 
 	// TODO don't use a mock
 	result = result.map(({ hour, mean }) => {
