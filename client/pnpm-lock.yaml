@@ -20,6 +20,7 @@ specifiers:
   mapbox-gl: ^2.7.0
   react: ^17.0.2
   react-bootstrap: ^2.1.2
+  react-datepicker: ^4.7.0
   react-dom: ^17.0.2
   react-dropdown-select: ^4.8.4
   react-icons: ^4.3.1
@@ -42,6 +43,7 @@ dependencies:
   mapbox-gl: 2.7.0
   react: 17.0.2
   react-bootstrap: 2.1.2_react-dom@17.0.2+react@17.0.2
+  react-datepicker: 4.7.0_react-dom@17.0.2+react@17.0.2
   react-dom: 17.0.2_react@17.0.2
   react-dropdown-select: 4.8.4_react-dom@17.0.2+react@17.0.2
   react-icons: 4.3.1_react@17.0.2
@@ -5395,6 +5397,11 @@ packages:
       whatwg-url: 8.7.0
     dev: false
 
+  /date-fns/2.28.0:
+    resolution: {integrity: sha512-8d35hViGYx/QH0icHYCeLmsLmMUheMmTyV9Fcm6gvNwdw31yXXH+O85sOBJ+OLnLQMKZowvpKb6FgMIQjcpvQw==}
+    engines: {node: '>=0.11'}
+    dev: false
+
   /debug/2.6.9:
     resolution: {integrity: sha512-bC7ElrdJaJnPbAP+1EotYvqZsb3ecl5wi6Bfi6BJTUcNowp6cvspg0jXznRTKDjm/E7AdgFBVeAPVMNcKGsHMA==}
     dependencies:
@@ -9544,6 +9551,22 @@ packages:
       warning: 4.0.3
     dev: false
 
+  /react-datepicker/4.7.0_react-dom@17.0.2+react@17.0.2:
+    resolution: {integrity: sha512-FS8KgbwqpxmJBv/bUdA42MYqYZa+fEYcpc746DZiHvVE2nhjrW/dg7c5B5fIUuI8gZET6FOzuDgezNcj568Czw==}
+    peerDependencies:
+      react: ^16.9.0 || ^17
+      react-dom: ^16.9.0 || ^17
+    dependencies:
+      '@popperjs/core': 2.11.2
+      classnames: 2.3.1
+      date-fns: 2.28.0
+      prop-types: 15.8.1
+      react: 17.0.2
+      react-dom: 17.0.2_react@17.0.2
+      react-onclickoutside: 6.12.1_react-dom@17.0.2+react@17.0.2
+      react-popper: 2.2.5_4d48938cec404f33c7375aa6b453941c
+    dev: false
+
   /react-dev-utils/12.0.0_5d47dd4a4acbd9bba861987ddac3e6d8:
     resolution: {integrity: sha512-xBQkitdxozPxt1YZ9O1097EJiVpwHr9FoAuEVURCKV0Av8NBERovJauzP7bo1ThvuhZ4shsQ1AJiu4vQpoT1AQ==}
     engines: {node: '>=14'}
@@ -9607,6 +9630,10 @@ packages:
     resolution: {integrity: sha512-mKR90fX7Pm5seCOfz8q9F+66VCc1PGsWSBxKbITjfKVQHMNF2zudxHnMdJiB1fRCb+XsbQV9sO9DCkgsMQgBIA==}
     dev: false
 
+  /react-fast-compare/3.2.0:
+    resolution: {integrity: sha512-rtGImPZ0YyLrscKI9xTpV8psd6I8VAtjKCzQDlzyDvqJA8XOW78TXYQwNRNd8g8JZnDu8q9Fu/1v4HPAVwVdHA==}
+    dev: false
+
   /react-icons/4.3.1_react@17.0.2:
     resolution: {integrity: sha512-cB10MXLTs3gVuXimblAdI71jrJx8njrJZmNMEMC+sQu5B/BIOmlsAjskdqpn81y8UBVEGuHODd7/ci5DvoSzTQ==}
     peerDependencies:
@@ -9648,6 +9675,28 @@ packages:
       '@types/mapbox-gl': 2.6.1
       mapbox-gl: 2.7.0
       react: 17.0.2
+    dev: false
+
+  /react-onclickoutside/6.12.1_react-dom@17.0.2+react@17.0.2:
+    resolution: {integrity: sha512-a5Q7CkWznBRUWPmocCvE8b6lEYw1s6+opp/60dCunhO+G6E4tDTO2Sd2jKE+leEnnrLAE2Wj5DlDHNqj5wPv1Q==}
+    peerDependencies:
+      react: ^15.5.x || ^16.x || ^17.x
+      react-dom: ^15.5.x || ^16.x || ^17.x
+    dependencies:
+      react: 17.0.2
+      react-dom: 17.0.2_react@17.0.2
+    dev: false
+
+  /react-popper/2.2.5_4d48938cec404f33c7375aa6b453941c:
+    resolution: {integrity: sha512-kxGkS80eQGtLl18+uig1UIf9MKixFSyPxglsgLBxlYnyDf65BiY9B3nZSc6C9XUNDgStROB0fMQlTEz1KxGddw==}
+    peerDependencies:
+      '@popperjs/core': ^2.0.0
+      react: ^16.8.0 || ^17
+    dependencies:
+      '@popperjs/core': 2.11.2
+      react: 17.0.2
+      react-fast-compare: 3.2.0
+      warning: 4.0.3
     dev: false
 
   /react-refresh/0.11.0:
