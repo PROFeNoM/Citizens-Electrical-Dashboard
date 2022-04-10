@@ -27,4 +27,7 @@ export class Consumption {
 
 	@Column({ name: 'mean_curve', type: 'float', nullable: false })
 	public meanCurve: number;
+
+	@Column({ name: 'is_prediction', type: 'boolean', nullable: false })
+	public isPrediction: boolean;
 }
