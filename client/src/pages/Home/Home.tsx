@@ -14,13 +14,13 @@ import {
     selectOptionsInf 
 } from './HomeUtils';
 
-import DatePicker from 'react-datepicker';
+import DatePicker from 'react-date-picker';
 
 
 interface State {
     selectedZoneName: string | null,
     indicatorType: string | null,
-    buildingType: string[] | null,
+    buildingType: string[] | {value: number, label: string}[] | null,
     infoType: string | null,
     t1: Date,
     t2: Date
@@ -47,7 +47,7 @@ export default class Home extends React.Component<{}, State>{
 
         return (
             <div id='home-container'>
-                <Header title='ACCUEIL' />
+                <Header title='Tableau éléctrique citoyen' />
                 <main>
                     <HomeMap
                         ref={this.mapRef}
@@ -55,12 +55,12 @@ export default class Home extends React.Component<{}, State>{
                     />
                     <div>
                         <div className="dropdown-wrapper">
-                            <Select style={dropdownStyleBuild} multi={true} placeholder={"Bâtiment"} options={selectOptionsBuild} onChange={(values) => console.log(values)} values={[]}/>
-                            <Select style={dropdownStyleDist} multi={false} placeholder={"Quartier"} options={selectOptionsDist} onChange={(values) => console.log(values)} values={[]}/>
-                            <Select style={dropdownStyleInd} multi={false} placeholder={"Indicateur"} options={selectOptionsInd} onChange={(values) => console.log(values)} values={[]}/>
-                            <Select style={dropdownStyleInf} multi={false} placeholder={"Information"} options={selectOptionsInf} onChange={(values) => console.log(values)} values={[]}/>
-                            <DatePicker selected={this.state.t1}/>
-                            <DatePicker selected={this.state.t2}/>
+                            <Select style={dropdownStyleDist} multi={false} placeholder={"Quartier"} options={selectOptionsDist} onChange={(values) => this.setState({selectedZoneName: values[0].label})} values={[]}/>
+                            <Select clearable={true} style={dropdownStyleBuild} multi={true} placeholder={"Bâtiment"} options={selectOptionsBuild} onChange={(values) => this.setState({buildingType: values})} values={[]}/>
+                            <DatePicker className="date-picker" value={this.state.t1} onChange={(value) => this.setState({t1: value})}/>
+                            <Select style={dropdownStyleInf} multi={false} placeholder={"Information"} options={selectOptionsInf} onChange={(values) => this.setState({infoType: values[0].label})} values={[]}/>
+                            <Select style={dropdownStyleInd} multi={false} placeholder={"Indicateur"} options={selectOptionsInd} onChange={(values) => this.setState({indicatorType: values[0].label})} values={[]}/>
+                            <DatePicker className="date-picker" value={this.state.t2} onChange={(value) => this.setState({t2: value})}/>
                         </div>
                         <DistrictEnergyBalance
                             selectedZoneName={this.state.selectedZoneName}

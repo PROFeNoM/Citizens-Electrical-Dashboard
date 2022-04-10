@@ -115,13 +115,12 @@ export default class DistrictEnergyBalance extends React.Component<Props, State>
 						<li><span className="data">{production}</span> MWh/mois d'électricité produite</li>
 						<li><span className="data">{ratio}</span> % de ratio production/consommation</li>
 					</ul>
-					{
+					{/* {
 						this.props.selectedZoneName === null ? (
 							<div id="zone-hint">Cliquez sur une zone urbaine pour en savoir plus.</div>
 						) : (
 							<>
 								<div id="controls">
-									{/*<div onClick={this.props.onCancel}>retour</div>-->*/}
 									<img id="icons" src={chart_ic} alt="Pictogramme de graphique"></img>
 									<Link to={'/consommation/' + this.props.selectedZoneName + "/Total"}>consommation</Link>
 									<Link to={'/production/' + this.props.selectedZoneName + "/Total"}>production</Link>
@@ -132,7 +131,7 @@ export default class DistrictEnergyBalance extends React.Component<Props, State>
 								</div>
 							</>
 						)
-					}
+					} */}
 				</div>
 			</div>
 		);
