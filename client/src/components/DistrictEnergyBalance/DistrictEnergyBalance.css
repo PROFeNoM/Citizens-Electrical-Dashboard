@@ -7,6 +7,7 @@
 #district-info {
     color: white;
     font-size: 16px;
+    width: 90%;
 }
 
 #district-info h2 {
@@ -35,6 +36,7 @@
     font-size: 1.5em;
     padding: .5em;
     background-color: #93c90e;
+    width: fit-content;
 }
 
 #district-info #controls {
@@ -54,9 +56,7 @@
 
 }
 
-
-
-#district-info #controls > * {
+#district-info #controls>* {
     text-transform: uppercase;
     font-size: 1.7em;
     padding: .5em;
@@ -69,12 +69,12 @@
     border-radius: .3em;
 }
 
-#district-info #controls > *:hover {
+#district-info #controls>*:hover {
     background-color: #06b8237c;
     transition: .5s;
 }
 
-#district-info #controls > *:not(:first-child) {
+#district-info #controls>*:not(:first-child) {
     margin-left: 1em;
 }
 

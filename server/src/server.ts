@@ -1,12 +1,10 @@
 import * as express from 'express';
-import { NextFunction, Request, Response } from 'express';
-import { resolve } from 'path';
+import { resolve } from 'path';
 import { getConnection } from 'typeorm';
-import { ConsumerProfile, Consumption } from './db/entities/Consumption';
-import { query, validationResult } from 'express-validator';
-import { ProducerProfile, Production } from './db/entities/Production';
 import { logger } from './logger';
 import { config } from './config';
+import { apiReqCheckerParser } from './validation';
+import { regionDataToDistrictData, regionDataToZoneData } from './mock';
 
 const app = express();
 const cors = require('cors');
@@ -17,84 +15,74 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static(wwwDir));
 
-// examples: http://localhost:5000/consumption?minDate=1609455600000&maxDate=1609459200000
+app.get('/api/v1/:entity/total', apiReqCheckerParser, async (req, res) => {
+	// TODO clean that
+	let field = req.params.entity === 'consumption'
+		? 'drained_energy'
+		: 'injected_energy';
 
-const routes = [
-	{
-		endpoint: '/consumption',
-		entity: Consumption,
-		profileEnum: ConsumerProfile,
-		fields: 'timestamp, profile, drain_points, drained_energy, mean_curve',
-	},
-	{
-		endpoint: '/production',
-		entity: Production,
-		profileEnum: ProducerProfile,
-		fields: 'timestamp, profile, injection_points, injected_energy, mean_curve',
+	let query = await getConnection().createQueryBuilder()
+		.select(`sum(${field}) AS total`)
+		.from(req.entity, 'x')
+		.where('x.timestamp BETWEEN :minDate AND :maxDate', { minDate: req.minDate, maxDate: req.maxDate })
+
+	if (req.profiles.length > 0) {
+		query = query.andWhere('x.profile IN (:...profiles)', { profiles: req.profiles });
 	}
-]
 
-for (const route of routes) {
-	app.get(route.endpoint,
-		query('minDate').matches(/\d+/),
-		query('maxDate').matches(/\d+/),
-		query('profiles').optional().isArray().custom(input => isEnumArray(input, route.profileEnum)),
-		checkRequest,
-		async (req, res) => {
-			const minDate = new Date(parseInt(req.query.minDate as string, 10));
-			const maxDate = new Date(parseInt(req.query.maxDate as string, 10));
-			const profiles = req.query.profiles;
+	const result = await query.getRawOne() as { total: number }
 
-			let query = await getConnection().createQueryBuilder()
-				.select(route.fields)
-				.from(route.entity, 'x')
-				.where('x.timestamp between :minDate and :maxDate', { minDate, maxDate });
+	// TODO don't use a mock
+	if (req.zone) {
+		result.total = regionDataToZoneData(req.zone, result.total);
+	} else {
+		result.total = regionDataToDistrictData(result.total);
+	}
 
-			if (profiles && profiles.length < Object.keys(route.profileEnum).length) {
-				query = query.andWhere('x.profile IN (:...profiles)', { profiles });
-			}
+	res.send(result);
+});
 
-			res.send(await query.getRawMany());
-		});
-}
+app.get('/api/v1/:entity/hourly-mean', apiReqCheckerParser, async (req, res) => {
+	// TODO clean that
+	let field = req.params.entity === 'consumption'
+		? 'drained_energy'
+		: 'injected_energy';
 
+	let query = await getConnection().createQueryBuilder()
+		.select(`extract(hour from timestamp)::int AS hour, avg(${field}) * 2 AS mean`)
+		.from(req.entity, 'x')
+		.groupBy('hour')
+		.where('x.timestamp BETWEEN :minDate AND :maxDate', { minDate: req.minDate, maxDate: req.maxDate })
+		.orderBy('hour');
+
+	if (req.profiles.length > 0) {
+		query = query.andWhere('x.profile IN (:...profiles)', { profiles: req.profiles });
+	}
+
+	let result = await query.getRawMany() as { hour: number, mean: number }[]
+
+	// TODO don't use a mock
+	result = result.map(({ hour, mean }) => {
+		if (req.zone) {
+			mean = regionDataToZoneData(req.zone, mean);
+		} else {
+			mean = regionDataToDistrictData(mean);
+		}
+		return { hour, mean };
+	})
+
+	res.send(result);
+});
+
+// TODO properly catch 404 requests
+
+app.get('/api/*', (req, res) => {
+	res.status(404).send();
+})
 
 app.get('*', (req, res) => {
 	res.sendFile(wwwDir + '/index.html');
 });
-
-
-function isEnumArray(input: string[], enumDef: object) {
-	const accepted = Object.keys(enumDef);
-
-	// shortcut
-	if (input.length > accepted.length) {
-		return false;
-	}
-
-	// check that there is no duplicate
-	if (new Set(input).size !== input.length) {
-		return false;
-	}
-
-	// check that there is only valid values
-	for (const elem of input) {
-		if (!accepted.includes(elem)) {
-			return false;
-		}
-	}
-
-	return true;
-}
-
-function checkRequest(req: Request, res: Response, next: NextFunction) {
-	const errors = validationResult(req);
-	if (errors.isEmpty()) {
-		next();
-	} else {
-		res.status(400).json({ errors: errors.array() });
-	}
-}
 
 export async function startServer() {
 	await new Promise<void>(resolve => app.listen(config.webServer.port, resolve));

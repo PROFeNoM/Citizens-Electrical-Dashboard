@@ -1,4 +1,4 @@
-import { FillExtrusionLayer, FillLayer, LineLayer } from 'react-map-gl';
+import { FillExtrusionLayer, FillLayer, LineLayer, CircleLayer } from 'react-map-gl';
 import { Expression, StyleFunction } from 'mapbox-gl';
 
 export type FillColor = string | StyleFunction | Expression | undefined;
@@ -33,7 +33,17 @@ export const zonesFill = (fillColor: FillColor) => ({
 	},
 }) as FillLayer;
 
-export const buildings3D: FillExtrusionLayer = {
+export const lightingPoints: CircleLayer = {
+	'id': 'lighting-points',
+	'type': 'circle',
+	'source': 'Lighting-source',
+	'paint': {
+		'circle-radius': 180,
+		'circle-color': '#aaa',
+	},
+}
+
+export const allBuildings3D: FillExtrusionLayer = {
 	'id': 'add-3d-buildings',
 	'source': 'district-buildings',
 	'type': 'fill-extrusion',
@@ -51,6 +61,20 @@ export const residentialBuildings3D: FillExtrusionLayer = {
 	'source': 'district-buildings',
 	'type': 'fill-extrusion',
 	'filter': ['==', 'USAGE1', 'Résidentiel'],
+	'minzoom': 13.5,
+	'paint': {
+		'fill-extrusion-color': '#e06666',
+		'fill-extrusion-height': ["*", 1.5, ['get', 'HAUTEUR']],
+		'fill-extrusion-base': ['get', 'Z_MIN_SOL'],
+		'fill-extrusion-opacity': 0.6,
+	},
+}
+
+export const professionalBuildings3D: FillExtrusionLayer = {
+	'id': 'add-3d-buildings',
+	'source': 'district-buildings',
+	'type': 'fill-extrusion',
+	'filter': ['!=', 'USAGE1', ['Résidentiel', null]],
 	'minzoom': 13.5,
 	'paint': {
 		'fill-extrusion-color': '#e06666',

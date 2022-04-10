@@ -1,9 +1,9 @@
 import './ChoroplethMap.css';
 import React from 'react';
-import { Building, getZoneConsumption } from '../../../scripts/dbUtils';
 import UrbanZoneMap from '../UrbanZonesMap/UrbanZoneMap';
 import { FeatureCollection } from 'geojson';
 import { changeRange } from '../../../scripts/utils';
+import { getTotalConsumption } from '../../../scripts/api';
 
 interface Props {
 	t1: number,
@@ -14,7 +14,7 @@ const colorPalette = ['#7fd1ef', '#6ab3e1', '#5395d4', '#3779c6', '#005eb8'];
 
 export default class ChoroplethMap extends React.Component<Props, {}> {
 	private async zoneTransformer(zones: FeatureCollection): Promise<FeatureCollection> {
-		const consumptions = await Promise.all(zones.features.map(f => getZoneConsumption(this.props.t1, Building.All, f.properties.libelle, this.props.t2)));
+		const consumptions = await Promise.all(zones.features.map(f => getTotalConsumption(this.props.t1, this.props.t2, undefined, f.properties.libelle)));
 		const minValue = Math.min(...consumptions);
 		const maxValue = Math.max(...consumptions);
 
@@ -34,12 +34,19 @@ export default class ChoroplethMap extends React.Component<Props, {}> {
 	render() {
 		return (
 			<div className="choropleth-map-wrapper">
-				<div className="choropleth-map-title-wrapper">
+				{/* <div className="choropleth-map-title-wrapper">
 					Comparaison du taux de consommation entre chaque zone urbaine du quartier
-				</div>
+				</div> */}
 
 				<div id="urbanZoneComparisonMap" className="choropleth-map">
 					<UrbanZoneMap
+						center={[-0.5564, 44.8431]}
+						bounds={[
+							[-0.5463, 44.8522],
+							[-0.5665, 44.8382],
+						]}
+						zoom={15.5}
+						pitch={42}
 						zonesTransformer={zones => this.zoneTransformer(zones)}
 						zonesFillColor={{
 							property: 'choroplethValue',
@@ -50,11 +57,11 @@ export default class ChoroplethMap extends React.Component<Props, {}> {
 
 				<div className="color-wrapper">
 					<div className="high-end-color-wrapper">
-						<div className="high-end-color"/>
+						<div className="high-end-color" />
 						<p className="high-end-text">Forte consommation</p>
 					</div>
 					<div className="low-end-color-wrapper">
-						<div className="low-end-color"/>
+						<div className="low-end-color" />
 						<p className="low-end-text">Faible consommation</p>
 					</div>
 				</div>

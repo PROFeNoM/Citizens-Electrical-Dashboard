@@ -1,5 +1,5 @@
 import './DropMenu.css';
-import { DropMenuData1, DropMenuData2, DropMenuData3 } from './DropMenuData';
+import { DropMenuData1, DropMenuData2 } from './DropMenuData';
 import { Link, useLocation } from 'react-router-dom';
 import { IoIosArrowDown } from 'react-icons/io';
 import { useState } from 'react';
@@ -64,29 +64,6 @@ function DropMenu() {
 										</li>
 									);
 								})}
-							</ul>
-						</nav>
-					</div>
-				</div>
-				<div className="dropmenu-buildings-wrapper">
-					<div className="dropButton">
-						<IoIosArrowDown onClick={showDropmenu3} />
-					</div>
-					<div className="dropmenu-buildings-title">{currentBuilding}</div>
-					<div className="dropmenu-wrapper">
-						<nav className={dropmenu3 ? 'dropmenu d3 active' : 'dropmenu d3'}>
-							<ul className="dropmenu-items" onClick={showDropmenu3}>
-								{
-									DropMenuData3.map((item, index) => {
-										return (
-											<li key={index} className={item.cName}>
-												<Link to={`/${currentPage}/${currentUrbanZone}/${item.path}`}>
-													<span className="item-title-dd">{item.title}</span>
-												</Link>
-											</li>
-										);
-									})
-								}
 							</ul>
 						</nav>
 					</div>

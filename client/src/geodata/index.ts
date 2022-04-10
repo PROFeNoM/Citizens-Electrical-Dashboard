@@ -1,8 +1,9 @@
-import { FeatureCollection, MultiPolygon } from 'geojson';
+import { FeatureCollection, MultiPolygon, Point } from 'geojson';
 
 export const buildings = require('./buildings.json') as FeatureCollection<MultiPolygon, BuildingFeatureProperties>;
 export const zones = require('./zones.json') as FeatureCollection<MultiPolygon, ZoneFeatureProperties>;
 export const publicLighting = require('./public-lighting.json') as PublicLightingRecord[];
+export const Lighting = require('./public-lighting.json') as FeatureCollection<Point>;
 
 export interface BuildingFeatureProperties {
 	osm_id: null,

@@ -32,17 +32,3 @@ export const DropMenuData2 = getZonesName()
         }
     ));
 
-export const DropMenuData3 = [
-    'Residentiel',
-    'Professionnel',
-    'Tertiaire',
-    'Eclairage',
-    'Producteur',
-    'Total']
-    .map(name => (
-        {
-            title: name,
-            path: name,
-            cName: 'nav-text'
-        }
-    ));

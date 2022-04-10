@@ -1,4 +1,3 @@
-import './BaseMap.css';
 import React, { MutableRefObject } from 'react';
 import { LngLatBoundsLike, LngLatLike, Map } from 'mapbox-gl';
 
