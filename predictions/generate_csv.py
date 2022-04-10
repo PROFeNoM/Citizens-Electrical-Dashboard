@@ -1,6 +1,6 @@
-# Example command line arguments: -p models/res.pickle -d 2022-01-01 -e 2022-03-31 -o test.csv -t RES
-# Example command line arguments: -p models/pro.pickle -d 2022-01-01 -e 2022-03-31 -o test.csv -t PRO
-# Example command line arguments: -p models/ent.pickle -d 2022-01-01 -e 2022-03-31 -o test.csv -t ENT
+# Example command line arguments: -pm models/mean_curve_models/res.pickle -pt models/total_models/res.pickle -d 2022-01-01 -e 2022-03-31 -o test.csv -t RES
+# Example command line arguments: -pm models/mean_curve_models/pro.pickle -pt models/total_models/pro.pickle -d 2022-01-01 -e 2022-03-31 -o test.csv -t PRO
+# Example command line arguments: -pm models/mean_curve_models/ent.pickle -pt models/total_models/ent.pickle -d 2022-01-01 -e 2022-03-31 -o test.csv -t ENT
 
 import csv
 import sys
@@ -19,24 +19,45 @@ from df_utils import make_df_without_regressors, make_df_with_regressors
 
 FLOOR = 0
 CAPACITY = {
-    "RES": 4.338139563583263,
-    "PRO": 4.805705472720941,
-    "ENT": 4.915918212083008
+    "mean_curve": {
+        "RES": 4.338139563583263,
+        "PRO": 5.191151067264514,
+        "ENT": 4.915918212083008
+    },
+    "total": {
+        "RES": 4.431937432252885,
+        "PRO": 4.5423538510023,
+        "ENT": 3.1148380419963018
+    }
 }
 STD = {
-    "RES": 6008.733365479282,
-    "PRO": 5837.368867533356,
-    "ENT": 262.8963698897594
+    "mean_curve": {
+        "RES": 6069.960378819583,
+        "PRO": 4398.5461183289035,
+        "ENT": 262.8963698897594
+    },
+    "total": {
+        "RES": 674213991.1630179,
+        "PRO": 112218025.89827447,
+        "ENT": 327627.9321726365
+    }
 }
 MEAN = {
-    "RES": 17767.7300501596,
-    "PRO": 28828.770405836753,
-    "ENT": 1684.0191228070175
+    "mean_curve": {
+        "RES": 17913.352807017545,
+        "PRO": 21176.57446990424,
+        "ENT": 1684.0191228070175
+    },
+    "total": {
+        "RES": 1787207064.0133379,
+        "PRO": 375758437.59091425,
+        "ENT": 2458161.711040073
+    }
 }
 NB_SOUTIRAGE = {
-    "RES": 6336730,
-    "PRO": 895700,
-    "ENT": 1387
+    "RES": 6342782,
+    "PRO": 781606,
+    "ENT": 1444
 }
 
 
@@ -50,22 +71,27 @@ def load_model(model):
 
 def parse_arguments():
     parser = argparse.ArgumentParser(description='Generate a CSV file for a given model between two dates')
-    parser.add_argument('-p', '--prophet', help='Prophet model path', required=True)
+    parser.add_argument('-pm', '--prophet_mean', help='Prophet mean curve model path', required=True)
+    parser.add_argument('-pt', '--prophet_total', help='Prophet total energy model path', required=True)
     parser.add_argument('-t', '--type', help='Type of model', required=True)
     parser.add_argument('-d', '--date_start', help='Start date', required=True)
     parser.add_argument('-e', '--date_end', help='End date', required=True)
     parser.add_argument('-o', '--output', help='Output file name', required=True)
     args = parser.parse_args()
 
-    model = args.prophet
+    mean_model = args.prophet_mean
+    total_model = args.prophet_total
     profile = args.type
     date_start = args.date_start
     date_end = args.date_end
     output = args.output
 
     # Check if the model exists
-    if not os.path.exists(model):
-        print('Model path does not exist')
+    if not os.path.exists(mean_model):
+        print('Mean model path does not exist')
+        sys.exit(1)
+    if not os.path.exists(total_model):
+        print('Total model path does not exist')
         sys.exit(1)
 
     # Type can either be 'RES', 'PRO' or 'ENT'
@@ -92,23 +118,23 @@ def parse_arguments():
         print('Date does not exist')
         sys.exit(1)
 
-    return model, profile, date_start, date_end, output
+    return mean_model, total_model, profile, date_start, date_end, output
 
 
-def make_df(date_start, date_end, capacity, floor, profile):
-    if profile == 'PRO':
+def make_df(date_start, date_end, capacity, floor, extended_dataframe=False):
+    if extended_dataframe:
         return make_df_with_regressors(date_start, date_end, capacity, floor)
     return make_df_without_regressors(date_start, date_end, capacity, floor)
 
 
-def make_forecast(model, df, profile):
+def make_forecast(model, df, profile, std, mean):
     # Make a prediction
     forecast = model.predict(df)
-    forecast['yhat'] = unstandardize(forecast['yhat'], STD[profile], MEAN[profile])
+    forecast['yhat'] = unstandardize(forecast['yhat'], std, mean)
     return forecast
 
 
-def make_csv(forecast, output, profile):
+def make_csv(forecast_total, forecast_mean, output, profile):
     # Create a csv file with the predictions
     # The output will be a csv file with the following columns:
     # timestamp, mean_curve
@@ -123,36 +149,42 @@ def make_csv(forecast, output, profile):
             'Courbe Moyenne n°1 + n°2 (Wh)',
             'Profil'
         ])
-        for i in range(len(forecast)):
+        for i in range(len(forecast_total)):
             writer.writerow([
-                forecast['ds'][i].strftime('%Y-%m-%dT%H:%M:%S+01:00'),
-                forecast['yhat'][i] * NB_SOUTIRAGE[profile],
+                forecast_total['ds'][i].strftime('%Y-%m-%dT%H:%M:%S+01:00'),
+                forecast_total['yhat'][i],
                 NB_SOUTIRAGE[profile],
-                forecast['yhat'][i],
+                forecast_mean['yhat'][i],
                 profile
             ])
 
 
 def main():
-    model_path, profile, date_start, date_end, output = parse_arguments()
+    mean_model_path, total_model_path, profile, date_start, date_end, output = parse_arguments()
 
-    print(f"Generating CSV file for {model_path} between {date_start} and {date_end}")
+    print(f"Generating CSV file for mean model {mean_model_path} and total model {total_model_path} between {date_start} and {date_end}")
     print(f"Output file: {output}")
 
     # Load the pickle model
-    model = load_model(model_path)
-    print(f"Model loaded")
+    mean_model = load_model(mean_model_path)
+    print(f"Mean model loaded")
+    total_model = load_model(total_model_path)
+    print(f"Total model loaded")
 
     # Create a dataframe with the dates and the corresponding predictions
-    df = make_df(date_start, date_end, CAPACITY[profile], FLOOR, profile)
-    print(f"Dataframe created")
+    df_mean = make_df(date_start, date_end, CAPACITY['mean_curve'][profile], FLOOR, profile == 'PRO')
+    print(f"Mean model dataframe created")
+    df_total = make_df(date_start, date_end, CAPACITY['total'][profile], FLOOR)
+    print(f"Total model dataframe created")
 
     # Make a prediction
-    forecast = make_forecast(model, df, profile)
-    print(f"Prediction made")
+    forecast_mean = make_forecast(mean_model, df_mean, profile, STD['mean_curve'][profile], MEAN['mean_curve'][profile])
+    print(f"Mean curve predictions made")
+    forecast_total = make_forecast(total_model, df_total, profile, STD['total'][profile], MEAN['total'][profile])
+    print(f"Total energy predictions made")
 
     # Create a csv file with the predictions
-    make_csv(forecast, output, profile)
+    make_csv(forecast_total, forecast_mean, output, profile)
     print("CSV file created")
 
 

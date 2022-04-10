@@ -16,19 +16,19 @@ data_st = _load_data_st('./data_st/data_st_pro.csv')
 
 
 def is_winter(ds):
-    """
+    '''
     This function converts each timestamp into a binary value based on whether
     or not it falls in the months of December, January, or February
-    """
-    return ((ds.month % 12 + 3) // 3) == 1
+    '''
+    return 1 if ((ds.month % 12 + 3) // 3) == 1 else 0
 
 
 def is_summer(ds):
-    """
+    '''
     This function converts each timestamp into a binary value based on whether
     or not it falls in the months of June, July, or August
-    """
-    return ((ds.month % 12 + 3) // 3) == 3
+    '''
+    return 1 if ((ds.month % 12 + 3) // 3) == 3 else 0
 
 
 def fill_regressors(ds):
@@ -44,7 +44,7 @@ def fill_regressors(ds):
     day = ds.day
     hour = ds.hour
     sub = data_st[(data_st.ds.dt.month == month) & (data_st.ds.dt.day == day) & (abs(data_st.ds.dt.hour - hour) <= 3)]
-    return sub[['weather_pc', 'weather_pc2', 'visibility']].mean()
+    return sub[['weather_pc', 'visibility']].mean()
 
 
 def make_df_without_regressors(date_start, date_end, capacity, floor):
@@ -74,13 +74,14 @@ def make_df_with_regressors(date_start, date_end, capacity, floor):
     # Fill seasonality conditions
     df['is_winter'] = df['ds'].apply(is_winter)
     df['is_summer'] = df['ds'].apply(is_summer)
-    df['is_spring_fall'] = df['ds'].apply(lambda x: not is_winter(x) and not is_summer(x))
+    df['is_spring_fall'] = ~(df.is_winter | df.is_summer) + 2
 
     # Forecast the weather and visibility for the prediction period
     df_weather_regressors = df.ds.apply(fill_regressors)
 
     # Add the forecasted data to the prediction period dataframe
-    df = df.join(df_weather_regressors)
+    df['weather_pc'] = df_weather_regressors['weather_pc']
+    df['weather_pc2'] = df_weather_regressors['visibility']
     df.dropna(inplace=True)
 
     return df
