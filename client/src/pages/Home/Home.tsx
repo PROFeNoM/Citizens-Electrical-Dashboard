@@ -3,10 +3,27 @@ import { Header } from '../../containers';
 import { DistrictEnergyBalance, HomeMap } from '../../components';
 import React from 'react';
 import Select from 'react-dropdown-select';
+import { 
+    dropdownStyleBuild, 
+    dropdownStyleDist, 
+    dropdownStyleInd,
+    dropdownStyleInf,
+    selectOptionsBuild, 
+    selectOptionsDist, 
+    selectOptionsInd, 
+    selectOptionsInf 
+} from './HomeUtils';
+
+import DatePicker from 'react-datepicker';
 
 
 interface State {
     selectedZoneName: string | null,
+    indicatorType: string | null,
+    buildingType: string[] | null,
+    infoType: string | null,
+    t1: Date,
+    t2: Date
 }
 
 export default class Home extends React.Component<{}, State>{
@@ -16,35 +33,17 @@ export default class Home extends React.Component<{}, State>{
         super(props);
         this.state = {
             selectedZoneName: null,
+            indicatorType: null,
+            buildingType: null,
+            infoType: null,
+            t1: new Date('2021-12-01T00:30:00Z'),
+            t2: new Date('2021-12-31T00:30:00Z')
+
         };
     }
 
 
     render() {
-
-        const dropdownStyleBuild = {
-            width: 200,
-            'display': 'flex',
-            'text-transform': 'uppercase'
-        };
-
-        const dropdownStyleDist = {
-            width: 200,
-            'display': 'flex',
-            'text-transform': 'uppercase'
-        };
-
-        const selectOptionsBuild = [
-            { value: 1, label: "Résidentiels"},
-            { value: 2, label: "Tertiaires"},
-            { value: 3, label: "Professionnels"},
-        ];
-
-        const selectOptionsDist = [
-            { value: 1, label: "Bastide Niel"},
-            { value: 2, label: "Historique"},
-            { value: 3, label: "Sud"},
-        ];
 
         return (
             <div id='home-container'>
@@ -56,8 +55,12 @@ export default class Home extends React.Component<{}, State>{
                     />
                     <div>
                         <div className="dropdown-wrapper">
-                            <Select style={dropdownStyleBuild} multi={true} placeholder={"Type de batiment"} options={selectOptionsBuild} onChange={() => console.log("Hello")} values={[]}/>
-                            <Select style={dropdownStyleDist} multi={false} placeholder={"Quartier"} options={selectOptionsDist} onChange={() => console.log("Hello")} values={[]}/>
+                            <Select style={dropdownStyleBuild} multi={true} placeholder={"Bâtiment"} options={selectOptionsBuild} onChange={(values) => console.log(values)} values={[]}/>
+                            <Select style={dropdownStyleDist} multi={false} placeholder={"Quartier"} options={selectOptionsDist} onChange={(values) => console.log(values)} values={[]}/>
+                            <Select style={dropdownStyleInd} multi={false} placeholder={"Indicateur"} options={selectOptionsInd} onChange={(values) => console.log(values)} values={[]}/>
+                            <Select style={dropdownStyleInf} multi={false} placeholder={"Information"} options={selectOptionsInf} onChange={(values) => console.log(values)} values={[]}/>
+                            <DatePicker selected={this.state.t1}/>
+                            <DatePicker selected={this.state.t2}/>
                         </div>
                         <DistrictEnergyBalance
                             selectedZoneName={this.state.selectedZoneName}
