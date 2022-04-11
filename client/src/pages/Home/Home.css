@@ -7,9 +7,22 @@
 .dropdown-wrapper {
     padding: 20px;
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr 5fr 5fr;
+    grid-template-columns: 30% 30% 30%;
     height: 20%;
+}
 
+.dropdown-wrapper * {
+    border-color: aqua;
+}
+
+
+
+.date-picker {
+    width: 95%;
+    height: 80%;
+    display: 'flex';
+    text-transform: 'uppercase';
+    color: white;
 }
 
 main {

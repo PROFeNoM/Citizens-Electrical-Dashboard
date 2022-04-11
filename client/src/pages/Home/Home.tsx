@@ -1,27 +1,28 @@
 import './Home.css';
 import { Header } from '../../containers';
-import { DistrictEnergyBalance, HomeMap } from '../../components';
+import { HomeMap } from '../../components';
 import React from 'react';
 import Select from 'react-dropdown-select';
 import { 
-    dropdownStyleBuild, 
-    dropdownStyleDist, 
-    dropdownStyleInd,
-    dropdownStyleInf,
+    Indicator,
+    Information,
+    dropdownStyle,
     selectOptionsBuild, 
     selectOptionsDist, 
     selectOptionsInd, 
-    selectOptionsInf 
+    selectOptionsInf
 } from './HomeUtils';
 
-import DatePicker from 'react-datepicker';
+import DatePicker from 'react-date-picker';
+import DataContainer from '../../components/DataContainer/DataContaineur';
+import { ConsumerProfile } from '../../scripts/api';
 
 
 interface State {
     selectedZoneName: string | null,
-    indicatorType: string | null,
-    buildingType: string[] | null,
-    infoType: string | null,
+    indicatorType: Indicator
+    buildingType: ConsumerProfile,
+    infoType: Information,
     t1: Date,
     t2: Date
 }
@@ -33,9 +34,9 @@ export default class Home extends React.Component<{}, State>{
         super(props);
         this.state = {
             selectedZoneName: null,
-            indicatorType: null,
-            buildingType: null,
-            infoType: null,
+            indicatorType: Indicator.InformationsGlobales,
+            buildingType: ConsumerProfile.ALL,
+            infoType: Information.VueGlobale,
             t1: new Date('2021-12-01T00:30:00Z'),
             t2: new Date('2021-12-31T00:30:00Z')
 
@@ -47,7 +48,7 @@ export default class Home extends React.Component<{}, State>{
 
         return (
             <div id='home-container'>
-                <Header title='ACCUEIL' />
+                <Header title='Tableau éléctrique citoyen' />
                 <main>
                     <HomeMap
                         ref={this.mapRef}
@@ -55,16 +56,20 @@ export default class Home extends React.Component<{}, State>{
                     />
                     <div>
                         <div className="dropdown-wrapper">
-                            <Select style={dropdownStyleBuild} multi={true} placeholder={"Bâtiment"} options={selectOptionsBuild} onChange={(values) => console.log(values)} values={[]}/>
-                            <Select style={dropdownStyleDist} multi={false} placeholder={"Quartier"} options={selectOptionsDist} onChange={(values) => console.log(values)} values={[]}/>
-                            <Select style={dropdownStyleInd} multi={false} placeholder={"Indicateur"} options={selectOptionsInd} onChange={(values) => console.log(values)} values={[]}/>
-                            <Select style={dropdownStyleInf} multi={false} placeholder={"Information"} options={selectOptionsInf} onChange={(values) => console.log(values)} values={[]}/>
-                            <DatePicker selected={this.state.t1}/>
-                            <DatePicker selected={this.state.t2}/>
+                            <Select style={dropdownStyle} multi={false} placeholder={"Quartier"} options={selectOptionsDist} onChange={(values) => this.setState({selectedZoneName: values[0].label})} values={[]}/>
+                            <Select clearable={true} style={dropdownStyle} multi={false} placeholder={"Bâtiment"} options={selectOptionsBuild} onChange={(values) => this.setState({buildingType: values[0].value})} values={[]}/>
+                            <DatePicker className="date-picker" value={this.state.t1} onChange={(value) => this.setState({t1: value})}/>
+                            <Select style={dropdownStyle} multi={false} placeholder={"Information"} options={selectOptionsInf} onChange={(values) => this.setState({infoType: values[0].value})} values={[]}/>
+                            <Select style={dropdownStyle} multi={false} placeholder={"Indicateur"} options={selectOptionsInd} onChange={(values) => this.setState({indicatorType: values[0].value})} values={[]}/>
+                            <DatePicker className="date-picker" value={this.state.t2} onChange={(value) => this.setState({t2: value})}/>
                         </div>
-                        <DistrictEnergyBalance
+                        <DataContainer
                             selectedZoneName={this.state.selectedZoneName}
-                            onCancel={() => this.mapRef.current.unselectZone()}
+                            indicatorType={this.state.indicatorType}
+                            buildingType={this.state.buildingType}
+                            infoType={this.state.infoType}
+                            t1={this.state.t1}
+                            t2={this.state.t2}
                         />
                     </div>
                 </main>

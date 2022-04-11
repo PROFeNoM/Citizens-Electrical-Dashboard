@@ -1,6 +1,6 @@
 import './Consumption.css';
 import React, { useState } from 'react';
-import { ChoroplethMap, TypicalConsumptionDay } from '../../components';
+import {ChoroplethMap, ConsumptionDonut, TypicalConsumptionDay} from '../../components';
 import { useParams } from 'react-router-dom';
 import HeaderDropDown from '../../containers/HeaderDropDown/HeaderDropDown';
 import { Menu, MenuItem, Button } from '@mui/material';
@@ -114,6 +114,13 @@ function Consumption() {
 						urbanZone={params.zoneName}
 						buildingType={buildingTypes[currentChart]}
 						title={titles[currentChart]}
+					/>
+					<ConsumptionDonut
+						t1={t1}
+						t2={t2}
+						urbanZone={params.zoneName}
+						buildingType={buildingTypes[currentChart]}
+						title={'Répartitions des consommations'}
 					/>
 					<>
 						<div className="controls">

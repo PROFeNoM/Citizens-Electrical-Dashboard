@@ -1,5 +1,5 @@
 import './TypicalConsumptionDay.css';
-import React from 'react';
+import React, { Component } from 'react';
 import { CanvasJSChart } from 'canvasjs-react-charts';
 import {
 	ConsumerProfile,
@@ -105,6 +105,7 @@ export default class TypicalConsumptionDay extends React.Component<Props, State>
 
 	render() {
 		const chartOptions = {
+			exportEnabled: true,
 			animationEnabled: true,
 			axisX: {
 				valueFormatString: "HH:mm",
