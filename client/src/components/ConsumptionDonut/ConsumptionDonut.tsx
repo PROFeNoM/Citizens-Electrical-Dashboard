@@ -1,6 +1,6 @@
-import './SolarDonut.css';
+import './ConsumptionDonut.css';
 import React from 'react';
-import {getTotalProduction, ProducerProfile} from "../../scripts/api";
+import {getTotalConsumption, ConsumerProfile} from "../../scripts/api";
 import {zones} from "../../geodata";
 import {CanvasJSChart} from 'canvasjs-react-charts';
 
@@ -8,16 +8,17 @@ interface Props {
 	t1: number;
 	t2: number;
 	urbanZone: string;
+	buildingType: ConsumerProfile;
 	title: string;
 }
 
 interface State {
-	productionDistribution: { name: string, y: number }[];
+	consumptionDistribution: { name: string, y: number }[];
 	urbanZoneProportion: number;
 	renderMe: boolean;
 }
 
-export default class SolarDonut extends React.Component<Props, State> {
+export default class ConsumptionDonut extends React.Component<Props, State> {
 	constructor(props: Props) {
 		super(props);
 		const tmpPoints = zones.features.map(f => {
@@ -25,7 +26,7 @@ export default class SolarDonut extends React.Component<Props, State> {
 		})
 
 		this.state = {
-			productionDistribution: tmpPoints,
+			consumptionDistribution: tmpPoints,
 			urbanZoneProportion: 0,
 			renderMe: false
 		};
@@ -33,18 +34,25 @@ export default class SolarDonut extends React.Component<Props, State> {
 
 	async componentDidMount() {
 		const {t1, t2, urbanZone} = this.props;
-		const productions = await Promise.all(zones.features.map(async f => {
-			return { name: f.properties.libelle, value: await getTotalProduction(t1, t2, [ProducerProfile.SOLAR], f.properties.libelle) };
+		const consumptions = await Promise.all(zones.features.map(async f => {
+			return {
+				name: f.properties.libelle,
+				value: await getTotalConsumption(
+					t1,
+					t2,
+					this.props.buildingType ? [this.props.buildingType] : undefined,
+					f.properties.libelle)
+			};
 		}));
 
-		const totalProduction = productions.reduce((acc, p) => acc + p.value, 0);
-		const productionDistribution = productions.map(p => {
-			return { name: p.name, y: p.value / totalProduction * 100 };
+		const totalConsumption = consumptions.reduce((acc, p) => acc + p.value, 0);
+		const consumptionDistribution = consumptions.map(p => {
+			return { name: p.name, y: p.value / totalConsumption * 100 };
 		});
 
 		this.setState({
-			productionDistribution: productionDistribution,
-			urbanZoneProportion: productions.find(z => z.name === urbanZone).value / totalProduction * 100,
+			consumptionDistribution: consumptionDistribution,
+			urbanZoneProportion: consumptions.find(z => z.name === urbanZone).value / totalConsumption * 100,
 			renderMe: true
 		});
 	}
@@ -64,10 +72,10 @@ export default class SolarDonut extends React.Component<Props, State> {
 				showInLegend: false,
 				indexLabel: "{name}: {y}",
 				yValueFormatString: "#,###'%'",
-				dataPoints: this.state.productionDistribution
+				dataPoints: this.state.consumptionDistribution
 			}]
 		}
-		console.log(this.state.productionDistribution)
+
 		return (
 			<div className="typical-c-day-wrapper">
 				<div className="typical-c-day-title-wrapper">{this.props.title}</div>

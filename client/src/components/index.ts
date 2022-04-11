@@ -8,3 +8,4 @@ export { default as TotalConsumption } from './TotalConsumption/TotalConsumption
 export { default as TypicalConsumptionDay } from './TypicalConsumptionDay/TypicalConsumptionDay'
 export { default as WeeklyProduction } from './WeeklyProduction/WeeklyProduction'
 export { default as ProductionChoroplethMap } from './Maps/ProductionChoroplethMap/ProductionChoroplethMap'
+export { default as ConsumptionDonut } from './ConsumptionDonut/ConsumptionDonut'
