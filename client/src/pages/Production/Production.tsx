@@ -8,30 +8,14 @@ import {ProducerProfile} from '../../scripts/api';
 import {Link} from 'react-router-dom';
 import chart_ic from '../../images/chart_icon.png';
 import i_ic from '../../images/i_icon.png';
+import SolarDonut from "../../components/SolarDonut/SolarDonut";
 
 function Production() {
-
-	const titles = [
-		'Production hebdomadaire de la zone urbaine par rapport au quartier'
-	];
-
 	let params = useParams();
 
-	const [isChartOpen, setIsChartOpen] = useState(false);
-	const [dropmenu, setDropmenu] = useState(null);
 	const [t1, setT1] = useState(new Date('2021-12-01T00:30:00Z').getTime());
 	const [t2, setT2] = useState(new Date('2021-12-31T00:30:00Z').getTime());
 	const [currentChart, setCurrentChart] = useState(0);
-
-	const open = Boolean(dropmenu);
-	const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-		setDropmenu(event.currentTarget);
-	};
-	const handleClose = (ind: number) => {
-		setDropmenu(null);
-		setIsChartOpen(true);
-		setCurrentChart(ind);
-	};
 
 	return (
 		<>
@@ -48,7 +32,13 @@ function Production() {
 						t1={t1}
 						t2={t2}
 						urbanZone={params.zoneName}
-						title={titles[currentChart]}
+						title={'Production hebdomadaire de la zone urbaine par rapport au quartier'}
+					/>
+					<SolarDonut
+						t1={t1}
+						t2={t2}
+						urbanZone={params.zoneName}
+						title={'Répartition des productions solaires'}
 					/>
 					<>
 						<div className="controls">
