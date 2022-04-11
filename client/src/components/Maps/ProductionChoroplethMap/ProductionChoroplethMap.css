@@ -1,0 +1,14 @@
+.high-end-color-prod {
+    width: 170px;
+    height: 20px;
+    background-color: #eaaa00;
+    display: table-cell;
+    padding: 5px;
+}
+
+.low-end-color-prod {
+    width: 170px;
+    height: 20px;
+    background-color: #faeabf;
+    display: table-cell;
+}
