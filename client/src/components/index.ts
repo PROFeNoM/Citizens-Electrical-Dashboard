@@ -9,3 +9,4 @@ export { default as TypicalConsumptionDay } from './TypicalConsumptionDay/Typica
 export { default as WeeklyProduction } from './WeeklyProduction/WeeklyProduction'
 export { default as ProductionChoroplethMap } from './Maps/ProductionChoroplethMap/ProductionChoroplethMap'
 export { default as ConsumptionDonut } from './ConsumptionDonut/ConsumptionDonut'
+export { default as LocalProductionInfo } from './LocalProductionInfo/LocalProductionInfo'

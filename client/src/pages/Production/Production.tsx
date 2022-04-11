@@ -1,6 +1,6 @@
 import './Production.css';
 import React, {useState} from "react";
-import {ProductionChoroplethMap, WeeklyProduction} from '../../components';
+import {LocalProductionInfo, ProductionChoroplethMap, WeeklyProduction} from '../../components';
 import {useParams} from 'react-router-dom';
 import HeaderDropDown from '../../containers/HeaderDropDown/HeaderDropDown';
 import {Link} from 'react-router-dom';
@@ -37,6 +37,12 @@ function Production() {
 							t2={t2}
 							urbanZone={params.zoneName}
 							title={'Répartition des productions solaires'}
+						/>
+						<LocalProductionInfo
+							t1={t1}
+							t2={t2}
+							urbanZone={params.zoneName}
+							title={"Une production locale d'énergie renouvelable"}
 						/>
 						<>
 							<div className="controls">
