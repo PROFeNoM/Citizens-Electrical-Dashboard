@@ -1,7 +1,7 @@
 import React from 'react';
 import { DistrictEnergyBalance } from '../../components'
 import { Indicator, Information } from '../../pages/Home/HomeUtils'
-import { TypicalConsumptionDay, TotalConsumption } from '../../components'
+import { TypicalConsumptionDay, ConsumptionDonut, SolarDonut, WeeklyProduction } from '../../components'
 import { ConsumerProfile } from '../../scripts/api';
 
 interface Props {
@@ -41,14 +41,36 @@ export default class DataContainer extends React.Component<Props> {
                         )
                     case Information.VueGlobale:
                         return (
-                            <TotalConsumption 
+                            <ConsumptionDonut
                                 t1={this.props.t1.getTime()}
                                 t2={this.props.t2.getTime()}
                                 urbanZone={this.props.selectedZoneName}
+                                buildingType={this.props.buildingType}
                                 title={"Evolution de la consommation"}
                             />
                         )
                 }
+                case Indicator.Production:
+                    switch(this.props.infoType){
+                        case Information.JourneeType:
+                            return (
+                                <SolarDonut 
+                                    t1={this.props.t1.getTime()}
+                                    t2={this.props.t2.getTime()}
+                                    urbanZone={this.props.selectedZoneName}
+                                    title={"Production globale"}
+                                />
+                            )
+                        case Information.VueGlobale:
+                            return (
+                                <WeeklyProduction 
+                                    t1={this.props.t1.getTime()}
+                                    t2={this.props.t2.getTime()}
+                                    urbanZone={this.props.selectedZoneName}
+                                    title={"Production Hebdomadaire"}
+                                />
+                            )
+                    }
         }
     }
 }
