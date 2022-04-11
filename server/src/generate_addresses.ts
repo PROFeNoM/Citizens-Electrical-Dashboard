@@ -1,6 +1,5 @@
 import axios from 'axios';
-import * as FormData from 'form-data';
-import { ClientRequest } from 'http';
+import * as FormData from 'form-data'
 
 main().catch(console.error);
 
@@ -19,40 +18,9 @@ async function main() {
 		}
 	}
 
-	csv = 'latitude;longitude\n' +
-		'44.827718;-0.597937\n' +
-		'44.848437;-0.611871\n' +
-		'44.831571;-0.598711\n' +
-		'44.873914;-0.547056\n' +
-		'44.8636;-0.570654\n' +
-		'44.8636;-0.570654\n' +
-		'44.837365;-0.567526\n' +
-		'44.851697;-0.578692\n' +
-		'44.826202;-0.577882\n' +
-		'44.838626;-0.592386\n' +
-		'44.853944;-0.617576\n' +
-		'44.853894;-0.617546\n' +
-		'44.832085;-0.568294\n' +
-		'44.832854;-0.605203\n' +
-		'44.824092;-0.563459\n' +
-		'44.825986;-0.565\n' +
-		'44.840044;-0.594302\n' +
-		'44.86285;-0.559326\n' +
-		'44.824517;-0.596255\n' +
-		'44.83271;-0.570368\n' +
-		'44.83271;-0.570368';
-
 	const form = new FormData();
-	form.append('data', csv);
-	try {
-		const res = await axios.post('https://api-adresse.data.gouv.fr/reverse/csv/', form, {
-			headers: {
-				...form.getHeaders(),
-				'content-length': '588'
-			}
-		});
-		console.log(res.data);
-	} catch (e) {
-		console.log((e.request as ClientRequest).getHeaders());
-	}
+	form.append('data', csv, { filename: 'data.csv' });
+	const res = await axios.post('https://api-adresse.data.gouv.fr/reverse/csv', form, { headers: form.getHeaders() })
+
+	console.log(res.data);
 }
