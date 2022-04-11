@@ -20,7 +20,6 @@ interface Data {
 interface Props {
 	selectedZoneName: string,
 	/** when the cancel btn is pressed (should unselect the currently selected zone) */
-	onCancel: () => void,
 }
 
 interface State {

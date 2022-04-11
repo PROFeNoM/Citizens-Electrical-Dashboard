@@ -11,11 +11,18 @@
     height: 20%;
 }
 
+.dropdown-wrapper * {
+    border-color: aqua;
+}
+
+
+
 .date-picker {
     width: 95%;
     height: 80%;
     display: 'flex';
-    text-transform: 'uppercase'
+    text-transform: 'uppercase';
+    color: white;
 }
 
 main {

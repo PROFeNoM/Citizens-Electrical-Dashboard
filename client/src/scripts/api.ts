@@ -1,4 +1,5 @@
 export enum ConsumerProfile {
+	ALL = 'ALL',
 	RESIDENTIAL = 'RESIDENTIAL',
 	PROFESSIONAL = 'PROFESSIONAL',
 	TERTIARY = 'TERTIARY',
