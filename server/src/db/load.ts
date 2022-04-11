@@ -2,7 +2,7 @@ import { rm } from 'fs/promises';
 import * as download from 'download';
 import { logger } from '../logger';
 import { connectToDB } from './connection';
-import { parseFile } from '@fast-csv/parse';
+import { parseFile } from 'fast-csv';
 import { ConsumerProfile, Consumption } from './entities/Consumption';
 import { EntityManager, getConnection } from 'typeorm';
 import { ProducerProfile, Production } from './entities/Production';

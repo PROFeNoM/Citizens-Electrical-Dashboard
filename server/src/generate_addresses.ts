@@ -1,3 +1,5 @@
+import { EOL } from 'os';
+import { parseString, writeToPath } from 'fast-csv';
 import axios from 'axios';
 import * as FormData from 'form-data'
 
@@ -7,7 +9,7 @@ async function main() {
 	const NW = [44.85167061339378, -0.5671098076715935];
 	const SE = [44.83706864026471, -0.5441770324348592];
 
-	const n = 2;
+	const n = 25;
 	const latStep = (SE[0] - NW[0]) / n;
 	const longStep = (SE[1] - NW[1]) / n;
 
@@ -22,5 +24,12 @@ async function main() {
 	form.append('data', csv, { filename: 'data.csv' });
 	const res = await axios.post('https://api-adresse.data.gouv.fr/reverse/csv', form, { headers: form.getHeaders() })
 
-	console.log(res.data);
+	const addresses = parseString((res.data as string).split('\n').join(EOL), { headers: true, delimiter: ';' });
+
+	const filtered: Record<string, string[]> = {};
+	for await (const a of addresses) {
+		filtered[a.result_id] = [a.result_housenumber, a.result_name, a.result_citycode];
+	}
+
+	writeToPath('raw-data/addresses.csv', Object.values(filtered), { delimiter: ';' });
 }

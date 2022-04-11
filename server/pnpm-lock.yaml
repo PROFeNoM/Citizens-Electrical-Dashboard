@@ -1,7 +1,6 @@
 lockfileVersion: 5.3
 
 specifiers:
-  '@fast-csv/parse': ^4.3.6
   '@types/download': ^8.0.1
   '@types/express': ^4.17.13
   '@types/node': ^17.0.18
@@ -10,6 +9,7 @@ specifiers:
   download: ^8.0.0
   express: ^4.17.3
   express-validator: ^6.14.0
+  fast-csv: ^4.3.6
   form-data: ^4.0.0
   log4js: ^6.4.1
   nodemon: ^2.0.15
@@ -21,12 +21,12 @@ specifiers:
   typescript: ^4.5.5
 
 dependencies:
-  '@fast-csv/parse': 4.3.6
   axios: 0.26.1
   cors: 2.8.5
   download: 8.0.0
   express: 4.17.3
   express-validator: 6.14.0
+  fast-csv: 4.3.6
   form-data: 4.0.0
   log4js: 6.4.1
   pg: 8.7.3
@@ -55,6 +55,17 @@ packages:
     dependencies:
       '@cspotcode/source-map-consumer': 0.8.0
     dev: true
+
+  /@fast-csv/format/4.3.5:
+    resolution: {integrity: sha512-8iRn6QF3I8Ak78lNAa+Gdl5MJJBM5vRHivFtMRUWINdevNo00K7OXxS2PshawLKTejVwieIlPmK5YlLu6w4u8A==}
+    dependencies:
+      '@types/node': 14.18.12
+      lodash.escaperegexp: 4.1.2
+      lodash.isboolean: 3.0.3
+      lodash.isequal: 4.5.0
+      lodash.isfunction: 3.0.9
+      lodash.isnil: 4.0.0
+    dev: false
 
   /@fast-csv/parse/4.3.6:
     resolution: {integrity: sha512-uRsLYksqpbDmWaSmzvJcuApSEe38+6NQZBUsuAyMZKqHxH0g1wcJgsKUvN3WC8tewaqFjBMMGrkHmC+T7k8LvA==}
@@ -795,6 +806,14 @@ packages:
       sort-keys-length: 1.0.1
     dev: false
 
+  /fast-csv/4.3.6:
+    resolution: {integrity: sha512-2RNSpuwwsJGP0frGsOmTb9oUF+VkFSM4SyLTDgwf2ciHWTarN0lQTC+F2f/t5J9QjW+c65VFIAAu85GsvMIusw==}
+    engines: {node: '>=10.0.0'}
+    dependencies:
+      '@fast-csv/format': 4.3.5
+      '@fast-csv/parse': 4.3.6
+    dev: false
+
   /fd-slicer/1.1.0:
     resolution: {integrity: sha1-JcfInLH5B3+IkbvmHY85Dq4lbx4=}
     dependencies:
@@ -1273,6 +1292,14 @@ packages:
 
   /lodash.groupby/4.6.0:
     resolution: {integrity: sha1-Cwih3PaDl8OXhVwyOXg4Mt90A9E=}
+    dev: false
+
+  /lodash.isboolean/3.0.3:
+    resolution: {integrity: sha1-bC4XHbKiV82WgC/UOwGyDV9YcPY=}
+    dev: false
+
+  /lodash.isequal/4.5.0:
+    resolution: {integrity: sha1-QVxEePK8wwEgwizhDtMib30+GOA=}
     dev: false
 
   /lodash.isfunction/3.0.9:
