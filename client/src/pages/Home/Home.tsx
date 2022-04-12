@@ -81,10 +81,10 @@ export default class Home extends React.Component<{}, State>{
                             <Select onChange={(values) => {if(values.length !== 0) this.temporaryState.selectedZoneName = values[0].label}} clearable={true} style={dropdownStyle} multi={false} placeholder={"Quartier"} options={selectOptionsDist} values={[]}/>
                             <Select onChange={(values) =>  {if(values.length !== 0) this.temporaryState.buildingType = values[0].value}} clearable={true} style={dropdownStyle} multi={false} placeholder={"Bâtiment"} options={selectOptionsBuild} values={[]}/>
                             <DatePicker className="date-picker" value={this.temporaryState.t1} onChange={(value) => this.temporaryState.t1 = value}/>
+                            <Button variant="outlined" onClick={this.validateRequest}>OK</Button>
                             <Select onChange={(values) => {if(values.length !== 0) this.temporaryState.infoType = values[0].value}} clearable={true} style={dropdownStyle} multi={false} placeholder={"Information"} options={selectOptionsInf} values={[]}/>
                             <Select onChange={(values) => {if(values.length !== 0) this.temporaryState.indicatorType = values[0].value}} clearable={true} style={dropdownStyle} multi={false} placeholder={"Indicateur"} options={selectOptionsInd} values={[]}/>
                             <DatePicker className="date-picker" value={this.temporaryState.t2} onChange={(value) => this.temporaryState.t2 = value}/>
-                            <Button onClick={this.validateRequest}>OK</Button>
                         </div>
                         <DataContainer
                             selectedZoneName={this.state.selectedZoneName}
