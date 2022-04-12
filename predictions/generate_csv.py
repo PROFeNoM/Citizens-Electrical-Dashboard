@@ -1,6 +1,7 @@
 # Example command line arguments: -pm models/mean_curve_models/res.pickle -pt models/total_models/res.pickle -d 2022-01-01 -e 2022-03-31 -o test.csv -t RES
 # Example command line arguments: -pm models/mean_curve_models/pro.pickle -pt models/total_models/pro.pickle -d 2022-01-01 -e 2022-03-31 -o test.csv -t PRO
 # Example command line arguments: -pm models/mean_curve_models/ent.pickle -pt models/total_models/ent.pickle -d 2022-01-01 -e 2022-03-31 -o test.csv -t ENT
+# Example command line arguments: -pm models/mean_curve_models/solar.pickle -pt models/total_models/solar.pickle -d 2022-01-01 -e 2022-03-31 -o test.csv -t SOLAR
 
 import csv
 import sys
@@ -22,42 +23,49 @@ CAPACITY = {
     "mean_curve": {
         "RES": 4.338139563583263,
         "PRO": 5.191151067264514,
-        "ENT": 4.915918212083008
+        "ENT": 4.915918212083008,
+        "SOLAR": 3.8506187084377586,
     },
     "total": {
         "RES": 4.431937432252885,
         "PRO": 4.5423538510023,
-        "ENT": 3.1148380419963018
+        "ENT": 3.1148380419963018,
+        "SOLAR": 4.080539845136828
     }
 }
 STD = {
     "mean_curve": {
         "RES": 6069.960378819583,
         "PRO": 4398.5461183289035,
-        "ENT": 262.8963698897594
+        "ENT": 262.8963698897594,
+        "SOLAR": 2244600.5946435267
     },
     "total": {
         "RES": 674213991.1630179,
         "PRO": 112218025.89827447,
-        "ENT": 327627.9321726365
+        "ENT": 327627.9321726365,
+        "SOLAR": 471421360.85562223
     }
 }
 MEAN = {
     "mean_curve": {
         "RES": 17913.352807017545,
         "PRO": 21176.57446990424,
-        "ENT": 1684.0191228070175
+        "ENT": 1684.0191228070175,
+        "SOLAR": 1520930.7977459312
     },
     "total": {
         "RES": 1787207064.0133379,
         "PRO": 375758437.59091425,
-        "ENT": 2458161.711040073
+        "ENT": 2458161.711040073,
+        "SOLAR": 328610356.3166721
     }
 }
-NB_SOUTIRAGE = {
+NB_POINTS = {
     "RES": 6342782,
     "PRO": 781606,
-    "ENT": 1444
+    "ENT": 1444,
+    "SOLAR": 139587
 }
 
 
@@ -95,8 +103,8 @@ def parse_arguments():
         sys.exit(1)
 
     # Type can either be 'RES', 'PRO' or 'ENT'
-    if profile not in ['RES', 'PRO', 'ENT']:
-        print('Type should either be RES, PRO or ENT')
+    if profile not in ['RES', 'PRO', 'ENT', 'SOLAR']:
+        print('Type should either be RES, PRO, ENT, or SOLAR')
         sys.exit(1)
 
     # Check if the dates format are valid
@@ -127,7 +135,7 @@ def make_df(date_start, date_end, capacity, floor, extended_dataframe=False):
     return make_df_without_regressors(date_start, date_end, capacity, floor)
 
 
-def make_forecast(model, df, profile, std, mean):
+def make_forecast(model, df, std, mean):
     # Make a prediction
     forecast = model.predict(df)
     forecast['yhat'] = unstandardize(forecast['yhat'], std, mean)
@@ -144,18 +152,18 @@ def make_csv(forecast_total, forecast_mean, output, profile):
         writer = csv.writer(csvfile)
         writer.writerow([
             'Horodate',
-            'Total énergie soutirée (Wh)',
-            'Nb points soutirage',
+            'Total énergie soutirée (Wh)' if profile != 'SOLAR' else 'Total énergie injectée (Wh)',
+            'Nb points soutirage' if profile != 'SOLAR' else 'Nb points injection',
             'Courbe Moyenne n°1 + n°2 (Wh)',
-            'Profil'
+            'Profil' if profile != 'SOLAR' else 'Filière de production'
         ])
         for i in range(len(forecast_total)):
             writer.writerow([
                 forecast_total['ds'][i].strftime('%Y-%m-%dT%H:%M:%S+01:00'),
-                forecast_total['yhat'][i],
-                NB_SOUTIRAGE[profile],
-                forecast_mean['yhat'][i],
-                profile
+                forecast_total['yhat'][i] if forecast_total['yhat'][i] > 0 else 0,
+                NB_POINTS[profile],
+                forecast_mean['yhat'][i] if forecast_mean['yhat'][i] > 0 else 0,
+                profile if profile != 'SOLAR' else 'F5 : Solaire'
             ])
 
 
@@ -178,9 +186,9 @@ def main():
     print(f"Total model dataframe created")
 
     # Make a prediction
-    forecast_mean = make_forecast(mean_model, df_mean, profile, STD['mean_curve'][profile], MEAN['mean_curve'][profile])
+    forecast_mean = make_forecast(mean_model, df_mean, STD['mean_curve'][profile], MEAN['mean_curve'][profile])
     print(f"Mean curve predictions made")
-    forecast_total = make_forecast(total_model, df_total, profile, STD['total'][profile], MEAN['total'][profile])
+    forecast_total = make_forecast(total_model, df_total, STD['total'][profile], MEAN['total'][profile])
     print(f"Total energy predictions made")
 
     # Create a csv file with the predictions
