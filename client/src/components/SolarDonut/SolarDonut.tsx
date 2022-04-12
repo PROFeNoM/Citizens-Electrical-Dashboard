@@ -1,8 +1,8 @@
 import './SolarDonut.css';
 import React from 'react';
-import {getTotalProduction, ProducerProfile} from "../../scripts/api";
-import {zones} from "../../geodata";
-import {CanvasJSChart} from 'canvasjs-react-charts';
+import { getTotalProduction, ProducerProfile } from "../../scripts/api";
+import { zones } from "../../geodata";
+import { CanvasJSChart } from 'canvasjs-react-charts';
 
 interface Props {
 	t1: number;
@@ -21,7 +21,7 @@ export default class SolarDonut extends React.Component<Props, State> {
 	constructor(props: Props) {
 		super(props);
 		const tmpPoints = zones.features.map(f => {
-			return {name: f.properties.libelle, y: 0};
+			return { name: f.properties.libelle, y: 0 };
 		})
 
 		this.state = {
@@ -32,7 +32,7 @@ export default class SolarDonut extends React.Component<Props, State> {
 	}
 
 	async componentDidMount() {
-		const {t1, t2, urbanZone} = this.props;
+		const { t1, t2, urbanZone } = this.props;
 		const productions = await Promise.all(zones.features.map(async f => {
 			return { name: f.properties.libelle, value: await getTotalProduction(t1, t2, [ProducerProfile.SOLAR], f.properties.libelle) };
 		}));
@@ -51,6 +51,7 @@ export default class SolarDonut extends React.Component<Props, State> {
 
 	render() {
 		const chartOptions = {
+			exportEnabled: true,
 			animationEnabled: true,
 			subtitles: [{
 				text: Math.round(this.state.urbanZoneProportion) + '%',

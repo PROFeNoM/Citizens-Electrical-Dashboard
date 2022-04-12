@@ -56,6 +56,7 @@ export default class TotalConsumption extends React.Component<Props, State> {
 
 	render() {
 		const chartOptions = {
+			exportEnabled: true,
 			animationEnabled: true,
 			axisX: {
 				fontFamily: 'Ubuntu',
