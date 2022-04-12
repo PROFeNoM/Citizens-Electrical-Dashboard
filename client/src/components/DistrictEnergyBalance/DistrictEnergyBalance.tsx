@@ -51,7 +51,8 @@ export default class DistrictEnergyBalance extends React.Component<Props, State>
 		}
 	}
 
-	async componentDidMount() {
+
+	async fetchData(){
 		const t1 = new Date('2021-12-01T00:30:00').getTime();
 		const t2 = new Date('2021-12-31T23:30:00').getTime();
 
@@ -81,6 +82,14 @@ export default class DistrictEnergyBalance extends React.Component<Props, State>
 			newState.districtData.production = districtProduction;
 			return newState
 		})
+	}
+
+	async componentDidMount() {
+		await this.fetchData();
+	}
+
+	async componentDidUpdate() {
+		await this.fetchData();
 	}
 
 	private get currentData(): Data {

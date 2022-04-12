@@ -29,7 +29,7 @@ export default class LocalProductionInfo extends React.Component<Props, State> {
 		};
 	}
 
-	async componentDidMount() {
+	async fetchData(){
 		const { t1, t2, urbanZone } = this.props;
 		// Retrive the number of production points using geodata zones
 		const zone = zones.features.find(z => z.properties.libelle === urbanZone).properties.PROD_F5;
@@ -42,6 +42,14 @@ export default class LocalProductionInfo extends React.Component<Props, State> {
 			//bestDay: bestDay,
 			//worstDay: worstDay
 		});
+	}
+
+	async componentDidMount() {
+		await this.fetchData();
+	}
+
+	async componentDidUpdate() {
+		await this.fetchData();
 	}
 
 	render() {

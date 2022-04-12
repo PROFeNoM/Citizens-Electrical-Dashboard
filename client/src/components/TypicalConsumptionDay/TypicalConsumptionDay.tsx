@@ -92,7 +92,7 @@ export default class TypicalConsumptionDay extends React.Component<Props, State>
 		});
 	}
 
-	async componentDidMount() {
+	async fetchData(){
 		const selfConsumptionData = await this.getSelfConsumptionData();
 		const districtConsumptionData = await this.getDistrictConsumptionData();
 		const urbanZoneConsumptionData = await this.getUrbanZoneConsumptionData();
@@ -101,6 +101,14 @@ export default class TypicalConsumptionDay extends React.Component<Props, State>
 			districtConsumptionData: districtConsumptionData,
 			urbanZoneConsumptionData: urbanZoneConsumptionData,
 		});
+	}
+
+	async componentDidMount() {
+		await this.fetchData();
+	}
+
+	async componentDidUpdate() {
+		await this.fetchData();
 	}
 
 	render() {

@@ -16,7 +16,7 @@ import {
 import DatePicker from 'react-date-picker';
 import DataContainer from '../../components/DataContainer/DataContaineur';
 import { ConsumerProfile } from '../../scripts/api';
-
+import { Button } from '@mui/material';
 
 interface State {
     selectedZoneName: string | null,
@@ -30,6 +30,8 @@ interface State {
 export default class Home extends React.Component<{}, State>{
     private mapRef = React.createRef<HomeMap>();
 
+    private temporaryState: State;
+
     constructor(props: {}) {
         super(props);
         this.state = {
@@ -41,6 +43,26 @@ export default class Home extends React.Component<{}, State>{
             t2: new Date('2021-12-31T00:30:00Z')
 
         };
+        this.temporaryState = this.state;
+    
+        this.validateRequest = this.validateRequest.bind(this);
+    }
+
+    validateRequest() {
+
+        console.log(this.temporaryState);
+        console.log("JE SUIS BIEN LA");
+        if (this.temporaryState.selectedZoneName == "Quartier de la Bastide")
+            this.setState({selectedZoneName: null});
+        else   
+            this.setState({selectedZoneName: this.temporaryState.selectedZoneName});
+       
+        this.setState({indicatorType: this.temporaryState.indicatorType});
+        this.setState({buildingType: this.temporaryState.buildingType});
+        this.setState({infoType: this.temporaryState.infoType});
+        this.setState({t1: this.temporaryState.t1});
+        this.setState({t2: this.temporaryState.t2});        
+        console.log(this.state);
     }
 
 
@@ -56,12 +78,13 @@ export default class Home extends React.Component<{}, State>{
                     />
                     <div>
                         <div className="dropdown-wrapper">
-                            <Select style={dropdownStyle} multi={false} placeholder={"Quartier"} options={selectOptionsDist} onChange={(values) => this.setState({selectedZoneName: values[0].label})} values={[]}/>
-                            <Select clearable={true} style={dropdownStyle} multi={false} placeholder={"Bâtiment"} options={selectOptionsBuild} onChange={(values) => this.setState({buildingType: values[0].value})} values={[]}/>
-                            <DatePicker className="date-picker" value={this.state.t1} onChange={(value) => this.setState({t1: value})}/>
-                            <Select style={dropdownStyle} multi={false} placeholder={"Information"} options={selectOptionsInf} onChange={(values) => this.setState({infoType: values[0].value})} values={[]}/>
-                            <Select style={dropdownStyle} multi={false} placeholder={"Indicateur"} options={selectOptionsInd} onChange={(values) => this.setState({indicatorType: values[0].value})} values={[]}/>
-                            <DatePicker className="date-picker" value={this.state.t2} onChange={(value) => this.setState({t2: value})}/>
+                            <Select onChange={(values) => {if(values.length !== 0) this.temporaryState.selectedZoneName = values[0].label}} clearable={true} style={dropdownStyle} multi={false} placeholder={"Quartier"} options={selectOptionsDist} values={[]}/>
+                            <Select onChange={(values) =>  {if(values.length !== 0) this.temporaryState.buildingType = values[0].value}} clearable={true} style={dropdownStyle} multi={false} placeholder={"Bâtiment"} options={selectOptionsBuild} values={[]}/>
+                            <DatePicker className="date-picker" value={this.temporaryState.t1} onChange={(value) => this.temporaryState.t1 = value}/>
+                            <Select onChange={(values) => {if(values.length !== 0) this.temporaryState.infoType = values[0].value}} clearable={true} style={dropdownStyle} multi={false} placeholder={"Information"} options={selectOptionsInf} values={[]}/>
+                            <Select onChange={(values) => {if(values.length !== 0) this.temporaryState.indicatorType = values[0].value}} clearable={true} style={dropdownStyle} multi={false} placeholder={"Indicateur"} options={selectOptionsInd} values={[]}/>
+                            <DatePicker className="date-picker" value={this.temporaryState.t2} onChange={(value) => this.temporaryState.t2 = value}/>
+                            <Button onClick={this.validateRequest}>OK</Button>
                         </div>
                         <DataContainer
                             selectedZoneName={this.state.selectedZoneName}

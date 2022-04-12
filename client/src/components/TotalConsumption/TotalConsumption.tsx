@@ -45,13 +45,21 @@ export default class TotalConsumption extends React.Component<Props, State> {
 		];
 	}
 
-	async componentDidMount() {
+	async fetchData(){
 		const districtConsumptionData = await this.getDistrictConsumptionData();
 		const urbanZoneConsumptionData = await this.getUrbanZoneConsumptionData();
 		this.setState({
 			districtConsumptionData: districtConsumptionData,
 			urbanZoneConsumptionData: urbanZoneConsumptionData
 		});
+	}
+
+	async componentDidMount() {
+		await this.fetchData();
+	}
+
+	async componentDidUpdate() {
+		await this.fetchData();
 	}
 
 	render() {

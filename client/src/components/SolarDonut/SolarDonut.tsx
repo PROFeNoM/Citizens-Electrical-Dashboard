@@ -31,7 +31,7 @@ export default class SolarDonut extends React.Component<Props, State> {
 		};
 	}
 
-	async componentDidMount() {
+	async fetchData(){
 		const { t1, t2, urbanZone } = this.props;
 		const productions = await Promise.all(zones.features.map(async f => {
 			return { name: f.properties.libelle, value: await getTotalProduction(t1, t2, [ProducerProfile.SOLAR], f.properties.libelle) };
@@ -49,6 +49,14 @@ export default class SolarDonut extends React.Component<Props, State> {
 		});
 	}
 
+	async componentDidMount() {
+		await this.fetchData();
+	}
+
+	async componentDidUpdate() {
+		await this.fetchData();
+	}
+	
 	render() {
 		const chartOptions = {
 			exportEnabled: true,
