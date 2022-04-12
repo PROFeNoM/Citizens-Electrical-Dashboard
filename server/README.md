@@ -24,7 +24,8 @@ docker-compose up
 
 ```bash
 pnpm build
-pnpm init-db
+pnpm generate-mock-data
+pnpm load-data-to-db
 ```
 
 ## Run the server in watch mode

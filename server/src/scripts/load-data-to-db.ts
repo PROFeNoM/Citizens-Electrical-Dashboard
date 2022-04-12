@@ -1,56 +1,23 @@
-import { rm } from 'fs/promises';
-import * as download from 'download';
-import { logger } from '../logger';
-import { connectToDB } from './connection';
-import { parseFile } from 'fast-csv';
-import { ConsumerProfile, Consumption } from './entities/Consumption';
 import { EntityManager, getConnection } from 'typeorm';
-import { ProducerProfile, Production } from './entities/Production';
-
-const dataDir = 'raw-data';
-
-// 2021-01-01, from 00:00:00 to 23:59:59, at UTC+1, converted to UTC
-const timestampStart = '2021-06-01T00:00:00Z';
-const timestampEnd = '2021-12-31T23:30:00Z';
+import { ConsumerProfile, Consumption } from '../db/entities/Consumption';
+import { logger } from '../logger';
+import { ProducerProfile, Production } from '../db/entities/Production';
+import { connectToDB } from '../db/connection';
+import { mockSrcDataDir, readCsv } from './utils';
 
 main().catch(console.error);
 
 async function main() {
-	await downloadRawData();
 	await connectToDB();
 	await getConnection().transaction(async tx => {
 		await loadConsumptionData(tx);
 		await loadProductionData(tx);
 	});
-	logger.info('data loaded to database');
-}
-
-async function downloadRawData() {
-	await rm(dataDir, { recursive: true, force: true });
-
-	logger.info('downloading raw data (file 1/3)');
-	await downloadDataset('conso-inf36-region', 'consumption-part1');
-
-	logger.info('downloading raw data (file 2/3)');
-	await downloadDataset('conso-sup36-region', 'consumption-part2');
-
-	logger.info('downloading raw data (file 3/3)');
-	await downloadDataset('prod-region', 'production');
-
-	async function downloadDataset(datasetName: string, destName: string) {
-		await download(
-			`https://data.enedis.fr/explore/dataset/${datasetName}/download/?format=csv&refine.region=Nouvelle+Aquitaine&q=horodate:%5B${timestampStart}+TO+${timestampEnd}%5D&timezone=UTC&lang=fr&use_labels_for_header=true&csv_separator=%3B`,
-			dataDir,
-			{
-				filename: `${destName}.csv`,
-			},
-		);
-	}
 }
 
 async function loadConsumptionData(tx: EntityManager) {
 	for (let i = 1; i <= 2; ++i) {
-		for await (const line of readCsv(`consumption-part${i}`)) {
+		for await (const line of readCsv(mockSrcDataDir + `consumption-part${i}`)) {
 			const consumption = new Consumption();
 			consumption.drainedEnergy = parseInt(line['Total énergie soutirée (Wh)'], 10);
 
@@ -83,7 +50,7 @@ async function loadConsumptionData(tx: EntityManager) {
 }
 
 async function loadProductionData(tx: EntityManager) {
-	for await (const line of readCsv('production')) {
+	for await (const line of readCsv(mockSrcDataDir + 'production.csv')) {
 		const production = new Production();
 		production.injectedEnergy = parseInt(line['Total énergie injectée (Wh)'], 10);
 
@@ -118,13 +85,4 @@ async function loadProductionData(tx: EntityManager) {
 
 		await tx.save(production);
 	}
-}
-
-function readCsv(filename: string) {
-	logger.info(`parsing ${filename}.csv`);
-
-	return parseFile(`${dataDir}/${filename}.csv`, {
-		headers: true,
-		delimiter: ';',
-	});
 }
