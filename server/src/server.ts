@@ -22,7 +22,7 @@ app.get('/api/v1/:entity/total', apiReqCheckerParser, async (req, res) => {
 		: 'injected_energy';
 
 	// Get the maximum timestamp in the database where the field is_prediction is false
-	const maxTimestamp: Date = await getConnection()
+	const maxTimestamp = await getConnection()
 		.createQueryBuilder()
 		.select(`MAX(timestamp)`)
 		.from(`${req.params.entity}`, `${req.params.entity}`)
@@ -31,11 +31,13 @@ app.get('/api/v1/:entity/total', apiReqCheckerParser, async (req, res) => {
 
 	let query: SelectQueryBuilder<any>;
 	let result: { total: number };
-	if (new Date(req.maxDate) < maxTimestamp) {
+	console.log(req.maxDate, maxTimestamp.max, req.maxDate < maxTimestamp.max);
+	if (req.maxDate < maxTimestamp.max) {
 		query = await getConnection().createQueryBuilder()
 			.select(`sum(${field}) AS total`)
 			.from(req.entity, 'x')
-			.where('x.isPrediction IS FALSE AND x.timestamp BETWEEN :minDate AND :maxDate', { minDate: req.minDate, maxDate: req.maxDate })
+			.where('x.timestamp BETWEEN :minDate AND :maxDate', { minDate: req.minDate, maxDate: req.maxDate })
+			.andWhere('x.isPrediction IS FALSE')
 		if (req.profiles.length > 0) {
 			query = query.andWhere('x.profile IN (:...profiles)', { profiles: req.profiles });
 		}
@@ -45,12 +47,12 @@ app.get('/api/v1/:entity/total', apiReqCheckerParser, async (req, res) => {
 		let actualRecordsQuery = await getConnection().createQueryBuilder()
 			.select(`sum(${field}) AS total`)
 			.from(req.entity, 'x')
-			.where('x.timestamp BETWEEN :minDate AND :maxDate', { minDate: req.minDate, maxDate: maxTimestamp.getTime() })
+			.where('x.timestamp BETWEEN :minDate AND :maxDate', { minDate: req.minDate, maxDate: maxTimestamp.max })
 			.andWhere('x.isPrediction IS FALSE', {});
 		let predictionRecordsQuery = await getConnection().createQueryBuilder()
 			.select(`sum(${field}) AS total`)
 			.from(req.entity, 'x')
-			.where('x.timestamp BETWEEN :minDate AND :maxDate', { minDate: maxTimestamp.getTime(), maxDate: req.maxDate })
+			.where('x.timestamp BETWEEN :minDate AND :maxDate', { minDate: maxTimestamp.max, maxDate: req.maxDate })
 			.andWhere('x.isPrediction IS TRUE', {});
 		if (req.profiles.length > 0) {
 			actualRecordsQuery = actualRecordsQuery.andWhere('x.profile IN (:...profiles)', { profiles: req.profiles });
@@ -79,7 +81,7 @@ app.get('/api/v1/:entity/hourly-mean', apiReqCheckerParser, async (req, res) => 
 		: 'injected_energy';
 
 	// Get the maximum timestamp in the database where the field is_prediction is false
-	const maxTimestamp: Date = await getConnection()
+	const maxTimestamp = await getConnection()
 		.createQueryBuilder()
 		.select(`MAX(timestamp)`)
 		.from(`${req.params.entity}`, `${req.params.entity}`)
@@ -89,7 +91,7 @@ app.get('/api/v1/:entity/hourly-mean', apiReqCheckerParser, async (req, res) => 
 	let query: SelectQueryBuilder<any>;
 	let result: { hour: number, mean: number }[];
 
-	if (new Date(req.maxDate) < maxTimestamp) {
+	if (req.maxDate < maxTimestamp.max) {
 		query = await getConnection().createQueryBuilder()
 			.select(`extract(hour from timestamp)::int AS hour, avg(${field}) * 2 AS mean`)
 			.from(req.entity, 'x')
@@ -107,14 +109,14 @@ app.get('/api/v1/:entity/hourly-mean', apiReqCheckerParser, async (req, res) => 
 			.select(`extract(hour from timestamp)::int AS hour, avg(${field}) * 2 AS mean`)
 			.from(req.entity, 'x')
 			.groupBy('hour')
-			.where('x.timestamp BETWEEN :minDate AND :maxDate', {minDate: req.minDate, maxDate: maxTimestamp.getTime()})
+			.where('x.timestamp BETWEEN :minDate AND :maxDate', {minDate: req.minDate, maxDate: maxTimestamp.max})
 			.andWhere('x.isPrediction IS FALSE', {})
 			.orderBy('hour')
 		let predictionRecordsQuery = await getConnection().createQueryBuilder()
 			.select(`extract(hour from timestamp)::int AS hour, avg(${field}) * 2 AS mean`)
 			.from(req.entity, 'x')
 			.groupBy('hour')
-			.where('x.timestamp BETWEEN :minDate AND :maxDate', {minDate: maxTimestamp.getTime(), maxDate: req.maxDate})
+			.where('x.timestamp BETWEEN :minDate AND :maxDate', {minDate: maxTimestamp.max, maxDate: req.maxDate})
 			.andWhere('x.isPrediction IS TRUE', {})
 			.orderBy('hour')
 		if (req.profiles.length > 0) {
