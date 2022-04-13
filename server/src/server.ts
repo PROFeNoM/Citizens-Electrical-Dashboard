@@ -21,9 +21,17 @@ app.get('/api/v1/:entity/total', apiReqCheckerParser, async (req, res) => {
 		? 'drained_energy'
 		: 'injected_energy';
 
+	// Get the maximum timestamp in the database where the field is_prediction is false
+	const maxTimestamp: Date = await getConnection()
+		.createQueryBuilder()
+		.select(`MAX(timestamp)`)
+		.from(`${req.params.entity}`, `${req.params.entity}`)
+		.where(`is_prediction = false`)
+		.getRawOne();
+
 	let query: SelectQueryBuilder<any>;
 	let result: { total: number };
-	if (new Date(req.maxDate) < new Date()) {
+	if (new Date(req.maxDate) < maxTimestamp) {
 		query = await getConnection().createQueryBuilder()
 			.select(`sum(${field}) AS total`)
 			.from(req.entity, 'x')
@@ -37,12 +45,12 @@ app.get('/api/v1/:entity/total', apiReqCheckerParser, async (req, res) => {
 		let actualRecordsQuery = await getConnection().createQueryBuilder()
 			.select(`sum(${field}) AS total`)
 			.from(req.entity, 'x')
-			.where('x.timestamp BETWEEN :minDate AND :maxDate', { minDate: req.minDate, maxDate: new Date().getTime() })
+			.where('x.timestamp BETWEEN :minDate AND :maxDate', { minDate: req.minDate, maxDate: maxTimestamp.getTime() })
 			.andWhere('x.isPrediction IS FALSE', {});
 		let predictionRecordsQuery = await getConnection().createQueryBuilder()
 			.select(`sum(${field}) AS total`)
 			.from(req.entity, 'x')
-			.where('x.timestamp BETWEEN :minDate AND :maxDate', { minDate: new Date().getTime(), maxDate: req.maxDate })
+			.where('x.timestamp BETWEEN :minDate AND :maxDate', { minDate: maxTimestamp.getTime(), maxDate: req.maxDate })
 			.andWhere('x.isPrediction IS TRUE', {});
 		if (req.profiles.length > 0) {
 			actualRecordsQuery = actualRecordsQuery.andWhere('x.profile IN (:...profiles)', { profiles: req.profiles });
@@ -70,10 +78,18 @@ app.get('/api/v1/:entity/hourly-mean', apiReqCheckerParser, async (req, res) => 
 		? 'drained_energy'
 		: 'injected_energy';
 
+	// Get the maximum timestamp in the database where the field is_prediction is false
+	const maxTimestamp: Date = await getConnection()
+		.createQueryBuilder()
+		.select(`MAX(timestamp)`)
+		.from(`${req.params.entity}`, `${req.params.entity}`)
+		.where(`is_prediction = false`)
+		.getRawOne();
+
 	let query: SelectQueryBuilder<any>;
 	let result: { hour: number, mean: number }[];
 
-	if (new Date(req.maxDate) < new Date()) {
+	if (new Date(req.maxDate) < maxTimestamp) {
 		query = await getConnection().createQueryBuilder()
 			.select(`extract(hour from timestamp)::int AS hour, avg(${field}) * 2 AS mean`)
 			.from(req.entity, 'x')
@@ -91,14 +107,14 @@ app.get('/api/v1/:entity/hourly-mean', apiReqCheckerParser, async (req, res) => 
 			.select(`extract(hour from timestamp)::int AS hour, avg(${field}) * 2 AS mean`)
 			.from(req.entity, 'x')
 			.groupBy('hour')
-			.where('x.timestamp BETWEEN :minDate AND :maxDate', {minDate: req.minDate, maxDate: new Date().getTime()})
+			.where('x.timestamp BETWEEN :minDate AND :maxDate', {minDate: req.minDate, maxDate: maxTimestamp.getTime()})
 			.andWhere('x.isPrediction IS FALSE', {})
 			.orderBy('hour')
 		let predictionRecordsQuery = await getConnection().createQueryBuilder()
 			.select(`extract(hour from timestamp)::int AS hour, avg(${field}) * 2 AS mean`)
 			.from(req.entity, 'x')
 			.groupBy('hour')
-			.where('x.timestamp BETWEEN :minDate AND :maxDate', {minDate: new Date().getTime(), maxDate: req.maxDate})
+			.where('x.timestamp BETWEEN :minDate AND :maxDate', {minDate: maxTimestamp.getTime(), maxDate: req.maxDate})
 			.andWhere('x.isPrediction IS TRUE', {})
 			.orderBy('hour')
 		if (req.profiles.length > 0) {
