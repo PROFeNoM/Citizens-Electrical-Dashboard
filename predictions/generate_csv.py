@@ -183,6 +183,11 @@ def main():
         df['Horodate'] = pd.to_datetime(df['Horodate'], utc=True).dt.tz_convert(None)
         # Only keep the data that have there month and day between date_start and date_end, independently of the year
         df = df[(df['Horodate'].dt.month >= date_start.month) & (df['Horodate'].dt.month <= date_end.month)]
+
+        year_offset = date_start.year - df['Horodate'].dt.year.min()
+        # Add the year offset to the records
+        df['Horodate'] = df['Horodate'] + pd.DateOffset(months=12*year_offset)
+
         df['Horodate'] = df['Horodate'].dt.strftime('%Y-%m-%dT%H:%M:%S+01:00')
         df.to_csv(output, index=False)
         print("CSV file created")
