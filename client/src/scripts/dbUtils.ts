@@ -13,6 +13,7 @@ for (const zone of zones.features) {
 	zonesArea[zone.properties.libelle] = turf.area(zone);
 }
 
+// FIXME client shouldn't have to compute that, client shouldn't have to compute anything
 /** Exactly like booleanContains of @turf/turf, but it works with MultiPolygon. */
 function isContained(feature1: Feature<MultiPolygon, any>, feature2: Feature<MultiPolygon, any>) {
 	// each "for" will loop only once if the given features are made of only one polygon each (which is most likely the case)
