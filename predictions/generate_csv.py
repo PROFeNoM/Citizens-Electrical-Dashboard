@@ -2,6 +2,7 @@
 # Example command line arguments: -pm models/mean_curve_models/pro.pickle -pt models/total_models/pro.pickle -d 2022-01-01 -e 2022-03-31 -o test.csv -t PRO
 # Example command line arguments: -pm models/mean_curve_models/ent.pickle -pt models/total_models/ent.pickle -d 2022-01-01 -e 2022-03-31 -o test.csv -t ENT
 # Example command line arguments: -pm models/mean_curve_models/solar.pickle -pt models/total_models/solar.pickle -d 2022-01-01 -e 2022-03-31 -o test.csv -t SOLAR
+# Example command line arguments: -d 2022-01-01 -e 2022-03-31 -o test.csv -t LIGHTING
 
 import csv
 import sys
@@ -17,6 +18,8 @@ from datetime import datetime, timedelta
 from prophet import Prophet
 
 from df_utils import make_df_without_regressors, make_df_with_regressors
+
+LIGHTING_DATA_PATH = 'data/lightingData2021.csv'
 
 FLOOR = 0
 CAPACITY = {
@@ -79,8 +82,8 @@ def load_model(model):
 
 def parse_arguments():
     parser = argparse.ArgumentParser(description='Generate a CSV file for a given model between two dates')
-    parser.add_argument('-pm', '--prophet_mean', help='Prophet mean curve model path', required=True)
-    parser.add_argument('-pt', '--prophet_total', help='Prophet total energy model path', required=True)
+    parser.add_argument('-pm', '--prophet_mean', help='Prophet mean curve model path. Not required for LIGHTING', required=False)
+    parser.add_argument('-pt', '--prophet_total', help='Prophet total energy model path. Not required for LIGHTING', required=False)
     parser.add_argument('-t', '--type', help='Type of model', required=True)
     parser.add_argument('-d', '--date_start', help='Start date', required=True)
     parser.add_argument('-e', '--date_end', help='End date', required=True)
@@ -95,16 +98,16 @@ def parse_arguments():
     output = args.output
 
     # Check if the model exists
-    if not os.path.exists(mean_model):
+    if profile != 'LIGHTING' and not os.path.exists(mean_model):
         print('Mean model path does not exist')
         sys.exit(1)
-    if not os.path.exists(total_model):
+    if profile != 'LIGHTING' and not os.path.exists(total_model):
         print('Total model path does not exist')
         sys.exit(1)
 
     # Type can either be 'RES', 'PRO' or 'ENT'
-    if profile not in ['RES', 'PRO', 'ENT', 'SOLAR']:
-        print('Type should either be RES, PRO, ENT, or SOLAR')
+    if profile not in ['RES', 'PRO', 'ENT', 'SOLAR', 'LIGHTING']:
+        print('Type should either be RES, PRO, ENT, SOLAR, or LIGHTING')
         sys.exit(1)
 
     # Check if the dates format are valid
@@ -172,6 +175,18 @@ def main():
 
     print(f"Generating CSV file for mean model {mean_model_path} and total model {total_model_path} between {date_start} and {date_end}")
     print(f"Output file: {output}")
+
+    if profile == 'LIGHTING':
+        # Load the csv file located at the path data/lightingData2021.csv
+        df = pd.read_csv(LIGHTING_DATA_PATH)
+        # Convert the 'Horodate' column to datetime
+        df['Horodate'] = pd.to_datetime(df['Horodate'], utc=True).dt.tz_convert(None)
+        # Only keep the data that have there month and day between date_start and date_end, independently of the year
+        df = df[(df['Horodate'].dt.month >= date_start.month) & (df['Horodate'].dt.month <= date_end.month)]
+        df['Horodate'] = df['Horodate'].dt.strftime('%Y-%m-%dT%H:%M:%S+01:00')
+        df.to_csv(output, index=False)
+        print("CSV file created")
+        return
 
     # Load the pickle model
     mean_model = load_model(mean_model_path)
