@@ -20,6 +20,10 @@ export function exists(path: PathLike): Promise<boolean> {
 	});
 }
 
+export function randomElement<T>(array: T[]): T {
+	return array[Math.floor(Math.random() * array.length)];
+}
+
 export function readCsv(path: string) {
 	logger.info(`parsing ${path}`);
 
