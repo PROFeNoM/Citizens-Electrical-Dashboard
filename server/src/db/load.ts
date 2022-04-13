@@ -48,7 +48,7 @@ async function downloadRawData() {
 	}
 }
 
-export function createConsumptionRecord(line: any) {
+function createConsumptionRecord(line: any) {
 	const consumption = new Consumption();
 	consumption.drainedEnergy = parseInt(line['Total énergie soutirée (Wh)'], 10);
 
@@ -75,7 +75,7 @@ export function createConsumptionRecord(line: any) {
 		return null;
 	}
 
-	consumption.isPrediction = consumption.timestamp > new Date();
+	consumption.isPrediction = false;
 
 	return consumption;
 }
@@ -90,7 +90,7 @@ async function loadConsumptionData(tx: EntityManager) {
 	}
 }
 
-export function createProductionRecord(line: any) {
+function createProductionRecord(line: any) {
 	const production = new Production();
 	production.injectedEnergy = parseInt(line['Total énergie injectée (Wh)'], 10);
 
@@ -123,7 +123,7 @@ export function createProductionRecord(line: any) {
 		return null;
 	}
 
-	production.isPrediction = production.timestamp > new Date();
+	production.isPrediction = false;
 
 	return production;
 }
