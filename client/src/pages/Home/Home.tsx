@@ -66,15 +66,40 @@ export default class Home extends React.Component<{}, State>{
                     />
                     <div>
                         <div className="dropdown-wrapper">
-                            <TreePicker onChange={(values: string) => { this.temporaryState.selectedZoneName = values }} className="TreePicker" data={selectOptionsDist} />
-                            <TreePicker onChange={(values: ConsumerProfile) => { this.temporaryState.buildingType = values }} className="TreePicker" data={selectOptionsBuild} />
-                            <TreePicker onChange={(values: Indicator) => this.temporaryState.indicatorType = values} className="TreePicker" data={indicatorTree} />
-                            <div></div>
-                            <DatePicker className="date-picker" onChange={(value) => this.temporaryState.t1 = value} />
-                            {/* <Select onChange={(values) => {if(values.length !== 0) this.temporaryState.infoType = values[0].value}} clearable={true} style={dropdownStyle} multi={false} placeholder={"Information"} options={selectOptionsInf} values={[]}/>
-                            <Select onChange={(values) => {if(values.length !== 0) this.temporaryState.indicatorType = values[0].value}} clearable={true} style={dropdownStyle} multi={false} placeholder={"Indicateur"} options={selectOptionsInd} values={[]}/> */}
-                            <DatePicker className="date-picker" onChange={(value) => this.temporaryState.t2 = value} />
-                            <Button className="val-button" variant="outlined" onClick={this.validateRequest}>OK</Button>
+                            <TreePicker
+                                onChange={(values: string) => { this.temporaryState.selectedZoneName = values }}
+                                className="TreePicker" data={selectOptionsDist}
+                                placeholder="Zone"
+                                placement="bottomEnd"
+                            />
+                            <TreePicker
+                                onChange={(values: ConsumerProfile) => { this.temporaryState.buildingType = values }}
+                                className="TreePicker"
+                                data={selectOptionsBuild}
+                                placeholder="Filière"
+                                placement="bottomEnd"
+                            />
+                            <TreePicker
+                                onChange={(values: Indicator) => this.temporaryState.indicatorType = values}
+                                className="TreePicker" data={indicatorTree}
+                                placeholder="Indicateur"
+                                placement="bottomEnd"
+                            />
+                            <div />
+                            <DatePicker
+                                className="date-picker"
+                                onChange={(value) => this.temporaryState.t1 = value}
+                                placeholder="Date début" />
+                            <DatePicker
+                                className="date-picker"
+                                onChange={(value) => this.temporaryState.t2 = value}
+                                placeholder="Date fin" />
+                            <Button
+                                className="validate-button"
+                                variant="outlined"
+                                onClick={this.validateRequest}>
+                                OK
+                            </Button>
                         </div>
                         <DataContainer
                             selectedZoneName={this.state.selectedZoneName}

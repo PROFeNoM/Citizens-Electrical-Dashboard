@@ -46,7 +46,7 @@ export const indicatorTree: tree[] = [
 				value: Indicator.LocalProductionInfo,
 			},
 			{
-				label: 'Repartion selon le type de bâtiment',
+				label: 'Répartion selon le type de bâtiment',
 				value: Indicator.SolarDonut,
 			},
 			{

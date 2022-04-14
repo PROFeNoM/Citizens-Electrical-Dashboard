@@ -7,6 +7,7 @@
     background-color: var(--color-bg);
 }
 
+
 .dropdown-wrapper {
     padding: 20px;
     display: grid;
@@ -14,28 +15,27 @@
     height: 20%;
 }
 
+
 .dropdown-wrapper * {
     border-color: aqua;
 }
 
 
-
 .date-picker {
     width: 95%;
     height: 90%;
-    display: 'flex';
-    text-transform: 'uppercase';
+    display: flex;
     color: white;
 }
 
 
-.val-button {
-  width: 95%;
-  height: 60%;
-  display: 'flex';
-  text-transform: 'uppercase';
-  color: white;
+.validate-button {
+    width: 95%;
+    height: 90%;
+    display: flex;
+    text-transform: uppercase;
 }
+
 
 main {
     display: grid;
@@ -43,9 +43,11 @@ main {
     height: 100%;
 }
 
+
 main .map-container {
     height: 100%;
 }
+
 
 @media (max-width: 800px) {
     main {
@@ -55,7 +57,7 @@ main .map-container {
 }
 
 
- .TreePicker {
+.TreePicker {
     height: 80%;
     width: 95%;
     background-color: none;
