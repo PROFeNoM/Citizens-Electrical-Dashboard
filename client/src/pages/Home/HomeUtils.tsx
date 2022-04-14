@@ -13,7 +13,8 @@ export enum Indicator {
     SolarDonut,
     TotalConsumption,
     WeeklyProduction,
-    TypicalConsumptionDay
+    TypicalConsumptionDay,
+    TypicalProductionDay
 };
 
 interface tree {label: string, value?: Indicator, children?: tree[]}
@@ -55,6 +56,10 @@ export const indicatorTree: tree[] = [
         label: 'Hebdomadaire',
         value: Indicator.WeeklyProduction,
       },
+      {
+        label: 'Journée type',
+        value: Indicator.TypicalProductionDay,
+      }
     ],
   }
 ]

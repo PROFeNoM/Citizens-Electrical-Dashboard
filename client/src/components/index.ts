@@ -12,3 +12,4 @@ export { default as ProductionChoroplethMap } from './Maps/ProductionChoroplethM
 export { default as ConsumptionDonut } from './ConsumptionDonut/ConsumptionDonut'
 export { default as LocalProductionInfo } from './LocalProductionInfo/LocalProductionInfo'
 export { default as SolarDonut } from './SolarDonut/SolarDonut'
+export { default as TypicalProductionDay } from './TypicalProductionDay/TypicalProductionDay'
