@@ -8,9 +8,8 @@ interface HeaderProps {
 function Header({ title }: HeaderProps) {
 	return (
 		<header>
-			<div />
-			<h1 className="header-title">{title}</h1>
-			<img src={logo} className="logo" alt="Logo Enedis" color="#fff" />
+				<p id="header-title">{title}</p>
+				<img src={logo} id="logo" alt="Logo Enedis" color="#fff" />
 		</header>
 	);
 }
