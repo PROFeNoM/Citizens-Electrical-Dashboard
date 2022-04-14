@@ -4,6 +4,7 @@
     display: flex;
     flex-flow: column;
     height: 100vh;
+    background-color: var(--color-bg);
 }
 
 .dropdown-wrapper {
