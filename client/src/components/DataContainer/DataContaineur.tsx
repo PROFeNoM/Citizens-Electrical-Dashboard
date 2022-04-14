@@ -1,6 +1,6 @@
 import React from 'react';
 import { DistrictEnergyBalance,ChargingStationIndicator } from '../../components'
-import { Indicator, Information } from '../../pages/Home/HomeUtils'
+import { Indicator } from '../../pages/Home/HomeUtils'
 import { TypicalConsumptionDay, ConsumptionDonut, SolarDonut, WeeklyProduction } from '../../components'
 import { ConsumerProfile } from '../../scripts/api';
 import LocalProductionInfo from '../LocalProductionInfo/LocalProductionInfo';
