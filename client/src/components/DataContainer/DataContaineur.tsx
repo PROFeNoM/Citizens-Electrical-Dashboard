@@ -1,5 +1,5 @@
 import React from 'react';
-import { DistrictEnergyBalance } from '../../components'
+import { DistrictEnergyBalance,ChargingStationIndicator } from '../../components'
 import { Indicator, Information } from '../../pages/Home/HomeUtils'
 import { TypicalConsumptionDay, ConsumptionDonut, SolarDonut, WeeklyProduction } from '../../components'
 import { ConsumerProfile } from '../../scripts/api';
@@ -73,7 +73,7 @@ export default class DataContainer extends React.Component<Props> {
                     }
                 case Indicator.BornesDeRecharge:
                     return (
-                        <DistrictEnergyBalance
+                        <ChargingStationIndicator
                         selectedZoneName={this.props.selectedZoneName}
                         />
                     )

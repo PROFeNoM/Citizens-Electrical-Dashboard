@@ -1,4 +1,5 @@
 export { default as HamburgerMenu } from './HamburgerMenu/HamburgerMenu'
+export { default as ChargingStationIndicator } from './ChargingStationIndicator/ChargingStationIndicator'
 export { default as DistrictEnergyBalance } from './DistrictEnergyBalance/DistrictEnergyBalance'
 export { default as HomeMap } from './Maps/HomeMap/HomeMap'
 export { default as ChoroplethMap } from './Maps/ChoroplethMap/ChoroplethMap'

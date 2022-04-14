@@ -38,8 +38,8 @@ export const lightingPoints: CircleLayer = {
 	'type': 'circle',
 	'source': 'Lighting-source',
 	'paint': {
-		'circle-radius': 180,
-		'circle-color': '#aaa',
+		'circle-radius': 12,
+		'circle-color': '#e06666',
 	},
 }
 
