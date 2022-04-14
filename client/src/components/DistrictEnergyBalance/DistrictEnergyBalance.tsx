@@ -3,9 +3,6 @@ import './DistrictEnergyBalance.css';
 import { getZoneArea, getZoneNbOfBuildings, getZoneNbOfCollectionSites, getZonesName } from '../../scripts/dbUtils';
 import copy from 'fast-copy';
 import { ConsumerProfile, getTotalConsumption, getTotalProduction } from '../../scripts/api';
-import { Link } from 'react-router-dom';
-import chart_ic from '../../images/chart_icon.png';
-import i_ic from '../../images/i_icon.png';
 
 const formatter = new Intl.NumberFormat();
 

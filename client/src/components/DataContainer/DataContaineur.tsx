@@ -71,6 +71,12 @@ export default class DataContainer extends React.Component<Props> {
                                 />
                             )
                     }
+                case Indicator.BornesDeRecharge:
+                    return (
+                        <DistrictEnergyBalance
+                        selectedZoneName={this.props.selectedZoneName}
+                        />
+                    )
         }
     }
 }
