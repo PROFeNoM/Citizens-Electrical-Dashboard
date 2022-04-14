@@ -1,3 +1,4 @@
+import './Home.css';
 import { zones } from '../../geodata';
 
 import { ConsumerProfile } from '../../scripts/api';
@@ -6,11 +7,59 @@ import { ConsumerProfile } from '../../scripts/api';
 
 
 export enum Indicator {
-    Production = "Production",
-    Consommation = "Consommation", 
-    BornesDeRecharge = "Bornes de rechage", 
-    InformationsGlobales = "Informations globales"
+    ConsumptionDonut,
+    DistrictEnergyBalance, 
+    LocalProductionInfo, 
+    SolarDonut,
+    TotalConsumption,
+    WeeklyProduction,
+    TypicalConsumptionDay
 };
+
+interface tree {label: string, value?: Indicator, children?: tree[]}
+
+export const indicatorTree: tree[] = [
+    {
+    label: 'Information Globale',
+    value: Indicator.DistrictEnergyBalance,
+},
+  {
+    label: 'Consommation',
+    children: [
+      {
+        label: 'Répartition selon le type de bâtiment',
+        value: Indicator.ConsumptionDonut,
+      },
+      {
+        label: 'Totale',
+        value: Indicator.TotalConsumption,
+      },
+      {
+        label: 'Journée type',
+        value: Indicator.TypicalConsumptionDay,
+      },
+    ],
+  },
+  {
+    label: 'Production',
+    children: [
+      {
+        label: 'Locale',
+        value: Indicator.LocalProductionInfo,
+      },
+      {
+        label: 'Repartion selon le type de bâtiment',
+        value: Indicator.SolarDonut,
+      },
+      {
+        label: 'Hebdomadaire',
+        value: Indicator.WeeklyProduction,
+      },
+    ],
+  }
+]
+
+
 
 export enum Information {
     VueGlobale = "Vue Globale",
@@ -37,12 +86,12 @@ export const selectOptionsDist = zones.features.map((item) => {return ({value: i
 selectOptionsDist.push({value: "Quartier de la Bastide", label: "Quartier de la Bastide"});
 
 
-export const selectOptionsInd:{value: Indicator, label: string}[] = [
-    { value: Indicator.Production, label: "Production"},
-    { value: Indicator.Consommation, label: "Consommation"},
-    { value: Indicator.BornesDeRecharge, label: "Bornes de rechage"},
-    { value: Indicator.InformationsGlobales, label: "Informations globales"},
-];
+// export const selectOptionsInd:{value: Indicator, label: string}[] = [
+//     { value: Indicator.Production, label: "Production"},
+//     { value: Indicator.Consommation, label: "Consommation"},
+//     { value: Indicator.BornesDeRecharge, label: "Bornes de rechage"},
+//     { value: Indicator.InformationsGlobales, label: "Informations globales"},
+// ];
 
 export const selectOptionsInf:{value: Information, label: string}[] = [
     { value: Information.VueGlobale, label: "Vue globale"},

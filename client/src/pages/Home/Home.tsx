@@ -5,24 +5,22 @@ import React from 'react';
 import Select from 'react-dropdown-select';
 import { 
     Indicator,
-    Information,
     dropdownStyle,
     selectOptionsBuild, 
     selectOptionsDist, 
-    selectOptionsInd, 
-    selectOptionsInf
+    indicatorTree
 } from './HomeUtils';
 
-import DatePicker from 'react-date-picker';
 import DataContainer from '../../components/DataContainer/DataContaineur';
 import { ConsumerProfile } from '../../scripts/api';
 import { Button } from '@mui/material';
+import { DatePicker, TreePicker } from 'rsuite';
+// import 'rsuite/dist/rsuite.css';
 
 interface State {
     selectedZoneName: string | null,
-    indicatorType: Indicator
+    indicatorType: Indicator | number,
     buildingType: ConsumerProfile,
-    infoType: Information,
     t1: Date,
     t2: Date
 }
@@ -36,9 +34,8 @@ export default class Home extends React.Component<{}, State>{
         super(props);
         this.state = {
             selectedZoneName: null,
-            indicatorType: Indicator.InformationsGlobales,
+            indicatorType: Indicator.DistrictEnergyBalance,
             buildingType: ConsumerProfile.ALL,
-            infoType: Information.VueGlobale,
             t1: new Date('2021-12-01T00:30:00Z'),
             t2: new Date('2021-12-31T00:30:00Z')
 
@@ -50,8 +47,6 @@ export default class Home extends React.Component<{}, State>{
 
     validateRequest() {
 
-        console.log(this.temporaryState);
-        console.log("JE SUIS BIEN LA");
         if (this.temporaryState.selectedZoneName == "Quartier de la Bastide")
             this.setState({selectedZoneName: null});
         else   
@@ -59,7 +54,6 @@ export default class Home extends React.Component<{}, State>{
        
         this.setState({indicatorType: this.temporaryState.indicatorType});
         this.setState({buildingType: this.temporaryState.buildingType});
-        this.setState({infoType: this.temporaryState.infoType});
         this.setState({t1: this.temporaryState.t1});
         this.setState({t2: this.temporaryState.t2});        
         console.log(this.state);
@@ -77,20 +71,22 @@ export default class Home extends React.Component<{}, State>{
                         onZoneClick={zoneName => this.setState({ selectedZoneName: zoneName })}
                     />
                     <div>
+                        <link href="rsuite/dist/rsuite.css" rel="stylesheet" type="text/css" />
                         <div className="dropdown-wrapper">
-                            <Select onChange={(values) => {if(values.length !== 0) this.temporaryState.selectedZoneName = values[0].label}} clearable={true} style={dropdownStyle} multi={false} placeholder={"Quartier"} options={selectOptionsDist} values={[]}/>
-                            <Select onChange={(values) =>  {if(values.length !== 0) this.temporaryState.buildingType = values[0].value}} clearable={true} style={dropdownStyle} multi={false} placeholder={"Bâtiment"} options={selectOptionsBuild} values={[]}/>
-                            <DatePicker className="date-picker" value={this.temporaryState.t1} onChange={(value) => this.temporaryState.t1 = value}/>
-                            <Button variant="outlined" onClick={this.validateRequest}>OK</Button>
-                            <Select onChange={(values) => {if(values.length !== 0) this.temporaryState.infoType = values[0].value}} clearable={true} style={dropdownStyle} multi={false} placeholder={"Information"} options={selectOptionsInf} values={[]}/>
-                            <Select onChange={(values) => {if(values.length !== 0) this.temporaryState.indicatorType = values[0].value}} clearable={true} style={dropdownStyle} multi={false} placeholder={"Indicateur"} options={selectOptionsInd} values={[]}/>
-                            <DatePicker className="date-picker" value={this.temporaryState.t2} onChange={(value) => this.temporaryState.t2 = value}/>
-                        </div>
+                            <TreePicker onChange={(values: string) => {this.temporaryState.selectedZoneName = values}} className="TreePicker" data={selectOptionsDist}/>
+                            <TreePicker onChange={(values: ConsumerProfile) =>  {this.temporaryState.buildingType = values}} className="TreePicker" data={selectOptionsBuild}/>
+                            <DatePicker className="date-picker" onChange={(value) => this.temporaryState.t1 = value}/>
+                            <div></div>
+                            <TreePicker onChange={(values: Indicator) => this.temporaryState.indicatorType = values} className="TreePicker" data={indicatorTree} />
+                            {/* <Select onChange={(values) => {if(values.length !== 0) this.temporaryState.infoType = values[0].value}} clearable={true} style={dropdownStyle} multi={false} placeholder={"Information"} options={selectOptionsInf} values={[]}/>
+                            <Select onChange={(values) => {if(values.length !== 0) this.temporaryState.indicatorType = values[0].value}} clearable={true} style={dropdownStyle} multi={false} placeholder={"Indicateur"} options={selectOptionsInd} values={[]}/> */}
+                            <DatePicker className="date-picker" onChange={(value) => this.temporaryState.t2 = value}/>
+                            <Button className="date-picker" variant="outlined" onClick={this.validateRequest}>OK</Button>
+                       </div>
                         <DataContainer
                             selectedZoneName={this.state.selectedZoneName}
                             indicatorType={this.state.indicatorType}
                             buildingType={this.state.buildingType}
-                            infoType={this.state.infoType}
                             t1={this.state.t1}
                             t2={this.state.t2}
                         />
