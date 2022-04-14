@@ -1,13 +1,16 @@
+@import "rsuite/dist/rsuite.css";
+
 #home-container {
     display: flex;
     flex-flow: column;
     height: 100vh;
+    background-color: var(--color-bg);
 }
 
 .dropdown-wrapper {
     padding: 20px;
     display: grid;
-    grid-template-columns: 30% 30% 30%;
+    grid-template-columns: 30% 30% 30% 10%;
     height: 20%;
 }
 
@@ -19,10 +22,19 @@
 
 .date-picker {
     width: 95%;
-    height: 80%;
+    height: 90%;
     display: 'flex';
     text-transform: 'uppercase';
     color: white;
+}
+
+
+.val-button {
+  width: 95%;
+  height: 60%;
+  display: 'flex';
+  text-transform: 'uppercase';
+  color: white;
 }
 
 main {
@@ -40,4 +52,12 @@ main .map-container {
         grid-template-columns: unset;
         grid-template-rows: 2fr 3fr;
     }
+}
+
+
+ .TreePicker {
+    height: 80%;
+    width: 95%;
+    background-color: none;
+    color: blue;
 }

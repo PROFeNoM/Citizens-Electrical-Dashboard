@@ -78,7 +78,7 @@ export default class WeeklyProduction extends React.Component<Props, State> {
 		}));
 	}
 
-	async componentDidMount() {
+	async fetchData(){
 		const districtProductionData = await this.getDistrictProductionData();
 		const urbanZoneProductionData = await this.getUrbanZoneProductionData();
 		this.setState({
@@ -86,8 +86,16 @@ export default class WeeklyProduction extends React.Component<Props, State> {
 			urbanZoneProductionData: urbanZoneProductionData,
 			renderMe: true,
 		});
-
 	}
+
+	async componentDidMount() {
+		await this.fetchData();
+	}
+
+	async componentDidUpdate() {
+		await this.fetchData();
+	}
+
 
 	render() {
 		const chartOptions = {

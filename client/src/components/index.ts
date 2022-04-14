@@ -1,4 +1,5 @@
 export { default as HamburgerMenu } from './HamburgerMenu/HamburgerMenu'
+export { default as ChargingStationIndicator } from './ChargingStationIndicator/ChargingStationIndicator'
 export { default as DistrictEnergyBalance } from './DistrictEnergyBalance/DistrictEnergyBalance'
 export { default as HomeMap } from './Maps/HomeMap/HomeMap'
 export { default as ChoroplethMap } from './Maps/ChoroplethMap/ChoroplethMap'
@@ -11,3 +12,4 @@ export { default as ProductionChoroplethMap } from './Maps/ProductionChoroplethM
 export { default as ConsumptionDonut } from './ConsumptionDonut/ConsumptionDonut'
 export { default as LocalProductionInfo } from './LocalProductionInfo/LocalProductionInfo'
 export { default as SolarDonut } from './SolarDonut/SolarDonut'
+export { default as TypicalProductionDay } from './TypicalProductionDay/TypicalProductionDay'

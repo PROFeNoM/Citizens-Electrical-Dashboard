@@ -1,8 +1,8 @@
 import React from 'react';
 import BaseMap, { BaseMapProps } from '../BaseMap/BaseMap';
 import { FeatureCollection } from 'geojson';
-import { lightingPoints, allBuildings3D,professionalBuildings3D, residentialBuildings3D, FillColor, zonesBorder, zonesFill} from '../layers';
-import { zones, buildings, Lighting } from '../../../geodata';
+import { lightingPoints, allBuildings3D, bornesPoints, residentialBuildings3D, FillColor, zonesBorder, zonesFill} from '../layers';
+import { zones, buildings, Lighting, Bornes } from '../../../geodata';
 
 interface Props extends BaseMapProps {
 	zonesTransformer?: (zones: FeatureCollection) => Promise<FeatureCollection>,
@@ -48,10 +48,17 @@ export default class UrbanZoneMap extends React.Component<Props, State> {
 				data: Lighting,
 				generateId: true,
 			})
+			.addSource('Bornes-source', {
+				type: 'geojson',
+				data: Bornes,
+				generateId: true,
+			})
 			.addLayer(zonesFill(this.props.zonesFillColor ?? '#7fd1ef'))
 			.addLayer(zonesBorder)
 			.addLayer(allBuildings3D)
-			.addLayer(lightingPoints)
+			//.addLayer(residentialBuildings3D)      //cette layer marche
+			//.addLayer(lightingPoints)  			//cette layer ne marche pas a cause de la natur du fichier geojson
+			//.addLayer(bornesPoints)   			//cette layer marche
 			.on('mouseenter', 'data', e => this.hoverZone(e.features[0].id))
 			.on('mousemove', 'data', e => this.hoverZone(e.features[0].id))
 			.on('mouseleave', 'data', () => this.cancelZoneHover());

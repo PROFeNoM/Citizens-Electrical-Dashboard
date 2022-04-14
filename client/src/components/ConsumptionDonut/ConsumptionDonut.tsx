@@ -32,7 +32,7 @@ export default class ConsumptionDonut extends React.Component<Props, State> {
 		};
 	}
 
-	async componentDidMount() {
+	async fetchData() {
 		const {t1, t2, urbanZone} = this.props;
 		const consumptions = await Promise.all(zones.features.map(async f => {
 			return {
@@ -55,6 +55,14 @@ export default class ConsumptionDonut extends React.Component<Props, State> {
 			urbanZoneProportion: consumptions.find(z => z.name === urbanZone).value / totalConsumption * 100,
 			renderMe: true
 		});
+	}
+
+	async componentDidMount() {
+		await this.fetchData();
+	}
+
+	async componentDidUpdate() {
+		await this.fetchData();
 	}
 
 	render() {

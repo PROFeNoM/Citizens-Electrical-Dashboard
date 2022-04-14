@@ -38,8 +38,18 @@ export const lightingPoints: CircleLayer = {
 	'type': 'circle',
 	'source': 'Lighting-source',
 	'paint': {
-		'circle-radius': 180,
-		'circle-color': '#aaa',
+		'circle-radius': 12,
+		'circle-color': '#e06666',
+	},
+}
+
+export const bornesPoints: CircleLayer = {
+	'id': 'bornes-points',
+	'type': 'circle',
+	'source': 'Bornes-source',
+	'paint': {
+		'circle-radius': 12,
+		'circle-color': '#e06666',
 	},
 }
 
@@ -61,20 +71,6 @@ export const residentialBuildings3D: FillExtrusionLayer = {
 	'source': 'district-buildings',
 	'type': 'fill-extrusion',
 	'filter': ['==', 'USAGE1', 'Résidentiel'],
-	'minzoom': 13.5,
-	'paint': {
-		'fill-extrusion-color': '#e06666',
-		'fill-extrusion-height': ["*", 1.5, ['get', 'HAUTEUR']],
-		'fill-extrusion-base': ['get', 'Z_MIN_SOL'],
-		'fill-extrusion-opacity': 0.6,
-	},
-}
-
-export const professionalBuildings3D: FillExtrusionLayer = {
-	'id': 'add-3d-buildings',
-	'source': 'district-buildings',
-	'type': 'fill-extrusion',
-	'filter': ['!=', 'USAGE1', ['Résidentiel', null]],
 	'minzoom': 13.5,
 	'paint': {
 		'fill-extrusion-color': '#e06666',

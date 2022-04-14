@@ -2,32 +2,34 @@ header {
     background-color: #005eb8;
     height: 50px;
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns:1fr auto 1fr;
 }
 
-.header-title {
-    place-self: center;
+#header-title {
+    grid-column-start: 2;
+    align-self: center;
     color: #fff;
     font-size: 2rem;
+    font-weight: bold;
     text-transform: uppercase;
 }
 
-.logo {
+#logo {
     place-self: center;
     justify-self: end;
-    filter: brightness(0) invert(1);
     height: 1.7rem;
+    filter: brightness(0) invert(1);
     margin-right: calc((50px - 1.7rem) / 2);
 }
 
 @media (max-width: 575px) {
-    .logo {
+    #logo {
         display: none;
     }
 }
 
 @media (max-width: 325px) {
-    .header-title {
+    #header-title {
         font-size: 1rem;
     }
 }

@@ -6,7 +6,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Home, Connection, About, Legal, Error } from './pages';
 import Consumption from './pages/Consumption/Consumption';
 import Production from './pages/Production/Production';
-import Stations from './pages/Stations/Stations';
+import Bornes from './pages/Bornes/Bornes';
 
 function App() {
     return (
@@ -20,7 +20,7 @@ function App() {
                     <Route path='/legal' element={<Legal />} />
                     <Route path='/consommation/:zoneName/:build' element={<Consumption />} />
                     <Route path='/production/:zoneName/:build' element={<Production />} />
-                    <Route path='/bornes/:zoneName' element={<Stations />} />
+                    <Route path='/bornes/:zoneName/:build' element={<Bornes />} />
                     <Route path='*' element={<Error />} />
                 </Routes>
             </Router>

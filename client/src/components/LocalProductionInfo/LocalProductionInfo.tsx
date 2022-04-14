@@ -29,7 +29,7 @@ export default class LocalProductionInfo extends React.Component<Props, State> {
 		};
 	}
 
-	async componentDidMount() {
+	async fetchData(){
 		const { t1, t2, urbanZone } = this.props;
 		// Retrive the number of production points using geodata zones
 		const zone = zones.features.find(z => z.properties.libelle === urbanZone).properties.PROD_F5;
@@ -44,12 +44,21 @@ export default class LocalProductionInfo extends React.Component<Props, State> {
 		});
 	}
 
+	async componentDidMount() {
+		await this.fetchData();
+	}
+
+	async componentDidUpdate() {
+		await this.fetchData();
+	}
+
 	render() {
+		const plural: boolean = this.state.productionPoints > 1;
 		return (
 			<div className="typical-c-day-wrapper">
 				<div className="typical-c-day-title-wrapper">{this.props.title}</div>
 				<div className="local-production-info-text-wrapper">
-					<p className="local-production-paragraph">La production d'énergie solaire des <b className='local-production-bold'>{this.state.productionPoints}</b> points de production de <b className='local-production-bold'>{this.props.urbanZone}</b> s'élève à <b className='local-production-bold'>{new Intl.NumberFormat().format(this.state.totalProduction)} kWh</b></p>
+					<p className="local-production-paragraph">La production d'énergie solaire {plural ? 'des' : 'du'} <b className='local-production-bold'>{this.state.productionPoints}</b> {plural ? 'points' : 'point'} de production de <b className='local-production-bold'>{this.props.urbanZone}</b> s'élève à <b className='local-production-bold'>{new Intl.NumberFormat().format(this.state.totalProduction)} kWh</b></p>
 					<p>Cette production a permis d'éviter l'émission de <b className='local-production-bold'>{Math.round(29 * this.state.totalProduction / 1000 / 1000 / 1000) }</b> kilotonnes de CO2 cette période</p>
 				</div>
 			</div>
