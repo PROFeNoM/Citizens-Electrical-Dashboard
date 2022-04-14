@@ -1,7 +1,7 @@
 import React from 'react';
 import { DistrictEnergyBalance,ChargingStationIndicator } from '../../components'
 import { Indicator } from '../../pages/Home/HomeUtils'
-import { TypicalConsumptionDay, ConsumptionDonut, SolarDonut, WeeklyProduction } from '../../components'
+import { TypicalProductionDay, TypicalConsumptionDay, ConsumptionDonut, SolarDonut, WeeklyProduction } from '../../components'
 import { ConsumerProfile } from '../../scripts/api';
 import LocalProductionInfo from '../LocalProductionInfo/LocalProductionInfo';
 import TotalConsumption from '../TotalConsumption/TotalConsumption';
@@ -39,6 +39,15 @@ export default class DataContainer extends React.Component<Props> {
                         urbanZone={this.props.selectedZoneName}
                         buildingType={this.props.buildingType}
                         title={"Journée type de consomation"}
+                    />
+                );
+            case Indicator.TypicalProductionDay:
+                return (
+                    <TypicalProductionDay
+                        t1={this.props.t1.getTime()}
+                        t2={this.props.t2.getTime()}
+                        urbanZone={this.props.selectedZoneName}
+                        title={"Journée type de production"}
                     />
                 );
             case Indicator.TotalConsumption:

@@ -33,6 +33,7 @@ export default class SolarDonut extends React.Component<Props, State> {
 
 	async fetchData(){
 		const { t1, t2, urbanZone } = this.props;
+		/*
 		const productions = await Promise.all(zones.features.map(async f => {
 			return { name: f.properties.libelle, value: await getTotalProduction(t1, t2, [ProducerProfile.SOLAR], f.properties.libelle) };
 		}));
@@ -41,6 +42,14 @@ export default class SolarDonut extends React.Component<Props, State> {
 		const productionDistribution = productions.map(p => {
 			return { name: p.name, y: p.value / totalProduction * 100 };
 		});
+		*/
+		const productions = zones.features.map(f => {
+			return { name: f.properties.libelle, value: f.properties.PROD_F5 };
+		});
+		const totalProduction = zones.features.reduce((acc, f) => acc + f.properties.PROD_F5, 0);
+		const productionDistribution = productions.map(p => {
+			return { name: p.name, y: p.value / totalProduction * 100 };
+		}).filter(p => p.y > 0);
 
 		this.setState({
 			productionDistribution: productionDistribution,
