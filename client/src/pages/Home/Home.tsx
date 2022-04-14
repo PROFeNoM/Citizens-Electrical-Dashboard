@@ -55,7 +55,25 @@ export default class Home extends React.Component<{}, State>{
         this.setState({ buildingType: this.temporaryState.buildingType });
         this.setState({ t1: this.temporaryState.t1 });
         this.setState({ t2: this.temporaryState.t2 });
-        console.log(this.state);
+        switch(this.temporaryState.indicatorType){
+            case Indicator.DistrictEnergyBalance:
+                this.setState({indicatorClass: IndicatorClass.Global});
+                break;
+            case Indicator.ConsumptionDonut:
+            case Indicator.TotalConsumption:
+            case Indicator.TypicalConsumptionDay:
+                this.setState({indicatorClass: IndicatorClass.Consumption});
+                break;
+            case Indicator.LocalProductionInfo:
+            case Indicator.SolarDonut:
+            case Indicator.WeeklyProduction:
+            case Indicator.TypicalProductionDay:
+                this.setState({indicatorClass: IndicatorClass.Production});
+                break;
+            default:
+                this.setState({indicatorClass: IndicatorClass.Global});
+                break;
+        }
     }
 
     render() {
