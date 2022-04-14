@@ -1,4 +1,5 @@
-import { Column, Entity, Index, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, Index, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Zone } from './Zone';
 
 export enum ProducerProfile {
 	BIOENERGY = 'BIOENERGY',
@@ -19,15 +20,12 @@ export class Production {
 	@Index()
 	public timestamp: Date;
 
+	@ManyToOne(() => Zone)
+	public zone: Zone;
+
 	@Column({ type: 'enum', enum: ProducerProfile })
 	public profile: ProducerProfile;
 
-	@Column({ name: 'injection_points', type: 'float', nullable: false })
-	public injectionPoints: number;
-
-	@Column({ name: 'injected_energy', type: 'float', nullable: false })
-	public injectedEnergy: number;
-
-	@Column({ name: 'mean_curve', type: 'float', nullable: false })
-	public meanCurve: number;
+	@Column({ type: 'float', nullable: false })
+	public energy: number;
 }

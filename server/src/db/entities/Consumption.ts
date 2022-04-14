@@ -1,4 +1,5 @@
-import { Column, Entity, Index, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, Index, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Zone } from './Zone';
 
 export enum ConsumerProfile {
 	PUBLIC_LIGHTING = 'PUBLIC_LIGHTING',
@@ -16,15 +17,12 @@ export class Consumption {
 	@Index()
 	public timestamp: Date;
 
+	@ManyToOne(() => Zone)
+	public zone: Zone;
+
 	@Column({ type: 'enum', enum: ConsumerProfile, nullable: false })
 	public profile: ConsumerProfile;
 
-	@Column({ name: 'drain_points', type: 'float', nullable: false })
-	public drainPoints: number;
-
-	@Column({ name: 'drained_energy', type: 'float', nullable: false })
-	public drainedEnergy: number;
-
-	@Column({ name: 'mean_curve', type: 'float', nullable: false })
-	public meanCurve: number;
+	@Column({ type: 'float', nullable: false })
+	public energy: number;
 }
