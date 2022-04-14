@@ -14,7 +14,14 @@ export enum Indicator {
 	TypicalProductionDay
 };
 
-interface tree { label: string, value?: Indicator, children?: tree[] }
+export enum IndicatorClass {
+  Global,
+  Consumption, 
+  Production, 
+  Station
+};
+
+interface tree {label: string, value?: Indicator, children?: tree[]}
 
 export const indicatorTree: tree[] = [
 	{

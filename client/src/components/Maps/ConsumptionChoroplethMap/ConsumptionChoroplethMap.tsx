@@ -1,4 +1,4 @@
-import './ChoroplethMap.css';
+import './ConsumptionChoroplethMap.css';
 import React from 'react';
 import UrbanZoneMap from '../UrbanZonesMap/UrbanZoneMap';
 import { FeatureCollection } from 'geojson';
@@ -12,7 +12,7 @@ interface Props {
 
 const colorPalette = ['#7fd1ef', '#6ab3e1', '#5395d4', '#3779c6', '#005eb8'];
 
-export default class ChoroplethMap extends React.Component<Props, {}> {
+export default class ConsumptionChoroplethMap extends React.Component<Props, {}> {
 	private async zoneTransformer(zones: FeatureCollection): Promise<FeatureCollection> {
 		const consumptions = await Promise.all(zones.features.map(f => getTotalConsumption(this.props.t1, this.props.t2, undefined, f.properties.libelle)));
 		const minValue = Math.min(...consumptions);

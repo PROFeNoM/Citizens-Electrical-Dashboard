@@ -4,8 +4,9 @@ import { HomeMap } from '../../components';
 import React from 'react';
 import {
     Indicator,
-    selectOptionsBuild,
-    selectOptionsDist,
+    IndicatorClass,
+    selectOptionsBuild, 
+    selectOptionsDist, 
     indicatorTree
 } from './HomeUtils';
 
@@ -13,17 +14,18 @@ import DataContainer from '../../components/DataContainer/DataContaineur';
 import { ConsumerProfile } from '../../scripts/api';
 import { Button } from '@mui/material';
 import { DatePicker, TreePicker } from 'rsuite';
+import MapContainer from '../../components/MapContainer/MapContainer';
 
 interface State {
     selectedZoneName: string | null,
-    indicatorType: Indicator | number,
+    indicatorType: Indicator,
+    indicatorClass: IndicatorClass,
     buildingType: ConsumerProfile,
     t1: Date,
     t2: Date
 }
 
 export default class Home extends React.Component<{}, State>{
-    private mapRef = React.createRef<HomeMap>();
 
     private temporaryState: State;
 
@@ -32,6 +34,7 @@ export default class Home extends React.Component<{}, State>{
         this.state = {
             selectedZoneName: null,
             indicatorType: Indicator.DistrictEnergyBalance,
+            indicatorClass: IndicatorClass.Global,
             buildingType: ConsumerProfile.ALL,
             t1: new Date('2021-12-01T00:30:00Z'),
             t2: new Date('2021-12-31T00:30:00Z')
@@ -60,9 +63,10 @@ export default class Home extends React.Component<{}, State>{
             <div id='home-container'>
                 <Header title='Tableau éléctrique citoyen' />
                 <main>
-                    <HomeMap
-                        ref={this.mapRef}
-                        onZoneClick={zoneName => this.setState({ selectedZoneName: zoneName })}
+                    <MapContainer 
+                        t1={this.state.t1}
+                        t2={this.state.t2}
+                        indicatorClass={this.state.indicatorClass}
                     />
                     <div>
                         <div className="dropdown-wrapper">
@@ -70,10 +74,8 @@ export default class Home extends React.Component<{}, State>{
                             <TreePicker onChange={(values: ConsumerProfile) => { this.temporaryState.buildingType = values }} className="TreePicker" data={selectOptionsBuild} />
                             <TreePicker onChange={(values: Indicator) => this.temporaryState.indicatorType = values} className="TreePicker" data={indicatorTree} />
                             <div></div>
-                            <DatePicker className="date-picker" onChange={(value) => this.temporaryState.t1 = value} />
-                            {/* <Select onChange={(values) => {if(values.length !== 0) this.temporaryState.infoType = values[0].value}} clearable={true} style={dropdownStyle} multi={false} placeholder={"Information"} options={selectOptionsInf} values={[]}/>
-                            <Select onChange={(values) => {if(values.length !== 0) this.temporaryState.indicatorType = values[0].value}} clearable={true} style={dropdownStyle} multi={false} placeholder={"Indicateur"} options={selectOptionsInd} values={[]}/> */}
-                            <DatePicker className="date-picker" onChange={(value) => this.temporaryState.t2 = value} />
+                            <DatePicker className="date-picker" onChange={(value) => this.temporaryState.t1 = value}/>
+                            <DatePicker className="date-picker" onChange={(value) => this.temporaryState.t2 = value}/>
                             <Button className="val-button" variant="outlined" onClick={this.validateRequest}>OK</Button>
                         </div>
                         <DataContainer
