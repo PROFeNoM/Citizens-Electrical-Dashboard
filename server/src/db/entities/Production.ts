@@ -1,5 +1,6 @@
 import { Column, Entity, Index, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Zone } from './Zone';
+import { DataTable } from './DataTable';
 
 export enum ProducerProfile {
 	BIOENERGY = 'BIOENERGY',
@@ -12,7 +13,7 @@ export enum ProducerProfile {
 }
 
 @Entity('production')
-export class Production {
+export class Production implements DataTable<ProducerProfile> {
 	@PrimaryGeneratedColumn({ type: 'int' })
 	public id: number;
 
@@ -28,4 +29,7 @@ export class Production {
 
 	@Column({ type: 'float', nullable: false })
 	public energy: number;
+
+	@Column({ type: 'boolean', nullable: false })
+	public prediction: boolean;
 }

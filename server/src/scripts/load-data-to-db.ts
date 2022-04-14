@@ -3,15 +3,7 @@ import { ConsumerProfile, Consumption } from '../db/entities/Consumption';
 import { ProducerProfile, Production } from '../db/entities/Production';
 import { connectToDB } from '../db/connection';
 import { mockDataDir, readCsv } from './utils';
-import { Zone } from '../db/entities/Zone';
-
-interface DataTable<P> {
-	id: number;
-	timestamp: Date;
-	zone: Zone;
-	profile: P;
-	energy: number;
-}
+import { DataTable } from '../db/entities/DataTable';
 
 main().catch(console.error);
 
