@@ -3,7 +3,7 @@ import UrbanZoneMap from '../UrbanZonesMap/UrbanZoneMap';
 
 interface Props {
 	/** Triggered on a click on the map. If the click is performed outside a zone, zoneName is null. */
-	onZoneClick: (zoneName: string | null) => void,
+	// onZoneClick: (zoneName: string | null) => void,
 }
 
 interface State {
@@ -56,7 +56,7 @@ export default class HomeMap extends React.Component<Props, State> {
 		})
 
 		// trigger event
-		this.props.onZoneClick(zoneName);
+		// this.props.onZoneClick(zoneName);
 	}
 
 	render() {
@@ -76,7 +76,7 @@ export default class HomeMap extends React.Component<Props, State> {
 					'#005eb8',
 					'#7fd1ef',
 				]}
-				onZoneClick={(featureId, zoneName) => this.onZoneClick(featureId, zoneName)}
+				// onZoneClick={() => undefined}//{(featureId, zoneName) => this.onZoneClick(featureId, zoneName)}
 			/>
 		);
 	}

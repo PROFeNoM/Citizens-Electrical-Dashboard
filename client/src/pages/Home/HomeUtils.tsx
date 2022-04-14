@@ -14,7 +14,14 @@ export enum Indicator {
 	TypicalProductionDay
 };
 
-interface tree { label: string, value?: Indicator, children?: tree[] }
+export enum IndicatorClass {
+  Global,
+  Consumption, 
+  Production, 
+  Station
+};
+
+interface tree {label: string, value?: Indicator, children?: tree[]}
 
 export const indicatorTree: tree[] = [
 	{
@@ -46,7 +53,7 @@ export const indicatorTree: tree[] = [
 				value: Indicator.LocalProductionInfo,
 			},
 			{
-				label: 'Repartion selon le type de bâtiment',
+				label: 'Répartion selon le type de bâtiment',
 				value: Indicator.SolarDonut,
 			},
 			{

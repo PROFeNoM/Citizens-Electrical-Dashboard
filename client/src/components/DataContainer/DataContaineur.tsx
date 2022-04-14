@@ -3,8 +3,8 @@ import { DistrictEnergyBalance,ChargingStationIndicator } from '../../components
 import { Indicator } from '../../pages/Home/HomeUtils'
 import { TypicalProductionDay, TypicalConsumptionDay, ConsumptionDonut, SolarDonut, WeeklyProduction } from '../../components'
 import { ConsumerProfile } from '../../scripts/api';
-import LocalProductionInfo from '../LocalProductionInfo/LocalProductionInfo';
 import TotalConsumption from '../TotalConsumption/TotalConsumption';
+import LocalProductionInfo from '../LocalProductionInfo/LocalProductionInfo';
 
 interface Props {
     selectedZoneName: string | null,
@@ -23,7 +23,6 @@ export default class DataContainer extends React.Component<Props> {
     
 
     render() {
-        console.log(this.props);
         switch(this.props.indicatorType){
             case Indicator.DistrictEnergyBalance:
                 return (

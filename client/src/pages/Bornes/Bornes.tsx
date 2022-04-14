@@ -16,7 +16,7 @@ function Bornes() {
 				<div id="bornes-map-wrapper">
 					<HomeMap 
                         ref={this.mapRef}
-                        onZoneClick={zoneName => this.setState({ selectedZoneName: zoneName })} 
+                        // onZoneClick={zoneName => this.setState({ selectedZoneName: zoneName })} 
                     />
 				</div>
 				<>

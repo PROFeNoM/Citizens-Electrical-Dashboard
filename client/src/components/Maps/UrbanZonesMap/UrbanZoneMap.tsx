@@ -59,9 +59,9 @@ export default class UrbanZoneMap extends React.Component<Props, State> {
 			//.addLayer(residentialBuildings3D)      //cette layer marche
 			//.addLayer(lightingPoints)  			//cette layer ne marche pas a cause de la natur du fichier geojson
 			//.addLayer(bornesPoints)   			//cette layer marche
-			.on('mouseenter', 'data', e => this.hoverZone(e.features[0].id))
-			.on('mousemove', 'data', e => this.hoverZone(e.features[0].id))
-			.on('mouseleave', 'data', () => this.cancelZoneHover());
+			// .on('mouseenter', 'data', e => this.hoverZone(e.features[0].id))
+			// .on('mousemove', 'data', e => this.hoverZone(e.features[0].id))
+			// .on('mouseleave', 'data', () => this.cancelZoneHover());
 
 		if (this.props.onZoneClick) {
 			// detect click on a zone
