@@ -10,7 +10,7 @@ import {
     indicatorTree
 } from './HomeUtils';
 
-import DataContainer from '../../components/DataContainer/DataContaineur';
+import DataContainer from '../../components/DataContainer/DataContainer';
 import { ConsumerProfile } from '../../scripts/api';
 import { Button } from '@mui/material';
 import { DatePicker, TreePicker } from 'rsuite';
