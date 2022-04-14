@@ -4,8 +4,9 @@ import { HomeMap } from '../../components';
 import React from 'react';
 import {
     Indicator,
-    selectOptionsBuild,
-    selectOptionsDist,
+    IndicatorClass,
+    selectOptionsBuild, 
+    selectOptionsDist, 
     indicatorTree
 } from './HomeUtils';
 
@@ -13,17 +14,18 @@ import DataContainer from '../../components/DataContainer/DataContaineur';
 import { ConsumerProfile } from '../../scripts/api';
 import { Button } from '@mui/material';
 import { DatePicker, TreePicker } from 'rsuite';
+import MapContainer from '../../components/MapContainer/MapContainer';
 
 interface State {
     selectedZoneName: string | null,
-    indicatorType: Indicator | number,
+    indicatorType: Indicator,
+    indicatorClass: IndicatorClass,
     buildingType: ConsumerProfile,
     t1: Date,
     t2: Date
 }
 
 export default class Home extends React.Component<{}, State>{
-    private mapRef = React.createRef<HomeMap>();
 
     private temporaryState: State;
 
@@ -32,6 +34,7 @@ export default class Home extends React.Component<{}, State>{
         this.state = {
             selectedZoneName: null,
             indicatorType: Indicator.DistrictEnergyBalance,
+            indicatorClass: IndicatorClass.Global,
             buildingType: ConsumerProfile.ALL,
             t1: new Date('2021-12-01T00:30:00Z'),
             t2: new Date('2021-12-31T00:30:00Z')
@@ -52,7 +55,25 @@ export default class Home extends React.Component<{}, State>{
         this.setState({ buildingType: this.temporaryState.buildingType });
         this.setState({ t1: this.temporaryState.t1 });
         this.setState({ t2: this.temporaryState.t2 });
-        console.log(this.state);
+        switch(this.temporaryState.indicatorType){
+            case Indicator.DistrictEnergyBalance:
+                this.setState({indicatorClass: IndicatorClass.Global});
+                break;
+            case Indicator.ConsumptionDonut:
+            case Indicator.TotalConsumption:
+            case Indicator.TypicalConsumptionDay:
+                this.setState({indicatorClass: IndicatorClass.Consumption});
+                break;
+            case Indicator.LocalProductionInfo:
+            case Indicator.SolarDonut:
+            case Indicator.WeeklyProduction:
+            case Indicator.TypicalProductionDay:
+                this.setState({indicatorClass: IndicatorClass.Production});
+                break;
+            default:
+                this.setState({indicatorClass: IndicatorClass.Global});
+                break;
+        }
     }
 
     render() {
@@ -60,15 +81,17 @@ export default class Home extends React.Component<{}, State>{
             <div id='home-container'>
                 <Header title='Tableau éléctrique citoyen' />
                 <main>
-                    <HomeMap
-                        ref={this.mapRef}
-                        onZoneClick={zoneName => this.setState({ selectedZoneName: zoneName })}
+                    <MapContainer 
+                        t1={this.state.t1}
+                        t2={this.state.t2}
+                        indicatorClass={this.state.indicatorClass}
                     />
                     <div>
                         <div className="dropdown-wrapper">
                             <TreePicker
                                 onChange={(values: string) => { this.temporaryState.selectedZoneName = values }}
-                                className="TreePicker" data={selectOptionsDist}
+                                className="TreePicker"
+                                data={selectOptionsDist}
                                 placeholder="Zone"
                                 placement="bottomEnd"
                             />
