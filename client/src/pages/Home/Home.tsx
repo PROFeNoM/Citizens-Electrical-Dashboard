@@ -5,8 +5,8 @@ import React from 'react';
 import {
     Indicator,
     IndicatorClass,
-    selectOptionsBuild, 
-    selectOptionsDist, 
+    selectOptionsBuild,
+    selectOptionsDist,
     indicatorTree
 } from './HomeUtils';
 
@@ -55,23 +55,23 @@ export default class Home extends React.Component<{}, State>{
         this.setState({ buildingType: this.temporaryState.buildingType });
         this.setState({ t1: this.temporaryState.t1 });
         this.setState({ t2: this.temporaryState.t2 });
-        switch(this.temporaryState.indicatorType){
+        switch (this.temporaryState.indicatorType) {
             case Indicator.DistrictEnergyBalance:
-                this.setState({indicatorClass: IndicatorClass.Global});
+                this.setState({ indicatorClass: IndicatorClass.Global });
                 break;
             case Indicator.ConsumptionDonut:
             case Indicator.TotalConsumption:
             case Indicator.TypicalConsumptionDay:
-                this.setState({indicatorClass: IndicatorClass.Consumption});
+                this.setState({ indicatorClass: IndicatorClass.Consumption });
                 break;
             case Indicator.LocalProductionInfo:
             case Indicator.SolarDonut:
             case Indicator.WeeklyProduction:
             case Indicator.TypicalProductionDay:
-                this.setState({indicatorClass: IndicatorClass.Production});
+                this.setState({ indicatorClass: IndicatorClass.Production });
                 break;
             default:
-                this.setState({indicatorClass: IndicatorClass.Global});
+                this.setState({ indicatorClass: IndicatorClass.Global });
                 break;
         }
     }
@@ -81,12 +81,12 @@ export default class Home extends React.Component<{}, State>{
             <div id='home-container'>
                 <Header title='Tableau éléctrique citoyen' />
                 <main>
-                    <MapContainer 
+                    <MapContainer
                         t1={this.state.t1}
                         t2={this.state.t2}
                         indicatorClass={this.state.indicatorClass}
                     />
-                    <div>
+                    <div id="data-container">
                         <div className="dropdown-wrapper">
                             <TreePicker
                                 onChange={(values: string) => { this.temporaryState.selectedZoneName = values }}
@@ -124,13 +124,15 @@ export default class Home extends React.Component<{}, State>{
                                 OK
                             </Button>
                         </div>
-                        <DataContainer
-                            selectedZoneName={this.state.selectedZoneName}
-                            indicatorType={this.state.indicatorType}
-                            buildingType={this.state.buildingType}
-                            t1={this.state.t1}
-                            t2={this.state.t2}
-                        />
+                        <div id="indicator-container">
+                            <DataContainer
+                                selectedZoneName={this.state.selectedZoneName}
+                                indicatorType={this.state.indicatorType}
+                                buildingType={this.state.buildingType}
+                                t1={this.state.t1}
+                                t2={this.state.t2}
+                            />
+                        </div>
                     </div>
                 </main>
             </div>
