@@ -8,6 +8,7 @@ import { getTotalConsumption } from '../../../scripts/api';
 interface Props {
 	t1: number,
 	t2: number,
+	highlightedZoneName: string | null,
 }
 
 const colorPalette = ['#7fd1ef', '#6ab3e1', '#5395d4', '#3779c6', '#005eb8'];
@@ -52,6 +53,7 @@ export default class ConsumptionChoroplethMap extends React.Component<Props, {}>
 							property: 'choroplethValue',
 							stops: colorPalette.map((color, idx) => [idx, color]),
 						}}
+						highlightedZoneName={this.props.highlightedZoneName}
 					/>
 				</div>
 

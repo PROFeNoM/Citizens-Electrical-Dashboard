@@ -10,6 +10,7 @@ import {getTotalProduction, ProducerProfile} from '../../../scripts/api';
 interface Props {
 	t1: number,
 	t2: number,
+	highlightedZoneName: string | null,
 }
 
 const colorPalette = ['#faeabf', '#f9da98', '#f6c970', '#f1ba46', '#eaaa00'];
@@ -34,6 +35,7 @@ export default class ProductionChoroplethMap extends React.Component<Props, {}> 
 	}
 
 	render() {
+		console.log("CHOROPLETH MAP PROPS", this.props.highlightedZoneName);
 		return (
 			<div className="choropleth-map-wrapper">
 				{/* <div className="choropleth-map-title-wrapper">
@@ -54,6 +56,7 @@ export default class ProductionChoroplethMap extends React.Component<Props, {}> 
 							property: 'choroplethValue',
 							stops: colorPalette.map((color, idx) => [idx, color]),
 						}}
+						highlightedZoneName={this.props.highlightedZoneName}
 					/>
 				</div>
 

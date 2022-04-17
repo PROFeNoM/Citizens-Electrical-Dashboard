@@ -8,6 +8,7 @@ interface Props {
 	t1: Date,
 	t2: Date,
     indicatorClass: IndicatorClass,
+    highlightedZoneName: string | null,
 }
 
 
@@ -29,6 +30,7 @@ export default class MapContainer extends React.Component<Props> {
                     <ProductionChoroplethMap 
                         t1={this.props.t1.getTime()} 
                         t2={this.props.t2.getTime()}
+                        highlightedZoneName={this.props.highlightedZoneName}
                         />
                 )
             case IndicatorClass.Consumption:
@@ -36,6 +38,7 @@ export default class MapContainer extends React.Component<Props> {
                     <ConsumptionChoroplethMap 
                         t1={this.props.t1.getTime()} 
                         t2={this.props.t2.getTime()}
+                        highlightedZoneName={this.props.highlightedZoneName}
                         />
                 )
             default:

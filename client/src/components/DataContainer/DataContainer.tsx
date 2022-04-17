@@ -11,7 +11,8 @@ interface Props {
     indicatorType: Indicator
     buildingType: ConsumerProfile,
     t1: Date,
-    t2: Date
+    t2: Date,
+    setHighlightedZone: (val: string | null) => void
 }
 
 
@@ -60,6 +61,7 @@ export default class DataContainer extends React.Component<Props> {
                         urbanZone={this.props.selectedZoneName}
                         buildingType={this.props.buildingType}
                         title={"Evolution de la consommation"}
+                        setHighlightedZone={this.props.setHighlightedZone}
                     />
                 );
             case Indicator.SolarDonut:
@@ -69,6 +71,7 @@ export default class DataContainer extends React.Component<Props> {
                         t2={this.props.t2.getTime()}
                         urbanZone={this.props.selectedZoneName}
                         title={"Production globale"}
+                        setHighlightedZone={this.props.setHighlightedZone}
                     />
                 );
             case Indicator.WeeklyProduction:

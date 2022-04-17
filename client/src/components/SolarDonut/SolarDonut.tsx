@@ -9,6 +9,7 @@ interface Props {
 	t2: number;
 	urbanZone: string;
 	title: string;
+	setHighlightedZone: (val: string | null) => void;
 }
 
 interface State {
@@ -62,10 +63,10 @@ export default class SolarDonut extends React.Component<Props, State> {
 		await this.fetchData();
 	}
 
-	async componentDidUpdate() {
-		await this.fetchData();
+	private onClick = (e: any) => {
+		this.props.setHighlightedZone(e.dataPoint.name);
 	}
-	
+
 	render() {
 		const chartOptions = {
 			exportEnabled: true,
@@ -82,10 +83,11 @@ export default class SolarDonut extends React.Component<Props, State> {
 				showInLegend: false,
 				indexLabel: "{name}: {y}",
 				yValueFormatString: "#,###'%'",
-				dataPoints: this.state.productionDistribution
+				dataPoints: this.state.productionDistribution,
+				click: this.onClick
 			}]
 		}
-		console.log(this.state.productionDistribution)
+
 		return (
 			<div className="typical-c-day-wrapper">
 				<div className="typical-c-day-title-wrapper">{this.props.title}</div>

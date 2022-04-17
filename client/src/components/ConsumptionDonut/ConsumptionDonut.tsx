@@ -10,6 +10,7 @@ interface Props {
 	urbanZone: string;
 	buildingType: ConsumerProfile;
 	title: string;
+	setHighlightedZone: (val: string | null) => void;
 }
 
 interface State {
@@ -40,7 +41,7 @@ export default class ConsumptionDonut extends React.Component<Props, State> {
 				value: await getTotalConsumption(
 					t1,
 					t2,
-					this.props.buildingType ? [this.props.buildingType] : undefined,
+					this.props.buildingType ? ( this.props.buildingType !== ConsumerProfile.ALL ? [this.props.buildingType] : undefined) : undefined,
 					f.properties.libelle)
 			};
 		}));
@@ -61,8 +62,8 @@ export default class ConsumptionDonut extends React.Component<Props, State> {
 		await this.fetchData();
 	}
 
-	async componentDidUpdate() {
-		await this.fetchData();
+	private onClick = (e: any) => {
+		this.props.setHighlightedZone(e.dataPoint.name);
 	}
 
 	render() {
@@ -80,7 +81,8 @@ export default class ConsumptionDonut extends React.Component<Props, State> {
 				showInLegend: false,
 				indexLabel: "{name}: {y}",
 				yValueFormatString: "#,###'%'",
-				dataPoints: this.state.consumptionDistribution
+				dataPoints: this.state.consumptionDistribution,
+				click: this.onClick
 			}]
 		}
 

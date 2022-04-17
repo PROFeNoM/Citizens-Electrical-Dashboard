@@ -9,10 +9,12 @@ interface Props extends BaseMapProps {
 	zonesFillColor?: FillColor,
 	/** Triggered on a click on the map. If the click is performed outside a zone, featureId and zoneName are null. */
 	onZoneClick?: (featureId: string | number | null, zoneName: string | null) => void,
+	highlightedZoneName?: string,
 }
 
 interface State {
 	hoveredZone: string | number,
+	transformedZones: FeatureCollection,
 }
 
 export default class UrbanZoneMap extends React.Component<Props, State> {
@@ -22,6 +24,7 @@ export default class UrbanZoneMap extends React.Component<Props, State> {
 		super(props);
 		this.state = {
 			hoveredZone: null,
+			transformedZones: null
 		};
 	}
 
@@ -31,6 +34,10 @@ export default class UrbanZoneMap extends React.Component<Props, State> {
 			this.mapRef.current.ensureMapLoading(),
 			this.props.zonesTransformer ? (await this.props.zonesTransformer(zones)) : zones,
 		])
+
+		this.setState({
+			transformedZones,
+		})
 
 		this.map
 			.addSource('urbanZone-source', {
@@ -75,6 +82,45 @@ export default class UrbanZoneMap extends React.Component<Props, State> {
 					this.props.onZoneClick(null, null);
 				}
 			});
+		}
+	}
+
+	async componentDidUpdate() {
+		await this.mapRef.current.ensureMapLoading();
+
+		try {
+			this.map
+				.addSource('urbanZone-source', {
+					type: 'geojson',
+					data: this.state.transformedZones,
+					generateId: true,
+				})
+				.addSource('district-buildings', {
+					type: 'geojson',
+					data: buildings,
+					generateId: true,
+				})
+				.addSource('Lighting-source', {
+					type: 'geojson',
+					data: Lighting,
+					generateId: true,
+				})
+				.addSource('Bornes-source', {
+					type: 'geojson',
+					data: Bornes,
+					generateId: true,
+				})
+				.addLayer(zonesFill(this.props.zonesFillColor ?? '#7fd1ef'))
+				.addLayer(zonesBorder)
+				.addLayer(allBuildings3D)
+		} catch (e) {
+			//console.error(e);
+		} finally {
+			if (this.props.highlightedZoneName) {
+				const featureId = this.state.transformedZones.features.findIndex(f => f.properties.libelle === this.props.highlightedZoneName);
+				if (featureId === this.state.hoveredZone) this.cancelZoneHover();
+				else this.hoverZone(featureId);
+			}
 		}
 	}
 

@@ -22,7 +22,8 @@ interface State {
     indicatorClass: IndicatorClass,
     buildingType: ConsumerProfile,
     t1: Date,
-    t2: Date
+    t2: Date,
+    highlightedZoneName: string | null,
 }
 
 export default class Home extends React.Component<{}, State>{
@@ -37,7 +38,8 @@ export default class Home extends React.Component<{}, State>{
             indicatorClass: IndicatorClass.Global,
             buildingType: ConsumerProfile.ALL,
             t1: new Date('2021-12-01T00:30:00Z'),
-            t2: new Date('2021-12-31T00:30:00Z')
+            t2: new Date('2021-12-31T00:30:00Z'),
+            highlightedZoneName: null,
 
         };
         this.temporaryState = this.state;
@@ -76,6 +78,10 @@ export default class Home extends React.Component<{}, State>{
         }
     }
 
+    handler = (val: string | null) => {
+        this.setState({highlightedZoneName: val});
+    }
+
     render() {
         return (
             <div id='home-container'>
@@ -85,6 +91,7 @@ export default class Home extends React.Component<{}, State>{
                         t1={this.state.t1}
                         t2={this.state.t2}
                         indicatorClass={this.state.indicatorClass}
+                        highlightedZoneName={this.state.highlightedZoneName}
                     />
                     <div id="data-container">
                         <div className="dropdown-wrapper">
@@ -131,6 +138,7 @@ export default class Home extends React.Component<{}, State>{
                                 buildingType={this.state.buildingType}
                                 t1={this.state.t1}
                                 t2={this.state.t2}
+                                setHighlightedZone={this.handler}
                             />
                         </div>
                     </div>

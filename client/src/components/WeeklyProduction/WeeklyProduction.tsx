@@ -92,9 +92,9 @@ export default class WeeklyProduction extends React.Component<Props, State> {
 		await this.fetchData();
 	}
 
-	async componentDidUpdate() {
+	/*async componentDidUpdate() {
 		await this.fetchData();
-	}
+	}*/
 
 
 	render() {
