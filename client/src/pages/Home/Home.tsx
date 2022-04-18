@@ -119,11 +119,15 @@ export default class Home extends React.Component<{}, State>{
                             <DatePicker
                                 className="date-picker"
                                 onChange={(value) => this.temporaryState.t1 = value}
-                                placeholder="Date début" />
+                                placeholder="Date début"
+                                defaultValue={this.temporaryState.t1}
+                            />
                             <DatePicker
                                 className="date-picker"
                                 onChange={(value) => this.temporaryState.t2 = value}
-                                placeholder="Date fin" />
+                                placeholder="Date fin"
+                                defaultValue={this.temporaryState.t2}
+                            />
                             <Button
                                 className="validate-button"
                                 variant="outlined"
@@ -131,7 +135,12 @@ export default class Home extends React.Component<{}, State>{
                                 OK
                             </Button>
                         </div>
-                        <div id="indicator-container">
+                        <div id="indicator-container"
+                             key={this.state.selectedZoneName
+                                 + this.temporaryState.t1.toString()
+                                 + this.temporaryState.t2.toString()
+                                 + this.state.buildingType}
+                        >
                             <DataContainer
                                 selectedZoneName={this.state.selectedZoneName}
                                 indicatorType={this.state.indicatorType}

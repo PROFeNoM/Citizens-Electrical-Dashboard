@@ -127,7 +127,7 @@ export default class WeeklyProduction extends React.Component<Props, State> {
 				}
 			]
 		}
-		console.log(this.state.urbanZoneProductionData);
+
 		return (
 			<div className="typical-c-day-wrapper">
 				<div className="typical-c-day-title-wrapper">{this.props.title}</div>
