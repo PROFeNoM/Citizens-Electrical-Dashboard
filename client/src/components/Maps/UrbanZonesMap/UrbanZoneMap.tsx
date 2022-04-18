@@ -120,7 +120,7 @@ export default class UrbanZoneMap extends React.Component<Props, State> {
 				const featureId = this.state.transformedZones.features.findIndex(f => f.properties.libelle === this.props.highlightedZoneName);
 				if (featureId === this.state.hoveredZone) this.cancelZoneHover();
 				else this.hoverZone(featureId);
-			}
+			} else this.cancelZoneHover();
 		}
 	}
 

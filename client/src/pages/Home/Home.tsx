@@ -91,7 +91,7 @@ export default class Home extends React.Component<{}, State>{
                         t1={this.state.t1}
                         t2={this.state.t2}
                         indicatorClass={this.state.indicatorClass}
-                        highlightedZoneName={this.state.highlightedZoneName}
+                        highlightedZoneName={[Indicator.SolarDonut, Indicator.ConsumptionDonut].includes(this.state.indicatorType) ? this.state.highlightedZoneName : null}
                     />
                     <div id="data-container">
                         <div className="dropdown-wrapper">
@@ -120,13 +120,13 @@ export default class Home extends React.Component<{}, State>{
                                 className="date-picker"
                                 onChange={(value) => this.temporaryState.t1 = value}
                                 placeholder="Date début"
-                                defaultValue={this.temporaryState.t1}
+                                defaultValue={this.state.t1}
                             />
                             <DatePicker
                                 className="date-picker"
                                 onChange={(value) => this.temporaryState.t2 = value}
                                 placeholder="Date fin"
-                                defaultValue={this.temporaryState.t2}
+                                defaultValue={this.state.t2}
                             />
                             <Button
                                 className="validate-button"
@@ -137,8 +137,8 @@ export default class Home extends React.Component<{}, State>{
                         </div>
                         <div id="indicator-container"
                              key={this.state.selectedZoneName
-                                 + this.temporaryState.t1.toString()
-                                 + this.temporaryState.t2.toString()
+                                 + this.state.t1.toString()
+                                 + this.state.t2.toString()
                                  + this.state.buildingType}
                         >
                             <DataContainer
