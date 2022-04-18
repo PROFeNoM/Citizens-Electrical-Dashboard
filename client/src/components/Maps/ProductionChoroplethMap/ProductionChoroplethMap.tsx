@@ -35,7 +35,6 @@ export default class ProductionChoroplethMap extends React.Component<Props, {}> 
 	}
 
 	render() {
-		console.log("CHOROPLETH MAP PROPS", this.props.highlightedZoneName);
 		return (
 			<div className="choropleth-map-wrapper">
 				{/* <div className="choropleth-map-title-wrapper">

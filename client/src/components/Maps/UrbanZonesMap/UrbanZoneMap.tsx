@@ -69,7 +69,7 @@ export default class UrbanZoneMap extends React.Component<Props, State> {
 			// .on('mouseenter', 'data', e => this.hoverZone(e.features[0].id))
 			// .on('mousemove', 'data', e => this.hoverZone(e.features[0].id))
 			// .on('mouseleave', 'data', () => this.cancelZoneHover());
-
+		this.cancelZoneHover();
 		if (this.props.onZoneClick) {
 			// detect click on a zone
 			this.map.on('click', 'data', e => {
