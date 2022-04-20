@@ -57,6 +57,7 @@ export default class ConsumptionChoroplethMap extends React.Component<Props, {}>
 					/>
 				</div>
 
+				{/* Removed for responsive purposes
 				<div className="color-wrapper">
 					<div className="high-end-color-wrapper">
 						<div className="high-end-color" />
@@ -67,6 +68,7 @@ export default class ConsumptionChoroplethMap extends React.Component<Props, {}>
 						<p className="low-end-text">Faible consommation</p>
 					</div>
 				</div>
+				*/}
 			</div>
 		);
 	}

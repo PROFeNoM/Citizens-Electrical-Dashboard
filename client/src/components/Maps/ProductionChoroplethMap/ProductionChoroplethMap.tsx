@@ -59,6 +59,7 @@ export default class ProductionChoroplethMap extends React.Component<Props, {}> 
 					/>
 				</div>
 
+				{/* Removed for responsive purposes
 				<div className="color-wrapper">
 					<div className="high-end-color-wrapper">
 						<div className="high-end-color-prod" />
@@ -69,6 +70,7 @@ export default class ProductionChoroplethMap extends React.Component<Props, {}> 
 						<p className="low-end-text">Faible production</p>
 					</div>
 				</div>
+				*/}
 			</div>
 		);
 	}
