@@ -15,6 +15,7 @@ interface Props {
 	t2: number;
 	urbanZone: string;
 	title: string;
+	setHighlightedZone: (val: string | null) => void;
 }
 
 interface State {
@@ -76,9 +77,9 @@ export default class TypicalProductionDay extends React.Component<Props, State> 
 		await this.fetchData();
 	}
 
-	/*async componentDidUpdate() {
-		await this.fetchData();
-	}*/
+	private onClick = (e: any) => {
+		this.props.setHighlightedZone(this.props.urbanZone);
+	}
 
 	render() {
 		const chartOptions = {
@@ -110,6 +111,7 @@ export default class TypicalProductionDay extends React.Component<Props, State> 
 					xValueFormatString: "HH:mm",
 					dataPoints: this.state.districtConsumptionData,
 					color: "#688199",
+					click: this.onClick
 				},
 				{
 					type: "column",
@@ -118,6 +120,7 @@ export default class TypicalProductionDay extends React.Component<Props, State> 
 					xValueFormatString: "HH:mm",
 					dataPoints: this.state.urbanZoneConsumptionData,
 					color: "#e63b11",
+					click: this.onClick
 				},
 			],
 		};

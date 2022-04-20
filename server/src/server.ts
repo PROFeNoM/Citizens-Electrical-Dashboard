@@ -74,6 +74,19 @@ app.get('/api/v1/:entity/hourly-mean', apiReqCheckerParser, async (req, res) => 
 	res.send(result);
 });
 
+app.get('/api/v1/:entity/max-timestamp', async (req, res) => {
+	const maxTimestamp = await getConnection()
+		.createQueryBuilder()
+		.select(`MAX(timestamp)`)
+		.from(`${req.params.entity}`, `${req.params.entity}`)
+		.where(`is_prediction = false`)
+		.getRawOne();
+
+	console.log(maxTimestamp);
+
+	res.send({ maxTimestamp: maxTimestamp.max });
+});
+
 // TODO properly catch 404 requests
 
 app.get('/api/*', (req, res) => {

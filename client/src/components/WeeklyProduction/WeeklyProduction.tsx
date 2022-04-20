@@ -8,6 +8,7 @@ interface Props {
 	t2: number;
 	urbanZone: string;
 	title: string;
+	setHighlightedZone: (val: string | null) => void;
 }
 
 interface State {
@@ -92,10 +93,9 @@ export default class WeeklyProduction extends React.Component<Props, State> {
 		await this.fetchData();
 	}
 
-	/*async componentDidUpdate() {
-		await this.fetchData();
-	}*/
-
+	private onClick = (e: any) => {
+		this.props.setHighlightedZone(this.props.urbanZone);
+	}
 
 	render() {
 		const chartOptions = {
@@ -117,13 +117,15 @@ export default class WeeklyProduction extends React.Component<Props, State> {
 					type: "column",
 					name: "Production de La Bastide (kWh)",
 					dataPoints: this.state.districtProductionData,
-					color: "#688199"
+					color: "#688199",
+					click: this.onClick
 				},
 				{
 					type: "column",
 					name: "Production de " + this.props.urbanZone + " (kWh)",
 					dataPoints: this.state.urbanZoneProductionData,
-					color: "#e63b11"
+					color: "#e63b11",
+					click: this.onClick
 				}
 			]
 		}

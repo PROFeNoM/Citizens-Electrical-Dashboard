@@ -20,6 +20,7 @@ interface Props {
 	urbanZone: string;
 	buildingType: ConsumerProfile;
 	title: string;
+	setHighlightedZone: (val: string | null) => void;
 }
 
 interface State {
@@ -107,9 +108,10 @@ export default class TypicalConsumptionDay extends React.Component<Props, State>
 		await this.fetchData();
 	}
 
-	/*async componentDidUpdate() {
-		await this.fetchData();
-	}*/
+	private onClick = (e: any) => {
+		console.log("CLicked on " + this.props.urbanZone);
+		this.props.setHighlightedZone(this.props.urbanZone);
+	}
 
 	render() {
 		const chartOptions = {
@@ -141,6 +143,7 @@ export default class TypicalConsumptionDay extends React.Component<Props, State>
 					xValueFormatString: "HH:mm",
 					dataPoints: this.state.districtConsumptionData,
 					color: "#688199",
+					click: this.onClick
 				},
 				{
 					type: "column",
@@ -149,6 +152,7 @@ export default class TypicalConsumptionDay extends React.Component<Props, State>
 					xValueFormatString: "HH:mm",
 					dataPoints: this.state.urbanZoneConsumptionData,
 					color: "#e63b11",
+					click: this.onClick
 				},
 			],
 		};

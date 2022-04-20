@@ -1,19 +1,12 @@
 import './Home.css';
-import { Header } from '../../containers';
-import { HomeMap } from '../../components';
+import {Header} from '../../containers';
 import React from 'react';
-import {
-    Indicator,
-    IndicatorClass,
-    selectOptionsBuild,
-    selectOptionsDist,
-    indicatorTree
-} from './HomeUtils';
+import {Indicator, IndicatorClass, indicatorTree, selectOptionsBuild, selectOptionsDist} from './HomeUtils';
 
 import DataContainer from '../../components/DataContainer/DataContainer';
-import { ConsumerProfile } from '../../scripts/api';
-import { Button } from '@mui/material';
-import { DatePicker, TreePicker } from 'rsuite';
+import {ConsumerProfile} from '../../scripts/api';
+import {Button} from '@mui/material';
+import {DatePicker, TreePicker} from 'rsuite';
 import MapContainer from '../../components/MapContainer/MapContainer';
 
 interface State {
@@ -48,6 +41,8 @@ export default class Home extends React.Component<{}, State>{
     }
 
     validateRequest() {
+        this.setState({highlightedZoneName: null});
+
         if (this.temporaryState.selectedZoneName === "Quartier de la Bastide")
             this.setState({ selectedZoneName: null });
         else
@@ -91,7 +86,7 @@ export default class Home extends React.Component<{}, State>{
                         t1={this.state.t1}
                         t2={this.state.t2}
                         indicatorClass={this.state.indicatorClass}
-                        highlightedZoneName={[Indicator.SolarDonut, Indicator.ConsumptionDonut].includes(this.state.indicatorType) ? this.state.highlightedZoneName : null}
+                        highlightedZoneName={this.state.highlightedZoneName}
                     />
                     <div id="data-container">
                         <div className="dropdown-wrapper">

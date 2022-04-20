@@ -33,6 +33,7 @@ export default class DataContainer extends React.Component<Props> {
                         urbanZone={this.props.selectedZoneName}
                         buildingType={this.props.buildingType}
                         title={"Journée type de consommation"}
+                        setHighlightedZone={this.props.setHighlightedZone}
                     />
                 );
             case Indicator.TypicalProductionDay:
@@ -42,6 +43,7 @@ export default class DataContainer extends React.Component<Props> {
                         t2={this.props.t2.getTime()}
                         urbanZone={this.props.selectedZoneName}
                         title={"Journée type de production"}
+                        setHighlightedZone={this.props.setHighlightedZone}
                     />
                 );
             case Indicator.TotalConsumption:
@@ -51,6 +53,7 @@ export default class DataContainer extends React.Component<Props> {
                         t2={this.props.t2.getTime()}
                         urbanZone={this.props.selectedZoneName}
                         title={"Consommation totale"}
+                        setHighlightedZone={this.props.setHighlightedZone}
                     />
                 );
             case Indicator.ConsumptionDonut:
@@ -81,6 +84,7 @@ export default class DataContainer extends React.Component<Props> {
                         t2={this.props.t2.getTime()}
                         urbanZone={this.props.selectedZoneName}
                         title={"Production Hebdomadaire"}
+                        setHighlightedZone={this.props.setHighlightedZone}
                     />
                 );
             case Indicator.LocalProductionInfo:

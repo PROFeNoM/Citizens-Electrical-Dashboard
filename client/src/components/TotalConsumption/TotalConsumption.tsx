@@ -7,7 +7,8 @@ interface Props {
 	t1: number,
 	t2: number,
 	urbanZone: string,
-	title: string
+	title: string,
+	setHighlightedZone: (val: string | null) => void
 }
 
 interface State {
@@ -58,9 +59,9 @@ export default class TotalConsumption extends React.Component<Props, State> {
 		await this.fetchData();
 	}
 
-	/*async componentDidUpdate() {
-		await this.fetchData();
-	}*/
+	private onClick = (e: any) => {
+		this.props.setHighlightedZone(this.props.urbanZone);
+	}
 
 	render() {
 		const chartOptions = {
@@ -91,13 +92,15 @@ export default class TotalConsumption extends React.Component<Props, State> {
 				name: 'Consommation de La Bastide (kWh)',
 				axisYType: 'primary',
 				dataPoints: this.state.districtConsumptionData,
-				color: '#688199'
+				color: '#688199',
+				click: this.onClick
 			}, {
 				type: 'column',
 				name: 'Consommation de la zone urbaine (kWh)',
 				axisYType: 'primary',
 				dataPoints: this.state.urbanZoneConsumptionData,
-				color: '#e63b11'
+				color: '#e63b11',
+				click: this.onClick
 			}]
 		}
 
