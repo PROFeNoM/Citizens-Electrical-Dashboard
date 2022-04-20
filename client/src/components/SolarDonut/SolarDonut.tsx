@@ -1,4 +1,3 @@
-import './SolarDonut.css';
 import React from 'react';
 import { getTotalProduction, ProducerProfile } from "../../scripts/api";
 import { zones } from "../../geodata";

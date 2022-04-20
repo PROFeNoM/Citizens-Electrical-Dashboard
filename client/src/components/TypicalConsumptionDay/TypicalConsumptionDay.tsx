@@ -1,5 +1,5 @@
 import './TypicalConsumptionDay.css';
-import React, { Component } from 'react';
+import React from 'react';
 import { CanvasJSChart } from 'canvasjs-react-charts';
 import {
 	ConsumerProfile,
@@ -108,7 +108,7 @@ export default class TypicalConsumptionDay extends React.Component<Props, State>
 		await this.fetchData();
 	}
 
-	private onClick = (e: any) => {
+	private onClick = () => {
 		console.log("CLicked on " + this.props.urbanZone);
 		this.props.setHighlightedZone(this.props.urbanZone);
 	}

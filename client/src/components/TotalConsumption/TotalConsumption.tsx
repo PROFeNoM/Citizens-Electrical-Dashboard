@@ -59,7 +59,7 @@ export default class TotalConsumption extends React.Component<Props, State> {
 		await this.fetchData();
 	}
 
-	private onClick = (e: any) => {
+	private onClick = () => {
 		this.props.setHighlightedZone(this.props.urbanZone);
 	}
 

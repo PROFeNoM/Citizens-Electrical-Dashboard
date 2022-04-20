@@ -1,4 +1,3 @@
-import './TypicalProductionDay.css';
 import React from 'react';
 import {CanvasJSChart} from 'canvasjs-react-charts';
 import {getHourlyMeanProduction, ProducerProfile,} from '../../scripts/api';
@@ -77,7 +76,7 @@ export default class TypicalProductionDay extends React.Component<Props, State> 
 		await this.fetchData();
 	}
 
-	private onClick = (e: any) => {
+	private onClick = () => {
 		this.props.setHighlightedZone(this.props.urbanZone);
 	}
 

@@ -1,4 +1,3 @@
-import './ConsumptionDonut.css';
 import React from 'react';
 import {getTotalConsumption, ConsumerProfile} from "../../scripts/api";
 import {zones} from "../../geodata";

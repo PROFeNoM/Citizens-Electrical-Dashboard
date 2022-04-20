@@ -1,4 +1,3 @@
-import './WeeklyProduction.css';
 import React from 'react';
 import {CanvasJSChart} from 'canvasjs-react-charts';
 import {getTotalProduction, ProducerProfile} from "../../scripts/api";
@@ -93,7 +92,7 @@ export default class WeeklyProduction extends React.Component<Props, State> {
 		await this.fetchData();
 	}
 
-	private onClick = (e: any) => {
+	private onClick = () => {
 		this.props.setHighlightedZone(this.props.urbanZone);
 	}
 
