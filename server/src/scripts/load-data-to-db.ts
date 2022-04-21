@@ -17,7 +17,7 @@ async function main() {
 
 async function loadConsumptionData(tx: EntityManager) {
 	for (let i = 1; i <= 2; ++i) {
-		for await (const line of readCsv(mockSrcDataDir + `consumption-part${i}`)) {
+		for await (const line of readCsv(mockSrcDataDir + `/consumption-part${i}.csv`)) {
 			const consumption = new Consumption();
 			consumption.drainedEnergy = parseInt(line['Total énergie soutirée (Wh)'], 10);
 
@@ -50,7 +50,7 @@ async function loadConsumptionData(tx: EntityManager) {
 }
 
 async function loadProductionData(tx: EntityManager) {
-	for await (const line of readCsv(mockSrcDataDir + 'production.csv')) {
+	for await (const line of readCsv(mockSrcDataDir + '/production.csv')) {
 		const production = new Production();
 		production.injectedEnergy = parseInt(line['Total énergie injectée (Wh)'], 10);
 
