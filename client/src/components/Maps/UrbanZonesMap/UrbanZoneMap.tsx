@@ -1,7 +1,7 @@
 import React from 'react';
 import BaseMap, { BaseMapProps } from '../BaseMap/BaseMap';
 import { FeatureCollection } from 'geojson';
-import { lightingPoints, allBuildings3D, bornesPoints, residentialBuildings3D, FillColor, zonesBorder, zonesFill} from '../layers';
+import { lightingPoints, allBuildings3D, bornesPoints, residentialBuildings3D,residentialBuildings3D2, FillColor, zonesBorder, zonesFill} from '../layers';
 import { zones, buildings, Lighting, Bornes } from '../../../geodata';
 
 interface Props extends BaseMapProps {
@@ -64,6 +64,7 @@ export default class UrbanZoneMap extends React.Component<Props, State> {
 			.addLayer(zonesBorder)
 			.addLayer(allBuildings3D)
 			//.addLayer(residentialBuildings3D)      //cette layer marche
+			//.addLayer(residentialBuildings3D2)	 // cette layer est complementaire acelle d'avant
 			//.addLayer(lightingPoints)  			//cette layer ne marche pas a cause de la natur du fichier geojson
 			//.addLayer(bornesPoints)   			//cette layer marche
 			// .on('mouseenter', 'data', e => this.hoverZone(e.features[0].id))
