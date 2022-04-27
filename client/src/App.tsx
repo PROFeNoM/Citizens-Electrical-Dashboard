@@ -4,7 +4,6 @@ import './App.css';
 import { HamburgerMenu } from './components';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Home, Connection, About, Legal, Error } from './pages';
-import Bornes from './pages/Bornes/Bornes';
 
 function App() {
     return (
@@ -16,7 +15,6 @@ function App() {
                     <Route path='/connection' element={<Connection />} />
                     <Route path='/about' element={<About />} />
                     <Route path='/legal' element={<Legal />} />
-                    <Route path='/bornes/:zoneName/:build' element={<Bornes />} />
                     <Route path='*' element={<Error />} />
                 </Routes>
             </Router>
