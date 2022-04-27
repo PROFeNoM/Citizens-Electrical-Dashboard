@@ -1,6 +1,5 @@
 import React from 'react';
-import './ChargingStationIndicator.css';
-import { getZonesName } from '../../scripts/dbUtils';
+import { getZonesNames } from '../../scripts/dbUtils';
 import copy from 'fast-copy';
 import { ConsumerProfile, getTotalConsumption, getTotalProduction } from '../../scripts/api';
 
@@ -32,7 +31,7 @@ export default class ChargingStationIndicator extends React.Component<Props, Sta
 			zonesData: {},
 		};
 		
-		for (const zoneName of getZonesName()) {
+		for (const zoneName of getZonesNames()) {
 			this.state.zonesData[zoneName] = {
 				nbOfStations: 4,
 				nbOfChargingPoints:12,
@@ -50,7 +49,7 @@ export default class ChargingStationIndicator extends React.Component<Props, Sta
 		let districtConsumption = 0;
 		let districtProduction = 0;
 
-		await Promise.all(getZonesName().map(async zoneName => {
+		await Promise.all(getZonesNames().map(async zoneName => {
 			const [zoneConsumption, zoneProduction] = await Promise.all([
 				getTotalConsumption(t1, t2, undefined, zoneName),
 				getTotalProduction(t1, t2, undefined, zoneName),
