@@ -3,9 +3,9 @@
 import './ProductionChoroplethMap.css';
 import React from 'react';
 import UrbanZoneMap from '../UrbanZonesMap/UrbanZoneMap';
-import {FeatureCollection} from 'geojson';
-import {changeRange} from '../../../scripts/utils';
-import {getTotalProduction, ProducerProfile} from '../../../scripts/api';
+import { FeatureCollection } from 'geojson';
+import { changeRange } from 'scripts/utils';
+import { getTotalProduction, ProducerProfile } from 'scripts/api';
 
 interface Props {
 	t1: number,

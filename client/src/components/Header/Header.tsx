@@ -1,7 +1,7 @@
 import './Header.css';
-import logoEnedis from '../../images/logoEnedis.png';
-import logoEnedisSmall from '../../images/logoEnedisSmall.png';
-import { Hamburger } from '../../components';
+import logoEnedis from 'images/logoEnedis.png';
+import logoEnedisSmall from 'images/logoEnedisSmall.png';
+import Hamburger from '../Hamburger/Hamburger';
 
 interface HeaderProps {
 	title: string;

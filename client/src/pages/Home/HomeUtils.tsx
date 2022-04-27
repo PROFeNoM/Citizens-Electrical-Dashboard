@@ -1,6 +1,6 @@
 import './Home.css';
-import { zones } from '../../geodata';
-import { ConsumerProfile } from '../../scripts/api';
+import { zones } from 'geodata';
+import { ConsumerProfile } from 'scripts/api';
 
 export enum Indicator {
 	ConsumptionDonut,

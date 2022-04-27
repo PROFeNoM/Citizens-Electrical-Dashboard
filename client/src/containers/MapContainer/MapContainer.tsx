@@ -1,8 +1,7 @@
 import React from 'react';
-import { IndicatorClass } from '../../pages/Home/HomeUtils';
-import { HomeMap } from '../../components';
-import ConsumptionChoroplethMap from '../Maps/ConsumptionChoroplethMap/ConsumptionChoroplethMap';
-import ProductionChoroplethMap from '../Maps/ProductionChoroplethMap/ProductionChoroplethMap';
+import { IndicatorClass } from 'pages/Home/HomeUtils';
+import { HomeMap } from 'components/Maps';
+import { ConsumptionChoroplethMap, ProductionChoroplethMap } from 'components/Maps';
 
 interface Props {
     t1: Date,

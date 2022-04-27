@@ -1,10 +1,11 @@
 import React from 'react';
-import { EnergyBalance, ChargingStationIndicator } from '..';
-import { TotalConsumption } from '..';
-import { LocalProductionInfo } from '..';
-import { Indicator } from '../../pages/Home/HomeUtils';
-import { TypicalProductionDay, TypicalConsumptionDay, ConsumptionDonut, SolarDonut, WeeklyProduction } from '..';
-import { ConsumerProfile } from '../../scripts/api';
+import {
+    EnergyBalance, ChargingStationIndicator,
+    TypicalConsumptionDay, ConsumptionDonut, TotalConsumption,
+    LocalProductionInfo, TypicalProductionDay, SolarDonut, WeeklyProduction
+} from 'components/Indicators';
+import { Indicator } from 'pages/Home/HomeUtils';
+import { ConsumerProfile } from 'scripts/api';
 
 interface Props {
     selectedZoneName: string | null,

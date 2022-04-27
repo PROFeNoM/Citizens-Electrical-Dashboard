@@ -1,7 +1,7 @@
 import React from 'react';
-import {getTotalConsumption, ConsumerProfile} from "../../scripts/api";
-import {zones} from "../../geodata";
-import {CanvasJSChart} from 'canvasjs-react-charts';
+import { getTotalConsumption, ConsumerProfile } from 'scripts/api';
+import { zones } from 'geodata';
+import { CanvasJSChart } from 'canvasjs-react-charts';
 
 interface Props {
 	t1: number;
@@ -22,7 +22,7 @@ export default class ConsumptionDonut extends React.Component<Props, State> {
 	constructor(props: Props) {
 		super(props);
 		const tmpPoints = zones.features.map(f => {
-			return {name: f.properties.libelle, y: 0};
+			return { name: f.properties.libelle, y: 0 };
 		})
 
 		this.state = {
@@ -33,14 +33,14 @@ export default class ConsumptionDonut extends React.Component<Props, State> {
 	}
 
 	async fetchData() {
-		const {t1, t2, urbanZone} = this.props;
+		const { t1, t2, urbanZone } = this.props;
 		const consumptions = await Promise.all(zones.features.map(async f => {
 			return {
 				name: f.properties.libelle,
 				value: await getTotalConsumption(
 					t1,
 					t2,
-					this.props.buildingType ? ( this.props.buildingType !== ConsumerProfile.ALL ? [this.props.buildingType] : undefined) : undefined,
+					this.props.buildingType ? (this.props.buildingType !== ConsumerProfile.ALL ? [this.props.buildingType] : undefined) : undefined,
 					f.properties.libelle)
 			};
 		}));

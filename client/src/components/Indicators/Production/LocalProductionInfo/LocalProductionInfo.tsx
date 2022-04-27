@@ -1,7 +1,7 @@
 import './LocalProductionInfo.css';
 import React from 'react';
-import {getTotalProduction, ProducerProfile} from "../../scripts/api";
-import {zones} from "../../geodata";
+import { getTotalProduction, ProducerProfile } from 'scripts/api';
+import { zones } from 'geodata';
 
 interface Props {
 	t1: number,
@@ -29,7 +29,7 @@ export default class LocalProductionInfo extends React.Component<Props, State> {
 		};
 	}
 
-	async fetchData(){
+	async fetchData() {
 		const { t1, t2, urbanZone } = this.props;
 		// Retrive the number of production points using geodata zones
 		const zone = zones.features.find(z => z.properties.libelle === urbanZone).properties.PROD_F5;
@@ -59,7 +59,7 @@ export default class LocalProductionInfo extends React.Component<Props, State> {
 				<div className="typical-c-day-title-wrapper">{this.props.title}</div>
 				<div className="local-production-info-text-wrapper">
 					<p className="local-production-paragraph">La production d'énergie solaire {plural ? 'des' : 'du'} <b className='local-production-bold'>{this.state.productionPoints}</b> {plural ? 'points' : 'point'} de production de <b className='local-production-bold'>{this.props.urbanZone}</b> s'élève à <b className='local-production-bold'>{new Intl.NumberFormat().format(this.state.totalProduction)} kWh</b></p>
-					<p>Cette production a permis d'éviter l'émission de <b className='local-production-bold'>{Math.round(29 * this.state.totalProduction / 1000 / 1000 / 1000) }</b> kilotonnes de CO2 cette période</p>
+					<p>Cette production a permis d'éviter l'émission de <b className='local-production-bold'>{Math.round(29 * this.state.totalProduction / 1000 / 1000 / 1000)}</b> kilotonnes de CO2 cette période</p>
 				</div>
 			</div>
 		);

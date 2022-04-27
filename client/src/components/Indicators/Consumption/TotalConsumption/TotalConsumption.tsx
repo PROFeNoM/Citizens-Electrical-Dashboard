@@ -1,7 +1,7 @@
 import './TotalConsumption.css';
 import React from 'react';
 import { CanvasJSChart } from 'canvasjs-react-charts';
-import { ConsumerProfile, getTotalConsumption } from '../../scripts/api';
+import { ConsumerProfile, getTotalConsumption } from 'scripts/api';
 
 interface Props {
 	t1: number,
@@ -114,13 +114,10 @@ export default class TotalConsumption extends React.Component<Props, State> {
 				</div>
 				<div className="typical-c-day-legend-wrapper">
 					<div className="typical-c-day-urbanZone-legend-wrapper">
-						<div className="typical-c-day-urbanZone-color" />
-						<p className="typical-c-day-urbanZone-text">Consommation par filière dans la zone urbaine</p>
+						<p className="typical-c-day-urbanZone-text"><div className="typical-c-day-urbanZone-color" />Consommation par filière dans la zone urbaine</p>
 					</div>
 					<div className="typical-c-day-district-legend-wrapper">
-						<div className="typical-c-day-district-color">
-							<p className="typical-c-day-district-text">Consommation par filière dans le quartier</p>
-						</div>
+						<p className="typical-c-day-district-text"><div className="typical-c-day-district-color" />Consommation par filière dans le quartier</p>
 					</div>
 				</div>
 			</div>

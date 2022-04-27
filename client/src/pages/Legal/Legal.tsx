@@ -1,4 +1,4 @@
-import { Header } from "../../containers";
+import { Header } from 'components';
 import CssBaseline from '@mui/material/CssBaseline';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';

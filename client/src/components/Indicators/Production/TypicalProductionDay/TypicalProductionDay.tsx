@@ -1,11 +1,6 @@
-import './TypicalConsumptionDay.css';
 import React from 'react';
 import { CanvasJSChart } from 'canvasjs-react-charts';
-import {
-	ConsumerProfile,
-	getHourlyMeanConsumption,
-	getHourlyMeanProduction,
-} from '../../scripts/api';
+import { getHourlyMeanProduction, ProducerProfile } from 'scripts/api';
 
 const tmpPoints = Array.from(Array(24).keys()).map((h) => {
 	return {
@@ -18,54 +13,29 @@ interface Props {
 	t1: number;
 	t2: number;
 	urbanZone: string;
-	buildingType: ConsumerProfile;
 	title: string;
 	setHighlightedZone: (val: string | null) => void;
 }
 
 interface State {
-	selfConsumptionData: { x: Date; y: number }[];
 	districtConsumptionData: { x: Date; y: number }[];
 	urbanZoneConsumptionData: { x: Date; y: number }[];
 }
 
-export default class TypicalConsumptionDay extends React.Component<Props, State> {
+export default class TypicalProductionDay extends React.Component<Props, State> {
 	constructor(props: Props) {
 		super(props);
 		this.state = {
-			selfConsumptionData: tmpPoints,
 			districtConsumptionData: tmpPoints,
 			urbanZoneConsumptionData: tmpPoints,
 		};
 	}
 
-	private async getSelfConsumptionData() {
-		const meanCons = await getHourlyMeanConsumption(
+	private async getDistrictProductionData() {
+		const meanCons = await getHourlyMeanProduction(
 			this.props.t1,
 			this.props.t2,
-			this.props.buildingType ? [this.props.buildingType] : undefined,
-			this.props.urbanZone
-		);
-		const meanProd = await getHourlyMeanProduction(
-			this.props.t1,
-			this.props.t2,
-			undefined,
-			this.props.urbanZone
-		);
-
-		return meanCons.map((el, index) => {
-			return {
-				x: el.hour,
-				y: Math.round((meanProd[index].mean / el.mean) * 100) / 100,
-			};
-		});
-	}
-
-	private async getDistrictConsumptionData() {
-		const meanCons = await getHourlyMeanConsumption(
-			this.props.t1,
-			this.props.t2,
-			this.props.buildingType ? [this.props.buildingType] : undefined,
+			[ProducerProfile.SOLAR],
 			undefined,
 		);
 
@@ -77,11 +47,11 @@ export default class TypicalConsumptionDay extends React.Component<Props, State>
 		});
 	}
 
-	private async getUrbanZoneConsumptionData() {
-		const meanCons = await getHourlyMeanConsumption(
+	private async getUrbanZoneProductionData() {
+		const meanCons = await getHourlyMeanProduction(
 			this.props.t1,
 			this.props.t2,
-			this.props.buildingType ? [this.props.buildingType] : undefined,
+			[ProducerProfile.SOLAR],
 			this.props.urbanZone
 		);
 
@@ -93,12 +63,10 @@ export default class TypicalConsumptionDay extends React.Component<Props, State>
 		});
 	}
 
-	async fetchData(){
-		const selfConsumptionData = await this.getSelfConsumptionData();
-		const districtConsumptionData = await this.getDistrictConsumptionData();
-		const urbanZoneConsumptionData = await this.getUrbanZoneConsumptionData();
+	async fetchData() {
+		const districtConsumptionData = await this.getDistrictProductionData();
+		const urbanZoneConsumptionData = await this.getUrbanZoneProductionData();
 		this.setState({
-			selfConsumptionData: selfConsumptionData,
 			districtConsumptionData: districtConsumptionData,
 			urbanZoneConsumptionData: urbanZoneConsumptionData,
 		});
@@ -109,7 +77,6 @@ export default class TypicalConsumptionDay extends React.Component<Props, State>
 	}
 
 	private onClick = () => {
-		console.log("CLicked on " + this.props.urbanZone);
 		this.props.setHighlightedZone(this.props.urbanZone);
 	}
 
@@ -138,7 +105,7 @@ export default class TypicalConsumptionDay extends React.Component<Props, State>
 			data: [
 				{
 					type: "column",
-					name: "Consommation de La Bastide (kWh)",
+					name: "Production de La Bastide (kWh)",
 					axisYType: "primary",
 					xValueFormatString: "HH:mm",
 					dataPoints: this.state.districtConsumptionData,
@@ -147,7 +114,7 @@ export default class TypicalConsumptionDay extends React.Component<Props, State>
 				},
 				{
 					type: "column",
-					name: "Consommation de la zone urbaine (kWh)",
+					name: "Production de la zone urbaine (kWh)",
 					axisYType: "primary",
 					xValueFormatString: "HH:mm",
 					dataPoints: this.state.urbanZoneConsumptionData,
@@ -167,13 +134,13 @@ export default class TypicalConsumptionDay extends React.Component<Props, State>
 					<div className="typical-c-day-urbanZone-legend-wrapper">
 						<div className="typical-c-day-urbanZone-color" />
 						<p className="typical-c-day-urbanZone-text">
-							Consommation moyenne de la zone urbaine
+							Production moyenne de la zone urbaine
 						</p>
 					</div>
 					<div className="typical-c-day-district-legend-wrapper">
 						<div className="typical-c-day-district-color" />
 						<p className="typical-c-day-district-text">
-							Consommation moyenne du quartier
+							Production moyenne du quartier
 						</p>
 					</div>
 				</div>

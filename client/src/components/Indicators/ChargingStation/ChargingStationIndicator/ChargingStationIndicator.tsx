@@ -1,7 +1,7 @@
 import React from 'react';
-import { getZonesNames } from '../../scripts/dbUtils';
+import { getZonesNames } from 'scripts/dbUtils';
 import copy from 'fast-copy';
-import { ConsumerProfile, getTotalConsumption, getTotalProduction } from '../../scripts/api';
+import { ConsumerProfile, getTotalConsumption, getTotalProduction } from 'scripts/api';
 
 const formatter = new Intl.NumberFormat();
 

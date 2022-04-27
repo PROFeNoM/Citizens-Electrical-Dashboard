@@ -2,8 +2,8 @@ import './ConsumptionChoroplethMap.css';
 import React from 'react';
 import UrbanZoneMap from '../UrbanZonesMap/UrbanZoneMap';
 import { FeatureCollection } from 'geojson';
-import { changeRange } from '../../../scripts/utils';
-import { getTotalConsumption } from '../../../scripts/api';
+import { changeRange } from 'scripts/utils';
+import { getTotalConsumption } from 'scripts/api';
 
 interface Props {
 	t1: number,

@@ -1,11 +1,10 @@
 import './Home.css';
-import { Header } from '../../containers';
 import React from 'react';
+import { Header } from 'components';
 import { Indicator, IndicatorClass, indicatorTree, selectOptionsBuildings, selectOptionsZoneNames } from './HomeUtils';
-import { IndicatorContainer } from '../../components';
-import { ConsumerProfile } from '../../scripts/api';
+import { MapContainer, IndicatorContainer } from 'containers';
+import { ConsumerProfile } from 'scripts/api';
 import { Button, DatePicker, TreePicker } from 'rsuite';
-import MapContainer from '../../components/MapContainer/MapContainer';
 
 interface State {
     selectedZoneName: string | null,

@@ -1,8 +1,8 @@
 import React from 'react';
 import './EnergyBalance.css';
-import { getZoneArea, getZoneNbOfBuildings, getZoneNbOfCollectionSites, getZonesNames } from '../../scripts/dbUtils';
+import { getZoneArea, getZoneNbOfBuildings, getZoneNbOfCollectionSites, getZonesNames } from 'scripts/dbUtils';
 import copy from 'fast-copy';
-import { ConsumerProfile, getTotalConsumption, getTotalProduction } from '../../scripts/api';
+import { ConsumerProfile, getTotalConsumption, getTotalProduction } from 'scripts/api';
 
 const formatter = new Intl.NumberFormat();
 

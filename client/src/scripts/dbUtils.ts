@@ -1,5 +1,5 @@
 import * as turf from '@turf/turf';
-import { buildings, zones, publicLighting, ZoneFeatureProperties } from '../geodata';
+import { buildings, zones, publicLighting, ZoneFeatureProperties } from 'geodata';
 import { Feature, MultiPolygon } from 'geojson';
 import { ConsumerProfile } from './api';
 

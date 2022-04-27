@@ -2,7 +2,7 @@ import React from 'react';
 import BaseMap, { BaseMapProps } from '../BaseMap/BaseMap';
 import { FeatureCollection } from 'geojson';
 import { lightingPoints, allBuildings3D, bornesPoints, residentialBuildings3D, FillColor, zonesBorder, zonesFill} from '../layers';
-import { zones, buildings, Lighting, Bornes } from '../../../geodata';
+import { zones, buildings, Lighting, Bornes } from 'geodata';
 
 interface Props extends BaseMapProps {
 	zonesTransformer?: (zones: FeatureCollection) => Promise<FeatureCollection>,

@@ -1,6 +1,6 @@
 import React from 'react';
-import { getTotalProduction, ProducerProfile } from "../../scripts/api";
-import { zones } from "../../geodata";
+import { getTotalProduction, ProducerProfile } from 'scripts/api';
+import { zones } from 'geodata';
 import { CanvasJSChart } from 'canvasjs-react-charts';
 
 interface Props {

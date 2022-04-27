@@ -1,6 +1,6 @@
 import React from 'react';
-import {CanvasJSChart} from 'canvasjs-react-charts';
-import {getTotalProduction, ProducerProfile} from "../../scripts/api";
+import { CanvasJSChart } from 'canvasjs-react-charts';
+import { getTotalProduction, ProducerProfile } from 'scripts/api';
 
 interface Props {
 	t1: number;
@@ -78,7 +78,7 @@ export default class WeeklyProduction extends React.Component<Props, State> {
 		}));
 	}
 
-	async fetchData(){
+	async fetchData() {
 		const districtProductionData = await this.getDistrictProductionData();
 		const urbanZoneProductionData = await this.getUrbanZoneProductionData();
 		this.setState({

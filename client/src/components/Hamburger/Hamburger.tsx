@@ -1,7 +1,7 @@
 import './HamburgerMenu.css';
 import React, { useState } from 'react';
-import { HamburgerMenu } from "./HamburgerMenu";
-import { HamburgerButton } from "./HamburgerButton";
+import { HamburgerMenu } from './HamburgerMenu';
+import { HamburgerButton } from './HamburgerButton';
 
 function Hamburger() {
     const [open, setOpen] = useState(false);
