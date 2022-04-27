@@ -1,10 +1,10 @@
 import React from 'react';
-import { DistrictEnergyBalance, ChargingStationIndicator } from '..'
-import { Indicator } from '../../pages/Home/HomeUtils'
-import { TypicalProductionDay, TypicalConsumptionDay, ConsumptionDonut, SolarDonut, WeeklyProduction } from '..'
+import { EnergyBalance, ChargingStationIndicator } from '..';
+import { TotalConsumption } from '..';
+import { LocalProductionInfo } from '..';
+import { Indicator } from '../../pages/Home/HomeUtils';
+import { TypicalProductionDay, TypicalConsumptionDay, ConsumptionDonut, SolarDonut, WeeklyProduction } from '..';
 import { ConsumerProfile } from '../../scripts/api';
-import TotalConsumption from '../TotalConsumption/TotalConsumption';
-import LocalProductionInfo from '../LocalProductionInfo/LocalProductionInfo';
 
 interface Props {
     selectedZoneName: string | null,
@@ -15,19 +15,12 @@ interface Props {
     setHighlightedZone: (val: string | null) => void
 }
 
-
-export default class DataContainer extends React.Component<Props> {
+export default class IndicatorContainer extends React.Component<Props> {
     render() {
-        switch(this.props.indicatorType){
-            case Indicator.DistrictEnergyBalance:
-                return (
-                    <DistrictEnergyBalance
-                        selectedZoneName={this.props.selectedZoneName}
-                        />
-                );
+        switch (this.props.indicatorType) {
             case Indicator.TypicalConsumptionDay:
                 return (
-                    <TypicalConsumptionDay 
+                    <TypicalConsumptionDay
                         t1={this.props.t1.getTime()}
                         t2={this.props.t2.getTime()}
                         urbanZone={this.props.selectedZoneName}
@@ -48,7 +41,7 @@ export default class DataContainer extends React.Component<Props> {
                 );
             case Indicator.TotalConsumption:
                 return (
-                    <TotalConsumption 
+                    <TotalConsumption
                         t1={this.props.t1.getTime()}
                         t2={this.props.t2.getTime()}
                         urbanZone={this.props.selectedZoneName}
@@ -69,7 +62,7 @@ export default class DataContainer extends React.Component<Props> {
                 );
             case Indicator.SolarDonut:
                 return (
-                    <SolarDonut 
+                    <SolarDonut
                         t1={this.props.t1.getTime()}
                         t2={this.props.t2.getTime()}
                         urbanZone={this.props.selectedZoneName}
@@ -79,7 +72,7 @@ export default class DataContainer extends React.Component<Props> {
                 );
             case Indicator.WeeklyProduction:
                 return (
-                    <WeeklyProduction 
+                    <WeeklyProduction
                         t1={this.props.t1.getTime()}
                         t2={this.props.t2.getTime()}
                         urbanZone={this.props.selectedZoneName}
@@ -89,18 +82,19 @@ export default class DataContainer extends React.Component<Props> {
                 );
             case Indicator.LocalProductionInfo:
                 return (
-                    <LocalProductionInfo 
+                    <LocalProductionInfo
                         t1={this.props.t1.getTime()}
                         t2={this.props.t2.getTime()}
                         urbanZone={this.props.selectedZoneName}
                         title={"Production locale"}
                     />
                 );
+            case Indicator.DistrictEnergyBalance:
             default:
                 return (
-                    <DistrictEnergyBalance
+                    <EnergyBalance
                         selectedZoneName={this.props.selectedZoneName}
-                        />
+                    />
                 );
         }
     }

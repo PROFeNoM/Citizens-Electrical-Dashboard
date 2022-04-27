@@ -54,7 +54,7 @@ function getZone(zoneName: string): Feature<MultiPolygon, ZoneFeatureProperties>
 	return zones.features.filter(data => data.properties.libelle === zoneName)[0];
 }
 
-export function getZonesName(): string[] {
+export function getZonesNames(): string[] {
 	return zones.features.map(zone => zone.properties.libelle);
 }
 

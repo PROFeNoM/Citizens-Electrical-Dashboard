@@ -1,5 +1,6 @@
 export { default as Hamburger } from './Hamburger/Hamburger'
-export { default as DistrictEnergyBalance } from './DistrictEnergyBalance/DistrictEnergyBalance'
+export { default as IndicatorContainer } from './IndicatorContainer/IndicatorContainer'
+export { default as EnergyBalance } from './EnergyBalance/EnergyBalance'
 export { default as BaseMap } from './Maps/BaseMap/BaseMap'
 export { default as HomeMap } from './Maps/HomeMap/HomeMap'
 export { default as ChoroplethMap } from './Maps/ConsumptionChoroplethMap/ConsumptionChoroplethMap'

@@ -1,8 +1,8 @@
 import './Home.css';
 import { Header } from '../../containers';
 import React from 'react';
-import { Indicator, IndicatorClass, indicatorTree, selectOptionsBuild, selectOptionsDist } from './HomeUtils';
-import DataContainer from '../../components/DataContainer/DataContainer';
+import { Indicator, IndicatorClass, indicatorTree, selectOptionsBuildings, selectOptionsZoneNames } from './HomeUtils';
+import { IndicatorContainer } from '../../components';
 import { ConsumerProfile } from '../../scripts/api';
 import { Button, DatePicker, TreePicker } from 'rsuite';
 import MapContainer from '../../components/MapContainer/MapContainer';
@@ -31,7 +31,6 @@ export default class Home extends React.Component<{}, State>{
             t1: new Date('2021-12-01T00:30:00Z'),
             t2: new Date('2021-12-31T00:30:00Z'),
             highlightedZoneName: null,
-
         };
         this.temporaryState = this.state;
         this.validateRequest = this.validateRequest.bind(this);
@@ -78,7 +77,7 @@ export default class Home extends React.Component<{}, State>{
 
     render() {
         return (
-            <div id='home-container'>
+            <div id="home-container">
                 <Header title='Tableau éléctrique citoyen' />
                 <main>
                     <div id="map-container">
@@ -94,7 +93,7 @@ export default class Home extends React.Component<{}, State>{
                             <TreePicker
                                 onChange={(values: string) => { this.temporaryState.selectedZoneName = values }}
                                 className="indicators-menu tree-picker"
-                                data={selectOptionsDist}
+                                data={selectOptionsZoneNames}
                                 placeholder="Zone"
                                 placement="bottomEnd"
                             />
@@ -107,7 +106,7 @@ export default class Home extends React.Component<{}, State>{
                             <TreePicker
                                 onChange={(values: ConsumerProfile) => { this.temporaryState.buildingType = values }}
                                 className="indicators-menu tree-picker"
-                                data={selectOptionsBuild}
+                                data={selectOptionsBuildings}
                                 placeholder="Filière"
                                 placement="bottomEnd"
                             />
@@ -135,7 +134,7 @@ export default class Home extends React.Component<{}, State>{
                                 + this.state.t2.toString()
                                 + this.state.buildingType}
                         >
-                            <DataContainer
+                            <IndicatorContainer
                                 selectedZoneName={this.state.selectedZoneName}
                                 indicatorType={this.state.indicatorType}
                                 buildingType={this.state.buildingType}
