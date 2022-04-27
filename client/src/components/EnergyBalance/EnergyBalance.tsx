@@ -1,6 +1,6 @@
 import React from 'react';
-import './DistrictEnergyBalance.css';
-import { getZoneArea, getZoneNbOfBuildings, getZoneNbOfCollectionSites, getZonesName } from '../../scripts/dbUtils';
+import './EnergyBalance.css';
+import { getZoneArea, getZoneNbOfBuildings, getZoneNbOfCollectionSites, getZonesNames } from '../../scripts/dbUtils';
 import copy from 'fast-copy';
 import { ConsumerProfile, getTotalConsumption, getTotalProduction } from '../../scripts/api';
 
@@ -15,16 +15,18 @@ interface Data {
 }
 
 interface Props {
-	selectedZoneName: string,
-	/** when the cancel btn is pressed (should unselect the currently selected zone) */
+	selectedZoneName: string
 }
 
 interface State {
-	districtData: Data,
-	zonesData: { [name: string]: Data },
+	districtData: Data, // Data for the entire district
+	zonesData: { [name: string]: Data } // Data for a specific zone
 }
 
-export default class DistrictEnergyBalance extends React.Component<Props, State> {
+/**
+ * Component that displays the energy balance of a zone.
+ */
+export default class EnergyBalance extends React.Component<Props, State> {
 	constructor(props: Props) {
 		super(props);
 		this.state = {
@@ -36,7 +38,7 @@ export default class DistrictEnergyBalance extends React.Component<Props, State>
 			zonesData: {},
 		};
 
-		for (const zoneName of getZonesName()) {
+		for (const zoneName of getZonesNames()) {
 			this.state.zonesData[zoneName] = {
 				nbOfBuildings: getZoneNbOfBuildings(zoneName),
 				area: getZoneArea(zoneName),
@@ -52,14 +54,14 @@ export default class DistrictEnergyBalance extends React.Component<Props, State>
 	}
 
 
-	async fetchData(){
+	async fetchData() {
 		const t1 = new Date('2021-12-01T00:30:00').getTime();
 		const t2 = new Date('2021-12-31T23:30:00').getTime();
 
 		let districtConsumption = 0;
 		let districtProduction = 0;
 
-		await Promise.all(getZonesName().map(async zoneName => {
+		await Promise.all(getZonesNames().map(async zoneName => {
 			const [zoneConsumption, zoneProduction] = await Promise.all([
 				getTotalConsumption(t1, t2, undefined, zoneName),
 				getTotalProduction(t1, t2, undefined, zoneName),
@@ -109,9 +111,9 @@ export default class DistrictEnergyBalance extends React.Component<Props, State>
 		const ratio = data.consumption !== undefined && data.production !== undefined ? formatter.format(Math.round(data.production / data.consumption * 100)) : '...';
 
 		return (
-			<div id="district-info-wrapper">
-				<div id="district-info">
-					<h2 id="district-name">{title}</h2>
+			<div id="energy-balance-wrapper">
+				<div id="energy-balance">
+					<h2 id="zone-name">{title}</h2>
 					<ul>
 						<li><span className="data">{nbBuildings}</span> bâtiments</li>
 						<li><span className="data">{area}</span> m² de bâtiments</li>
@@ -120,23 +122,6 @@ export default class DistrictEnergyBalance extends React.Component<Props, State>
 						<li><span className="data">{production}</span> MWh/mois d'électricité produite</li>
 						<li><span className="data">{ratio}</span> % de ratio production/consommation</li>
 					</ul>
-					{/* {
-						this.props.selectedZoneName === null ? (
-							<div id="zone-hint">Cliquez sur une zone urbaine pour en savoir plus.</div>
-						) : (
-							<>
-								<div id="controls">
-									<img id="icons" src={chart_ic} alt="Pictogramme de graphique"></img>
-									<Link to={'/consommation/' + this.props.selectedZoneName + "/Total"}>consommation</Link>
-									<Link to={'/production/' + this.props.selectedZoneName + "/Total"}>production</Link>
-								</div>
-								<div id="controls">
-									<img id="icons" src={i_ic} alt="Pictogramme d'information"></img>
-									<Link to={'/bornes/' + this.props.selectedZoneName}>bornes de recharges</Link>
-								</div>
-							</>
-						)
-					} */}
 				</div>
 			</div>
 		);
