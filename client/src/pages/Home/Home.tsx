@@ -1,12 +1,10 @@
 import './Home.css';
-import {Header} from '../../containers';
+import { Header } from '../../containers';
 import React from 'react';
-import {Indicator, IndicatorClass, indicatorTree, selectOptionsBuild, selectOptionsDist} from './HomeUtils';
-
+import { Indicator, IndicatorClass, indicatorTree, selectOptionsBuild, selectOptionsDist } from './HomeUtils';
 import DataContainer from '../../components/DataContainer/DataContainer';
-import {ConsumerProfile} from '../../scripts/api';
-import {Button} from '@mui/material';
-import {DatePicker, TreePicker} from 'rsuite';
+import { ConsumerProfile } from '../../scripts/api';
+import { Button, DatePicker, TreePicker } from 'rsuite';
 import MapContainer from '../../components/MapContainer/MapContainer';
 
 interface State {
@@ -36,22 +34,23 @@ export default class Home extends React.Component<{}, State>{
 
         };
         this.temporaryState = this.state;
-
         this.validateRequest = this.validateRequest.bind(this);
     }
 
     validateRequest() {
-        this.setState({highlightedZoneName: null});
+        this.setState({ highlightedZoneName: null });
 
-        if (this.temporaryState.selectedZoneName === "Quartier de la Bastide")
+        if (this.temporaryState.selectedZoneName === "Quartier de la Bastide") {
             this.setState({ selectedZoneName: null });
-        else
+        } else {
             this.setState({ selectedZoneName: this.temporaryState.selectedZoneName });
+        }
 
         this.setState({ indicatorType: this.temporaryState.indicatorType });
         this.setState({ buildingType: this.temporaryState.buildingType });
         this.setState({ t1: this.temporaryState.t1 });
         this.setState({ t2: this.temporaryState.t2 });
+
         switch (this.temporaryState.indicatorType) {
             case Indicator.DistrictEnergyBalance:
                 this.setState({ indicatorClass: IndicatorClass.Global });
@@ -74,7 +73,7 @@ export default class Home extends React.Component<{}, State>{
     }
 
     handler = (val: string | null) => {
-        this.setState({highlightedZoneName: val});
+        this.setState({ highlightedZoneName: val });
     }
 
     render() {
@@ -82,59 +81,59 @@ export default class Home extends React.Component<{}, State>{
             <div id='home-container'>
                 <Header title='Tableau éléctrique citoyen' />
                 <main>
-                    <MapContainer
-                        t1={this.state.t1}
-                        t2={this.state.t2}
-                        indicatorClass={this.state.indicatorClass}
-                        highlightedZoneName={this.state.highlightedZoneName}
-                    />
-                    <div id="data-container">
-                        <div className="dropdown-wrapper">
+                    <div id="map-container">
+                        <MapContainer
+                            t1={this.state.t1}
+                            t2={this.state.t2}
+                            indicatorClass={this.state.indicatorClass}
+                            highlightedZoneName={this.state.highlightedZoneName}
+                        />
+                    </div>
+                    <div id="indicators-container">
+                        <div id="indicators-menus-wrapper">
                             <TreePicker
                                 onChange={(values: string) => { this.temporaryState.selectedZoneName = values }}
-                                className="TreePicker"
+                                className="indicators-menu tree-picker"
                                 data={selectOptionsDist}
                                 placeholder="Zone"
                                 placement="bottomEnd"
                             />
                             <TreePicker
+                                onChange={(values: Indicator) => this.temporaryState.indicatorType = values}
+                                className="indicators-menu tree-picker" data={indicatorTree}
+                                placeholder="Indicateur"
+                                placement="bottomEnd"
+                            />
+                            <TreePicker
                                 onChange={(values: ConsumerProfile) => { this.temporaryState.buildingType = values }}
-                                className="TreePicker"
+                                className="indicators-menu tree-picker"
                                 data={selectOptionsBuild}
                                 placeholder="Filière"
                                 placement="bottomEnd"
                             />
-                            <TreePicker
-                                onChange={(values: Indicator) => this.temporaryState.indicatorType = values}
-                                className="TreePicker" data={indicatorTree}
-                                placeholder="Indicateur"
-                                placement="bottomEnd"
-                            />
-                            <div />
                             <DatePicker
-                                className="date-picker"
+                                className="indicators-menu date-picker"
                                 onChange={(value) => this.temporaryState.t1 = value}
                                 placeholder="Date début"
                                 defaultValue={this.state.t1}
                             />
                             <DatePicker
-                                className="date-picker"
+                                className="indicators-menu date-picker"
                                 onChange={(value) => this.temporaryState.t2 = value}
                                 placeholder="Date fin"
                                 defaultValue={this.state.t2}
                             />
                             <Button
-                                className="validate-button"
-                                variant="outlined"
+                                className="indicators-menu validate-button"
                                 onClick={this.validateRequest}>
                                 OK
                             </Button>
                         </div>
-                        <div id="indicator-container"
-                             key={this.state.selectedZoneName
-                                 + this.state.t1.toString()
-                                 + this.state.t2.toString()
-                                 + this.state.buildingType}
+                        <div id="indicators-wrapper"
+                            key={this.state.selectedZoneName
+                                + this.state.t1.toString()
+                                + this.state.t2.toString()
+                                + this.state.buildingType}
                         >
                             <DataContainer
                                 selectedZoneName={this.state.selectedZoneName}
