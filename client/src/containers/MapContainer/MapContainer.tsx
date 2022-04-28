@@ -1,7 +1,6 @@
 import React from 'react';
-import { IndicatorClass } from 'pages/Home/HomeUtils';
-import { HomeMap } from 'components/Maps';
-import { ConsumptionChoroplethMap, ProductionChoroplethMap } from 'components/Maps';
+import { IndicatorClass } from 'constants/indicator';
+import { HomeMap, ConsumptionChoroplethMap, ProductionChoroplethMap } from 'components/Maps';
 
 interface Props {
     t1: Date,
@@ -10,6 +9,11 @@ interface Props {
     highlightedZoneName: string | null,
 }
 
+/**
+ * Map container
+ * 
+ * Change the map to display based on the indicator class.
+ */
 export default class MapContainer extends React.Component<Props> {
     render() {
         switch (this.props.indicatorClass) {

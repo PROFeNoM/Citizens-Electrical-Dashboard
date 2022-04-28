@@ -1,8 +1,9 @@
 import './HamburgerMenu.css';
+
 import { Link } from 'react-router-dom';
 import * as AiIcons from 'react-icons/ai';
 
-export const HamburgerMenuData = [
+const hamburgerMenuData = [
     {
         title: 'Accueil',
         path: '/',
@@ -28,7 +29,7 @@ export const HamburgerMenuData = [
 export function HamburgerMenu({ open }) {
     return (
         <div className={open ? "hamburger-menu active" : "hamburger-menu"}>
-            {HamburgerMenuData.map((item, index) => {
+            {hamburgerMenuData.map((item, index) => {
                 return (
                     <li key={index} className="hamburger-menu-item">
                         <Link to={item.path}>

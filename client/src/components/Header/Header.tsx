@@ -1,4 +1,5 @@
 import './Header.css';
+
 import logoEnedis from 'images/logoEnedis.png';
 import logoEnedisSmall from 'images/logoEnedisSmall.png';
 import Hamburger from '../Hamburger/Hamburger';
@@ -9,7 +10,7 @@ interface HeaderProps {
 
 function Header({ title }: HeaderProps) {
 	return (
-		<header>
+		<div id="header-container">
 			<div id="hamburger-menu-wrapper">
 				<Hamburger />
 			</div>
@@ -20,7 +21,7 @@ function Header({ title }: HeaderProps) {
 				<img src={logoEnedis} id="enedis-logo" alt="Logo Enedis" color="#fff" />
 				<img src={logoEnedisSmall} id="enedis-logo-small" alt="Logo Enedis petit" color="#fff" />
 			</div>
-		</header>
+		</div>
 	);
 }
 

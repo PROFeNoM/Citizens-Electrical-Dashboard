@@ -1,0 +1,5 @@
+#data-container {
+    display: grid;
+    grid-template-columns: 4fr 4fr;
+    height: 100%;
+}
