@@ -2,8 +2,7 @@ import './Home.css';
 
 import React from 'react';
 
-import { Header } from 'components';
-import { DataContainer } from 'containers';
+import { Header, DataContainer } from 'containers';
 
 /**
  * Home page
