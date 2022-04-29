@@ -56,8 +56,9 @@ async function loadCsvToTable<P>(tx: EntityManager, path: string, tableType: new
 		jobs.push(new Promise((resolve, reject) => {
 			const entry = new tableType();
 			entry.timestamp = new Date(line.timestamp);
-			entry.energy = parseInt(line.energy, 10);
 			entry.profile = profileParser(line.profile);
+			entry.energy = parseInt(line.energy, 10);
+			entry.prediction = false;
 
 			tx.save(entry)
 				.catch(reject)

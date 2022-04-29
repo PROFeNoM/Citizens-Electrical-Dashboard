@@ -114,7 +114,7 @@ async function downloadRandomAddresses(): Promise<Addresses> {
 		}
 
 		// cache the result in a file
-		writeToPath(filename, filtered, {
+		await writeToPath(filename, filtered, {
 			delimiter: ';',
 			headers: ['zoneName', 'houseNumber', 'streetName', 'cityCode']
 		});
