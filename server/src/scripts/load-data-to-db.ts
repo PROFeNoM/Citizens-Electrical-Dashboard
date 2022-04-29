@@ -23,7 +23,7 @@ interface Address {
 	cityCode: string,
 }
 
-interface AddressResolveTask {
+interface AddressResolutionCtx {
 	address: Address,
 	callback: () => void,
 	promise: Promise<void>,
@@ -134,7 +134,7 @@ async function getZoneFromAddress(address: Address, batchIndex: number): Promise
 
 const addressCache: Record<string, Coordinates> = {};
 const nbOfCallsPerBatch: number[] = [];
-let addressesToResolve: Record<string, AddressResolveTask> = {};
+let addressesToResolve: Record<string, AddressResolutionCtx> = {};
 
 async function getCoordinatesFromAddress(address: Address, batchIndex: number): Promise<Coordinates> {
 	// keep track of how many times this function was called for each batch
@@ -178,7 +178,7 @@ async function getCoordinatesFromAddress(address: Address, batchIndex: number): 
 	return addressCache[hash];
 }
 
-async function resolveAddresses(toResolve: Record<string, AddressResolveTask>): Promise<void> {
+async function resolveAddresses(toResolve: Record<string, AddressResolutionCtx>): Promise<void> {
 	const qtyToResolve = Object.keys(toResolve).length;
 
 	if (qtyToResolve === 0) {
