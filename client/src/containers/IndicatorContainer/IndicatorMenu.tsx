@@ -12,7 +12,7 @@ interface tree { label: string, value?: IndicatorType, children?: tree[] }
 const indicatorTree: tree[] = [
 	{
 		label: 'Informations globales',
-		value: IndicatorType.DistrictEnergyBalance,
+		value: IndicatorType.EnergyBalance,
 	},
 	{
 		label: 'Consommation',
@@ -50,8 +50,12 @@ const indicatorTree: tree[] = [
 				label: 'Journée type',
 				value: IndicatorType.TypicalProductionDay,
 			}
-		]
-	}
+		],
+	},
+    {
+        label: 'Stations de charge',
+        value: IndicatorType.ChargingStations,
+    },
 ];
 
 const selectOptionsBuildings: { value: ConsumerProfile, label: string }[] = [
@@ -96,7 +100,7 @@ export default class IndicatorMenu extends React.Component<Props, State> {
 
         this.state = {
             zoneName: null,
-            indicatorType: IndicatorType.DistrictEnergyBalance,
+            indicatorType: IndicatorType.EnergyBalance,
             buildingType: ConsumerProfile.ALL,
             t1: new Date(today.getFullYear(), today.getMonth(), today.getDate() - 30),
             t2: today
@@ -134,7 +138,7 @@ export default class IndicatorMenu extends React.Component<Props, State> {
             case IndicatorType.TypicalProductionDay:
                 this.props.setIndicatorClass(IndicatorClass.Production);
                 break;
-            case IndicatorType.DistrictEnergyBalance:
+            case IndicatorType.EnergyBalance:
             default:
                 this.props.setIndicatorClass(IndicatorClass.Global);
                 break;

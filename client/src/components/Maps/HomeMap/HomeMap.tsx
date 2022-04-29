@@ -7,7 +7,7 @@ interface Props {
 }
 
 interface State {
-	selectedZone: string | number | null,
+	zone: string | number | null,
 }
 
 export default class HomeMap extends React.Component<Props, State> {
@@ -16,7 +16,7 @@ export default class HomeMap extends React.Component<Props, State> {
 	constructor(props) {
 		super(props);
 		this.state = {
-			selectedZone: null,
+			zone: null,
 		};
 	}
 
@@ -30,14 +30,14 @@ export default class HomeMap extends React.Component<Props, State> {
 	}
 
 	private onZoneClick(featureId: string | number | null, zoneName: string | null) {
-		if (this.state.selectedZone === featureId) {
+		if (this.state.zone === featureId) {
 			return;
 		}
 
 		// deselect current zone
-		if (this.state.selectedZone !== null) {
+		if (this.state.zone !== null) {
 			this.map.setFeatureState(
-				{ source: 'urbanZone-source', id: this.state.selectedZone },
+				{ source: 'urbanZone-source', id: this.state.zone },
 				{ selected: false },
 			);
 		}
@@ -52,7 +52,7 @@ export default class HomeMap extends React.Component<Props, State> {
 
 		// update state
 		this.setState({
-			selectedZone: featureId,
+			zone: featureId,
 		})
 
 		// trigger event

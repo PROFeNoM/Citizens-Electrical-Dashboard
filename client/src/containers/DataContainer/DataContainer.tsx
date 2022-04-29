@@ -6,7 +6,7 @@ import { MapContainer, IndicatorContainer } from 'containers';
 import { ConsumerProfile } from 'scripts/api';
 
 interface State {
-    selectedZoneName: string | null, // Zone seletected for the indicators, null means the entire district
+    zoneName: string | null, // Zone seletected for the indicators, null means the entire district
     highlightedZoneName: string | null, // Zone that is currently highlighted on the map
     indicatorType: IndicatorType, // Type of indicator selected
     indicatorClass: IndicatorClass, // Class of indicator selected
@@ -24,8 +24,8 @@ export default class DataContainer extends React.Component<{}, State> {
     constructor(props: {}) {
         super(props);
         this.state = {
-            selectedZoneName: null,
-            indicatorType: IndicatorType.DistrictEnergyBalance,
+            zoneName: null,
+            indicatorType: IndicatorType.EnergyBalance,
             indicatorClass: IndicatorClass.Global,
             buildingType: ConsumerProfile.ALL,
             t1: new Date('2021-12-01T00:30:00Z'),
@@ -46,8 +46,8 @@ export default class DataContainer extends React.Component<{}, State> {
                     />
                 </div>
                 <IndicatorContainer
-                    zoneName={this.state.selectedZoneName}
-                    setZoneName={(zoneName: string | null) => this.setState((state) => ({ ...state, selectedZoneName: zoneName }))}
+                    zoneName={this.state.zoneName}
+                    setZoneName={(zoneName: string | null) => this.setState((state) => ({ ...state, zoneName: zoneName }))}
                     indicatorType={this.state.indicatorType}
                     setIndicatorType={(indicatorType: IndicatorType) => this.setState((state) => ({ ...state, indicatorType: indicatorType }))}
                     setIndicatorClass={(indicatorClass: IndicatorClass) => this.setState((state) => ({ ...state, indicatorClass: indicatorClass }))}

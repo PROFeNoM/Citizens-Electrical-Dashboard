@@ -2,45 +2,41 @@ import './IndicatorViewer.css';
 
 import React from 'react';
 
-import { IndicatorType } from 'constants/indicator';
+import { IndicatorType, getIndicator } from 'constants/indicator';
 import { ConsumerProfile } from 'scripts/api';
 import {
-    EnergyBalance, ChargingStationIndicator,
+    EnergyBalance,
     TypicalConsumptionDay, ConsumptionDonut, TotalConsumption,
-    LocalProductionInfo, TypicalProductionDay, SolarDonut, WeeklyProduction
+    LocalProductionInfo, TypicalProductionDay, SolarDonut, WeeklyProduction,
+    ChargingStations
 } from 'components/Indicators';
 
 interface Props {
-    selectedZoneName: string | null,
-    indicatorType: IndicatorType
-    buildingType: ConsumerProfile,
-    t1: Date,
-    t2: Date,
-    setHighlightedZone: (val: string | null) => void
+    zoneName: string | null;
+    indicatorType: IndicatorType;
+    buildingType: ConsumerProfile;
+    t1: Date;
+    t2: Date;
+    setHighlightedZone: (val: string | null) => void;
 }
 
-export default class IndicatorViewer extends React.Component<Props> {
-    render() {
-        <div id="indicator-wrapper"></div>
-        switch (this.props.indicatorType) {
+export default class IndicatorViewer extends React.Component<Props, {}> {
+    constructor(props: Props) {
+        super(props);
+
+        this.renderIndicator = this.renderIndicator.bind(this);
+    }
+
+    renderIndicator(indicatorType: IndicatorType) {
+        switch (indicatorType) {
             case IndicatorType.TypicalConsumptionDay:
                 return (
                     <TypicalConsumptionDay
                         t1={this.props.t1.getTime()}
                         t2={this.props.t2.getTime()}
-                        urbanZone={this.props.selectedZoneName}
+                        urbanZone={this.props.zoneName}
                         buildingType={this.props.buildingType}
-                        title={"Journée type de consommation"}
-                        setHighlightedZone={this.props.setHighlightedZone}
-                    />
-                );
-            case IndicatorType.TypicalProductionDay:
-                return (
-                    <TypicalProductionDay
-                        t1={this.props.t1.getTime()}
-                        t2={this.props.t2.getTime()}
-                        urbanZone={this.props.selectedZoneName}
-                        title={"Journée type de production"}
+                        title={'Journée type de consommation'}
                         setHighlightedZone={this.props.setHighlightedZone}
                     />
                 );
@@ -49,8 +45,8 @@ export default class IndicatorViewer extends React.Component<Props> {
                     <TotalConsumption
                         t1={this.props.t1.getTime()}
                         t2={this.props.t2.getTime()}
-                        urbanZone={this.props.selectedZoneName}
-                        title={"Consommation totale"}
+                        urbanZone={this.props.zoneName}
+                        title={'Consommation totale'}
                         setHighlightedZone={this.props.setHighlightedZone}
                     />
                 );
@@ -59,29 +55,9 @@ export default class IndicatorViewer extends React.Component<Props> {
                     <ConsumptionDonut
                         t1={this.props.t1.getTime()}
                         t2={this.props.t2.getTime()}
-                        urbanZone={this.props.selectedZoneName}
+                        urbanZone={this.props.zoneName}
                         buildingType={this.props.buildingType}
-                        title={"Evolution de la consommation"}
-                        setHighlightedZone={this.props.setHighlightedZone}
-                    />
-                );
-            case IndicatorType.SolarDonut:
-                return (
-                    <SolarDonut
-                        t1={this.props.t1.getTime()}
-                        t2={this.props.t2.getTime()}
-                        urbanZone={this.props.selectedZoneName}
-                        title={"Production globale"}
-                        setHighlightedZone={this.props.setHighlightedZone}
-                    />
-                );
-            case IndicatorType.WeeklyProduction:
-                return (
-                    <WeeklyProduction
-                        t1={this.props.t1.getTime()}
-                        t2={this.props.t2.getTime()}
-                        urbanZone={this.props.selectedZoneName}
-                        title={"Production Hebdomadaire"}
+                        title={'Evolution de la consommation'}
                         setHighlightedZone={this.props.setHighlightedZone}
                     />
                 );
@@ -90,17 +66,65 @@ export default class IndicatorViewer extends React.Component<Props> {
                     <LocalProductionInfo
                         t1={this.props.t1.getTime()}
                         t2={this.props.t2.getTime()}
-                        urbanZone={this.props.selectedZoneName}
-                        title={"Production locale"}
+                        urbanZone={this.props.zoneName}
+                        title={'Production locale'}
                     />
                 );
-            case IndicatorType.DistrictEnergyBalance:
+            case IndicatorType.TypicalProductionDay:
+                return (
+                    <TypicalProductionDay
+                        t1={this.props.t1.getTime()}
+                        t2={this.props.t2.getTime()}
+                        urbanZone={this.props.zoneName}
+                        title={'Journée type de production'}
+                        setHighlightedZone={this.props.setHighlightedZone}
+                    />
+                );
+            case IndicatorType.SolarDonut:
+                return (
+                    <SolarDonut
+                        t1={this.props.t1.getTime()}
+                        t2={this.props.t2.getTime()}
+                        urbanZone={this.props.zoneName}
+                        title={'Production globale'}
+                        setHighlightedZone={this.props.setHighlightedZone}
+                    />
+                );
+            case IndicatorType.WeeklyProduction:
+                return (
+                    <WeeklyProduction
+                        t1={this.props.t1.getTime()}
+                        t2={this.props.t2.getTime()}
+                        urbanZone={this.props.zoneName}
+                        title={'Production hebdomadaire'}
+                        setHighlightedZone={this.props.setHighlightedZone}
+                    />
+                );
+            case IndicatorType.ChargingStations:
+                return (
+                    <ChargingStations
+                        zoneName={this.props.zoneName}
+                    />
+                );
+            case IndicatorType.EnergyBalance:
             default:
                 return (
                     <EnergyBalance
-                        selectedZoneName={this.props.selectedZoneName}
+                        zoneName={this.props.zoneName}
                     />
                 );
         }
+    }
+
+    render() {
+        const indicator = getIndicator(this.props.indicatorType);
+        return (
+            <div id="indicator-wrapper">
+                <h2 id="indicator-name">{indicator.name}</h2>
+                <div id="indicator-content">
+                    {this.renderIndicator(indicator.type)}
+                </div>
+            </div>
+        );
     }
 }

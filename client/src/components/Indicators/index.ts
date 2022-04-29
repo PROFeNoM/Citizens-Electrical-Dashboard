@@ -6,4 +6,4 @@ export { default as WeeklyProduction } from './Production/WeeklyProduction/Weekl
 export { default as LocalProductionInfo } from './Production/LocalProductionInfo/LocalProductionInfo'
 export { default as SolarDonut } from './Production/SolarDonut/SolarDonut'
 export { default as TypicalProductionDay } from './Production/TypicalProductionDay/TypicalProductionDay'
-export { default as ChargingStationIndicator } from './ChargingStation/ChargingStationIndicator/ChargingStationIndicator'
+export { default as ChargingStations } from './ChargingStations/ChargingStations/ChargingStations'
