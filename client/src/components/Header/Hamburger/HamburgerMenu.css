@@ -44,7 +44,9 @@
 }
 
 .hamburger-menu-item a:hover {
-    background-color: #93c90e;
+    background-color: var(--color-green);
+    color: white;
+    text-decoration: none;
 }
 
 .hamburger-menu-item-title {
