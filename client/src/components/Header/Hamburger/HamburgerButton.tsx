@@ -1,11 +1,23 @@
 import './HamburgerButton.css';
 
-export function HamburgerButton ({ open, setOpen }) {
-    return (
-        <div className={open ? "hamburger-button active" : "hamburger-button"} onClick={() => setOpen(!open)}>
-            <div />
-            <div />
-            <div />
-        </div>
-    )
+import React from 'react';
+
+interface Props {
+    isOpen: boolean,
+    onClick: () => void
+}
+
+export default class HamburgerButton extends React.Component<Props, {}> {
+    render() {
+        return (
+            <button
+                className={`hamburger-button ${this.props.isOpen ? 'active' : ''}`}
+                onClick={this.props.onClick}
+            >
+                <div className="hamburger-button-line"></div>
+                <div className="hamburger-button-line"></div>
+                <div className="hamburger-button-line"></div>
+            </button>
+        );
+    }
 }

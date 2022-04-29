@@ -1,17 +1,32 @@
 import './HamburgerMenu.css';
-import React, { useState } from 'react';
-import { HamburgerMenu } from './HamburgerMenu';
-import { HamburgerButton } from './HamburgerButton';
 
-function Hamburger() {
-    const [open, setOpen] = useState(false);
-    const node = React.useRef();
-    return (
-        <div id="hamburger" ref={node}>
-            <HamburgerButton open={open} setOpen={setOpen} />
-            <HamburgerMenu open={open} />
-        </div>
-    )
+import React from 'react';
+
+import HamburgerButton from './HamburgerButton';
+import HamburgerMenu from './HamburgerMenu';
+
+interface State {
+    isOpen: boolean
 }
 
-export default Hamburger;
+export default class Hamburger extends React.Component<{}, State> {
+    constructor(props: {}) {
+        super(props);
+
+        this.state = {
+            isOpen: false
+        };
+    }
+
+    render() {
+        return (
+            <div id="hamburger-wrapper">
+                <HamburgerButton
+                    isOpen={this.state.isOpen}
+                    onClick={() => this.setState({ isOpen: !this.state.isOpen })}
+                />
+                <HamburgerMenu isOpen={this.state.isOpen} />
+            </div>
+        );
+    }
+}

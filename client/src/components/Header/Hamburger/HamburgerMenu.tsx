@@ -1,5 +1,6 @@
 import './HamburgerMenu.css';
 
+import React from 'react';
 import { Link } from 'react-router-dom';
 import * as AiIcons from 'react-icons/ai';
 
@@ -26,19 +27,25 @@ const hamburgerMenuData = [
     },
 ];
 
-export function HamburgerMenu({ open }) {
-    return (
-        <div className={open ? "hamburger-menu active" : "hamburger-menu"}>
-            {hamburgerMenuData.map((item, index) => {
-                return (
-                    <li key={index} className="hamburger-menu-item">
-                        <Link to={item.path}>
-                            {item.icon}
-                            <span className="hamburger-menu-item-title">{item.title}</span>
-                        </Link>
-                    </li>
-                )
-            })}
-        </div>
-    )
+interface Props {
+    isOpen: boolean
+}
+
+export default class HamburgerMenu extends React.Component<Props, {}> {
+    render() {
+        return (
+            <div className={`hamburger-menu ${this.props.isOpen ? 'active' : ''}`}>
+                {hamburgerMenuData.map((item, index) => {
+                    return (
+                        <li key={index} className="hamburger-menu-item">
+                            <Link to={item.path}>
+                                {item.icon}
+                                <span className="hamburger-menu-item-title">{item.title}</span>
+                            </Link>
+                        </li>
+                    );
+                })}
+            </div>
+        );
+    }
 }
