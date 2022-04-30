@@ -20,7 +20,8 @@ app.get('/api/v1/:entity/total', apiReqCheckerParser, async (req, res) => {
 	let query = await getConnection().createQueryBuilder()
 		.select('coalesce(sum(energy), 0) AS total')
 		.from(req.entity, 'e')
-		.where('e.timestamp BETWEEN :minDate AND :maxDate', { minDate: req.minDate, maxDate: req.maxDate });
+		.where('e.timestamp BETWEEN :minDate AND :maxDate', { minDate: req.minDate, maxDate: req.maxDate })
+		.andWhere('(e.timestamp <= current_timestamp OR e.prediction)'); // don't include past predictions
 
 	if (req.zoneId !== undefined) {
 		query = query.andWhere('e.zoneId = :zoneId', { zoneId: req.zoneId });
@@ -41,6 +42,7 @@ app.get('/api/v1/:entity/hourly-mean', apiReqCheckerParser, async (req, res) => 
 		.from(req.entity, 'e')
 		.groupBy('hour')
 		.where('e.timestamp BETWEEN :minDate AND :maxDate', { minDate: req.minDate, maxDate: req.maxDate })
+		.andWhere('(e.timestamp <= current_timestamp OR e.prediction)') // don't include past predictions
 		.orderBy('hour');
 
 	if (req.zoneId !== undefined) {
