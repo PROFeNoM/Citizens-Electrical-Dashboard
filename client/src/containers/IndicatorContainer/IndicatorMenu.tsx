@@ -3,7 +3,7 @@ import './IndicatorMenu.css';
 import React from 'react';
 import { Button, DatePicker, TreePicker } from 'rsuite';
 
-import {Indicator, IndicatorType, IndicatorClass, getIndicatorFromType, getAllIndicators } from 'constants/indicator';
+import { Indicator, IndicatorType, IndicatorClass, getIndicatorFromType, getAllIndicators } from 'constants/indicator';
 import { ConsumerProfile } from 'scripts/api';
 import { zones } from 'geodata';
 
@@ -12,6 +12,7 @@ import { zones } from 'geodata';
  */
 type tree<T> = {
     label: string,
+    value: string,
     children: {
         label: string,
         value: T
@@ -25,6 +26,7 @@ const indicatorTree: tree<IndicatorType> = Object.values(IndicatorClass)
     .map((className: string) => (
         {
             label: className,
+            value: className,
             children:
                 getAllIndicators()
                     .filter((indicator: Indicator) => indicator.class === className)
@@ -45,7 +47,8 @@ const selectOptionsBuildings: { value: ConsumerProfile, label: string }[] = [
     { value: ConsumerProfile.PUBLIC_LIGHTING, label: "Éclairage publique" },
 ];
 
-const selectOptionsZoneNames = zones.features.map((item) => ({ value: item.properties.libelle, label: item.properties.libelle }));
+const selectOptionsZoneNames: { value: string, label: string }[] = zones.features
+    .map((item) => ({ value: item.properties.libelle, label: item.properties.libelle }));
 selectOptionsZoneNames.push({ value: 'Quartier de la Bastide', label: 'Quartier de la Bastide' });
 
 interface Props {
@@ -108,44 +111,64 @@ export default class IndicatorMenu extends React.Component<Props, State> {
     render(): React.ReactNode {
         return (
             <div id="indicator-menu-wrapper">
-                <TreePicker
-                    onChange={(value: string) => { this.setState({ zoneName: value }); }}
-                    className="indicator-menu tree-picker"
-                    data={selectOptionsZoneNames}
-                    placeholder="Zone"
-                    placement="bottomEnd"
-                />
-                <TreePicker
-                    onChange={(value: IndicatorType) => { this.setState({ indicatorType: value }); }}
-                    className="indicator-menu tree-picker" data={indicatorTree}
-                    placeholder="Indicateur"
-                    placement="bottomEnd"
-                    defaultExpandAll={true}
-                />
-                <TreePicker
-                    onChange={(value: ConsumerProfile) => { this.setState({ buildingType: value }); }}
-                    className="indicator-menu tree-picker"
-                    data={selectOptionsBuildings}
-                    placeholder="Filière"
-                    placement="bottomEnd"
-                />
-                <DatePicker
-                    className="indicator-menu date-picker"
-                    onChange={(value) => { this.setState({ t1: value }); }}
-                    placeholder="Date début"
-                    defaultValue={this.state.t1}
-                />
-                <DatePicker
-                    className="indicator-menu date-picker"
-                    onChange={(value) => { this.setState({ t2: value }); }}
-                    placeholder="Date fin"
-                    defaultValue={this.state.t2}
-                />
-                <Button
-                    className="indicator-menu validate-button"
-                    onClick={this.validateRequest}>
-                    OK
-                </Button>
+                <div id="indicator-menu-zone">
+                    <p>Zone géographique</p>
+                    <TreePicker
+                        className="indicator-menu-item tree-picker"
+                        onChange={(value: string) => { this.setState({ zoneName: value }); }}
+                        data={selectOptionsZoneNames}
+                        placeholder="Zone"
+                        placement="bottomEnd"
+                    />
+                </div>
+                <div id="indicator-menu-indicator-type">
+                    <p>Type d'indicateur</p>
+                    <TreePicker
+                        className="indicator-menu-item tree-picker" data={indicatorTree}
+                        onChange={(value: IndicatorType | IndicatorClass) => { if (typeof value === 'number') { this.setState({ indicatorType: value }); } }}
+                        placeholder="Indicateur"
+                        placement="bottomEnd"
+                        defaultExpandAll={true}
+                    />
+                </div>
+                <div id="indicator-menu-building-type">
+                    <p>Filière de consommation</p>
+                    <TreePicker
+                        id="indicator-menu-building-type"
+                        className="indicator-menu-item tree-picker"
+                        onChange={(value: ConsumerProfile) => { this.setState({ buildingType: value }); }}
+                        data={selectOptionsBuildings}
+                        placeholder="Filière"
+                        placement="bottomEnd"
+                    />
+                </div>
+                <div id="indicator-menu-start-date">
+                    <p>Date de début</p>
+                    <DatePicker
+                        id="indicator-menu-start-date"
+                        className="indicator-menu-item date-picker"
+                        onChange={(value) => { this.setState({ t1: value }); }}
+                        placeholder="Date début"
+                        defaultValue={this.state.t1}
+                    />
+                </div>
+                <div id="indicator-menu-end-date">
+                    <p>Date de fin</p>
+                    <DatePicker
+                        id="indicator-menu-end-date"
+                        className="indicator-menu-item date-picker"
+                        onChange={(value) => { this.setState({ t2: value }); }}
+                        placeholder="Date fin"
+                        defaultValue={this.state.t2}
+                    />
+                </div>
+                <div id="indicator-menu-validate">
+                    <Button
+                        className="indicator-menu-item validate-button"
+                        onClick={this.validateRequest}>
+                        Voir →
+                    </Button>
+                </div>
             </div>
         );
     }

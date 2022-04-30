@@ -3,8 +3,8 @@
 }
 
 #energy-balance {
-    color: white;
-    font-size: large;
+    color: var(--color-text);
+    font-size: medium;
 }
 
 #zone-name {

@@ -117,6 +117,7 @@ export default class IndicatorViewer extends React.Component<Props, {}> {
                 return (
                     <EnergyBalance
                         zoneName={this.props.zoneName}
+                        setHighlightedZone={this.props.setHighlightedZone}
                     />
                 );
         }
@@ -125,7 +126,9 @@ export default class IndicatorViewer extends React.Component<Props, {}> {
     render() {
         return (
             <div id="indicator-wrapper">
-                <h2 id="indicator-name">{this.props.indicator.name}</h2>
+                <div id="indicator-name">
+                    <h2>{this.props.indicator.name}</h2>
+                </div>
                 <div id="indicator-content">
                     {this.renderIndicator(this.props.indicator)}
                 </div>

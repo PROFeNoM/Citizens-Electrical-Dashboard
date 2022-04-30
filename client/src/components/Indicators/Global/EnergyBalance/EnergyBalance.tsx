@@ -18,6 +18,7 @@ interface Data {
 
 interface Props {
 	zoneName: string; // Name of the selected zone
+	setHighlightedZone: (val: string | null) => void;
 }
 
 interface State {
@@ -101,9 +102,9 @@ export default class EnergyBalance extends React.Component<Props, State> {
 		await this.fetchData();
 	}
 
-	/*async componentDidUpdate() {
-		await this.fetchData();
-	}*/
+	async componentDidUpdate() {
+		// await this.fetchData();
+	}
 
 	private get currentData(): Data {
 		return this.props.zoneName !== null
