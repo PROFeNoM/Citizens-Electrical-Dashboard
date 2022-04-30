@@ -1,6 +1,9 @@
+const devMode =  process.env.NODE_ENV !== 'production'
+
 export const config = {
+	devMode,
 	webServer: {
-		port: process.env.NODE_ENV === 'production' ? 80 : 5000,
+		port: devMode ? 5000 : 80,
 	},
 	database: {
 		host: process.env.DATABASE_HOST ?? 'localhost',

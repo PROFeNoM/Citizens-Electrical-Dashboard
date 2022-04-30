@@ -2,6 +2,7 @@ lockfileVersion: 5.3
 
 specifiers:
   '@turf/turf': ^6.5.0
+  '@types/cors': ^2.8.12
   '@types/download': ^8.0.1
   '@types/express': ^4.17.13
   '@types/node': ^17.0.18
@@ -37,6 +38,7 @@ dependencies:
   typeorm: 0.2.43_pg@8.7.3
 
 devDependencies:
+  '@types/cors': 2.8.12
   '@types/download': 8.0.1
   '@types/express': 4.17.13
   '@types/node': 17.0.19
@@ -1159,6 +1161,10 @@ packages:
     resolution: {integrity: sha512-cdeYyv4KWoEgpBISTxWvqYsVy444DOqehiF3fM3ne10AmJ62RSyNkUnxMJXHQWRQQX2eR94m5y1IZyDwBjV9FQ==}
     dependencies:
       '@types/node': 17.0.19
+    dev: true
+
+  /@types/cors/2.8.12:
+    resolution: {integrity: sha512-vt+kDhq/M2ayberEtJcIN/hxXy1Pk+59g2FV/ZQceeaTyCtCucjL2Q7FXlFjtWn4n15KCr1NE2lNNFhp0lEThw==}
     dev: true
 
   /@types/decompress/4.2.4:
