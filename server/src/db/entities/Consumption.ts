@@ -18,7 +18,7 @@ export class Consumption implements DataTable<ConsumerProfile> {
 	@Index()
 	public timestamp: Date;
 
-	@ManyToOne(() => Zone)
+	@ManyToOne(() => Zone, { nullable: false })
 	public zone: Zone;
 
 	@Column({ type: 'enum', enum: ConsumerProfile, nullable: false })

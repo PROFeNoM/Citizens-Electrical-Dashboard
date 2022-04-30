@@ -21,7 +21,7 @@ export class Production implements DataTable<ProducerProfile> {
 	@Index()
 	public timestamp: Date;
 
-	@ManyToOne(() => Zone)
+	@ManyToOne(() => Zone, { nullable: false })
 	public zone: Zone;
 
 	@Column({ type: 'enum', enum: ProducerProfile })

@@ -11,6 +11,9 @@ import axios from 'axios';
 import { EOL } from 'os';
 import { createHash } from 'crypto';
 import { logger } from '../logger';
+import * as turf from '@turf/turf';
+import * as zonesGeodata from '../geodata/zones.json';
+import { FeatureCollection, MultiPolygon } from '@turf/turf';
 
 interface Coordinates {
 	long: number,
@@ -36,8 +39,9 @@ main().catch(console.error);
 async function main() {
 	await connectToDB();
 	await getConnection().transaction(async tx => {
-		await loadCsvToTable(tx, mockDataDir + '/consumption.csv', Consumption, parseConsumerProfile);
-		await loadCsvToTable(tx, mockDataDir + '/production.csv', Production, parseProducerProfile);
+		const zones = await getZones(tx);
+		await loadCsvToTable(tx, mockDataDir + '/consumption.csv', Consumption, parseConsumerProfile, zones);
+		await loadCsvToTable(tx, mockDataDir + '/production.csv', Production, parseProducerProfile, zones);
 	});
 }
 
@@ -75,7 +79,7 @@ function parseProducerProfile(raw: string): ProducerProfile {
 	}
 }
 
-async function loadCsvToTable<P>(tx: EntityManager, path: string, tableType: new () => DataTable<P>, profileParser: (raw: string) => P) {
+async function loadCsvToTable<P>(tx: EntityManager, path: string, tableType: new () => DataTable<P>, profileParser: (raw: string) => P, zones: Record<string, Zone>) {
 	let jobs: Promise<void>[] = [];
 	let batchIndex = 0;
 	let jobIndexInBatch = 0;
@@ -93,11 +97,17 @@ async function loadCsvToTable<P>(tx: EntityManager, path: string, tableType: new
 			entry.profile = profileParser(line.profile);
 			entry.energy = parseInt(line.energy, 10);
 			entry.prediction = false;
-			entry.zone = await getZoneFromAddress({
+			entry.zone = await getZoneFromAddress(zones, {
 				houseNumber: line.houseNumber,
 				streetName: line.streetName,
 				cityCode: line.cityCode,
 			}, batchIndex);
+
+			if (entry.zone === null) {
+				// logger.warn('failed to map address to zone');
+				return;
+			}
+
 			await tx.save(entry);
 		})());
 
@@ -126,10 +136,42 @@ async function loadCsvToTable<P>(tx: EntityManager, path: string, tableType: new
 	await Promise.all(jobs);
 }
 
-async function getZoneFromAddress(address: Address, batchIndex: number): Promise<Zone> {
-	const coordinates = await getCoordinatesFromAddress(address, batchIndex);
-	// TODO
-	return null;
+async function getZones(tx: EntityManager): Promise<Record<string, Zone>> {
+	const zones: Record<string, Zone> = {};
+
+	for (const zoneGeodata of (zonesGeodata as FeatureCollection<MultiPolygon>).features) {
+		const zoneName = zoneGeodata.properties.libelle;
+
+		let zone = await tx.findOne(Zone, { where: { name: zoneName }});
+		if (zone == null) {
+			zone = new Zone();
+			zone.name = zoneName;
+			await tx.save(zone);
+		}
+
+		zones[zoneName] = zone;
+	}
+
+	return zones;
+}
+
+async function getZoneFromAddress(zones: Record<string, Zone>, address: Address, batchIndex: number): Promise<Zone | null> {
+	const coo = await getCoordinatesFromAddress(address, batchIndex);
+	const point = turf.point([coo.long, coo.lat]);
+
+	let zoneName: string | null = null;
+	for (const zoneGeodata of (zonesGeodata as FeatureCollection<MultiPolygon>).features) {
+		if (turf.booleanContains({ type: 'Polygon', coordinates: zoneGeodata.geometry.coordinates[0] }, point)) {
+			zoneName = zoneGeodata.properties.libelle;
+			break;
+		}
+	}
+
+	if (zoneName === null || zones[zoneName] === undefined) {
+		return null;
+	}
+
+	return zones[zoneName];
 }
 
 const addressCache: Record<string, Coordinates> = {};
