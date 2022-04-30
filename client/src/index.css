@@ -1,10 +1,8 @@
 :root {
     font-family: 'Ubuntu', 'Roboto', 'San F', 'Arial', sans-serif;
 
-    --color-bg: #00a3e0;
-    --color-header: #005eb8;
-    --color-primary: #005eb8;
-    --color-secondary: #00a3e0;
+    --color-primary: #00a3e0;
+    --color-secondary: #005eb8;
     --color-text: #fff;
     --color-green: #93c90e;
 }

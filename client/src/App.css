@@ -12,12 +12,12 @@
 
 .home, .about, .connection, .legal, .error {
     display: flex;
-    height: 90vh;
     /* align-items: center; */
     /* justify-content: center; */
     /* font-size: 3rem; */
 }
 
 body {
-    background: var(--color-bg);
+    background-color: var(--color-primary);
+    height: 100%;
 }
