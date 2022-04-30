@@ -18,7 +18,7 @@ app.use(express.static(wwwDir));
 
 app.get('/api/v1/:entity/total', apiReqCheckerParser, async (req, res) => {
 	let query = await getConnection().createQueryBuilder()
-		.select('sum(energy) AS total')
+		.select('coalesce(sum(energy), 0) AS total')
 		.from(req.entity, 'e')
 		.where('e.timestamp BETWEEN :minDate AND :maxDate', { minDate: req.minDate, maxDate: req.maxDate });
 
@@ -52,6 +52,13 @@ app.get('/api/v1/:entity/hourly-mean', apiReqCheckerParser, async (req, res) => 
 	}
 
 	let result = await query.getRawMany() as { hour: number, mean: number }[];
+
+	// add missing hourly means (note: array is sorted by hour)
+	for (let hour = 0; hour < 24; ++hour) {
+		if (result.length <= hour || result[hour].hour < hour) {
+			result.splice(hour, 0, { hour, mean: 0 });
+		}
+	}
 
 	res.send(result);
 });
