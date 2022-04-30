@@ -1,23 +1,29 @@
 import React from 'react';
-import UrbanZoneMap from '../UrbanZonesMap/UrbanZoneMap';
+
+import { UrbanZonesMap } from 'components/Maps';
 
 interface Props {
 	/** Triggered on a click on the map. If the click is performed outside a zone, zoneName is null. */
-	onZoneClick: (zoneName: string | null) => void,
+	// onZoneClick: (zoneName: string | null) => void,
 }
 
 interface State {
-	selectedZone: string | number | null,
+	zone: string | number | null;
 }
 
 export default class HomeMap extends React.Component<Props, State> {
-	private mapRef = React.createRef<UrbanZoneMap>();
+	private mapRef = React.createRef<UrbanZonesMap>();
 
-	constructor(props) {
+	constructor(props: Props) {
 		super(props);
+
 		this.state = {
-			selectedZone: null,
+			zone: null,
 		};
+	}
+
+	get map() {
+		return this.mapRef.current.map;
 	}
 
 	unselectZone() {
@@ -25,43 +31,40 @@ export default class HomeMap extends React.Component<Props, State> {
 		this.onZoneClick(null, null)
 	}
 
-	get map() {
-		return this.mapRef.current.map;
-	}
-
 	private onZoneClick(featureId: string | number | null, zoneName: string | null) {
-		if (this.state.selectedZone === featureId) {
+		if (this.state.zone === featureId) {
 			return;
 		}
 
-		// deselect current zone
-		if (this.state.selectedZone !== null) {
+		// Deselect current zone
+		if (this.state.zone !== null) {
 			this.map.setFeatureState(
-				{ source: 'urbanZone-source', id: this.state.selectedZone },
+				{ source: 'urban-zones', id: this.state.zone },
 				{ selected: false },
 			);
 		}
 
-		// select the new one
+		// Select the new one
 		if (zoneName !== null) {
 			this.map.setFeatureState(
-				{ source: 'urbanZone-source', id: featureId },
+				{ source: 'urban-zones', id: featureId },
 				{ selected: true },
 			);
 		}
 
 		// update state
-		this.setState({
-			selectedZone: featureId,
-		})
+		this.setState((state) => ({
+			zone: featureId,
+			...state
+		}));
 
 		// trigger event
-		this.props.onZoneClick(zoneName);
+		// this.props.onZoneClick(zoneName);
 	}
 
 	render() {
 		return (
-			<UrbanZoneMap
+			<UrbanZonesMap
 				ref={this.mapRef}
 				center={[-0.5564, 44.8431]}
 				bounds={[
@@ -76,7 +79,7 @@ export default class HomeMap extends React.Component<Props, State> {
 					'#005eb8',
 					'#7fd1ef',
 				]}
-				onZoneClick={(featureId, zoneName) => this.onZoneClick(featureId, zoneName)}
+			// onZoneClick={() => undefined}//{(featureId, zoneName) => this.onZoneClick(featureId, zoneName)}
 			/>
 		);
 	}

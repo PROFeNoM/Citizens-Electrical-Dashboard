@@ -7,6 +7,7 @@
       "esnext",
       "es2018"
     ],
+    "baseUrl": "src",
     "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,

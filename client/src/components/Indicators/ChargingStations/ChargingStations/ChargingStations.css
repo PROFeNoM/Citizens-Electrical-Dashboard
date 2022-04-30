@@ -1,0 +1,12 @@
+#charging-stations-info-wrapper {
+    padding: 0 5%;
+}
+
+#charging-stations-info {
+    color: white;
+    font-size: x-large;
+}
+
+#charging-stations-info h2 {
+    margin-bottom: 20px;
+}

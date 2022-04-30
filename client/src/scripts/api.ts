@@ -76,7 +76,7 @@ async function apiCall(endpoint: string, t1: number, t2: number, profiles?: stri
 	const host = window.location.hostname === 'localhost' ? 'http://localhost:5000' : 'https://pfa.c-saccoccio.fr';
 	let url = `${host}/api/v1/${endpoint}?minDate=${t1}&maxDate=${t2}`;
 
-	if (profiles && profiles.length > 0) {
+	if (profiles && profiles.length > 0 && profiles[0] !== ConsumerProfile.ALL) { // Use the fact that default is ALL
 		url += profiles.map((p, i) => `&profiles[${i}]=${p}`).join();
 	}
 

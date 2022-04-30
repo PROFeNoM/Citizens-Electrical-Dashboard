@@ -4,9 +4,9 @@ import { Expression, StyleFunction } from 'mapbox-gl';
 export type FillColor = string | StyleFunction | Expression | undefined;
 
 export const zonesBorder: LineLayer = {
-	id: 'outline',
+	id: 'urban-zones-outline',
 	type: 'line',
-	source: 'urbanZone-source',
+	source: 'urban-zones',
 	paint: {
 		'line-color': '#005eb8',
 		'line-width': [
@@ -19,9 +19,9 @@ export const zonesBorder: LineLayer = {
 }
 
 export const zonesFill = (fillColor: FillColor) => ({
-	id: 'data',
+	id: 'urban-zones-data',
 	type: 'fill',
-	source: 'urbanZone-source',
+	source: 'urban-zones',
 	paint: {
 		'fill-color': fillColor,
 		'fill-opacity': [
@@ -44,9 +44,9 @@ export const lightingPoints: CircleLayer = {
 }
 
 export const bornesPoints: CircleLayer = {
-	'id': 'bornes-points',
+	'id': 'charging-stations',
 	'type': 'circle',
-	'source': 'Bornes-source',
+	'source': 'charging-stations',
 	'paint': {
 		'circle-radius': 12,
 		'circle-color': '#e06666',
@@ -54,27 +54,30 @@ export const bornesPoints: CircleLayer = {
 }
 
 export const allBuildings3D: FillExtrusionLayer = {
-	'id': 'add-3d-buildings',
+	'id': '3d-buildings',
 	'source': 'district-buildings',
 	'type': 'fill-extrusion',
 	'minzoom': 13.5,
 	'paint': {
 		'fill-extrusion-color': '#aaa',
-		'fill-extrusion-height': ["*", 1.5, ['get', 'HAUTEUR']],
+		'fill-extrusion-height': ['*', 1.5, ['get', 'HAUTEUR']],
 		'fill-extrusion-base': ['get', 'Z_MIN_SOL'],
 		'fill-extrusion-opacity': 0.6,
 	},
 }
 
 export const residentialBuildings3D: FillExtrusionLayer = {
-	'id': 'add-3d-buildings',
+	'id': '3d-residentialbuildings',
 	'source': 'district-buildings',
 	'type': 'fill-extrusion',
-	'filter': ['==', 'USAGE1', 'Résidentiel'],
+	'filter': ['any',
+    	['==', 'USAGE1', 'Résidentiel'],
+    	['==', 'USAGE2', 'Résidentiel']
+ 	],
 	'minzoom': 13.5,
 	'paint': {
 		'fill-extrusion-color': '#e06666',
-		'fill-extrusion-height': ["*", 1.5, ['get', 'HAUTEUR']],
+		'fill-extrusion-height': ['*', 1.5, ['get', 'HAUTEUR']],
 		'fill-extrusion-base': ['get', 'Z_MIN_SOL'],
 		'fill-extrusion-opacity': 0.6,
 	},

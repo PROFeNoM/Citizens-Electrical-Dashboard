@@ -1,15 +1,18 @@
 // YES THIS IS A COPY OF THE CHOROPLETH MAP, HENCE THIS SHOULD BE REFACTORED (cf. functional programming)
 
 import './ProductionChoroplethMap.css';
+
 import React from 'react';
-import UrbanZoneMap from '../UrbanZonesMap/UrbanZoneMap';
-import {FeatureCollection} from 'geojson';
-import {changeRange} from '../../../scripts/utils';
-import {getTotalProduction, ProducerProfile} from '../../../scripts/api';
+
+import { UrbanZonesMap } from 'components/Maps';
+import { FeatureCollection } from 'geojson';
+import { changeRange } from 'scripts/utils';
+import { getTotalProduction, ProducerProfile } from 'scripts/api';
 
 interface Props {
 	t1: number,
 	t2: number,
+	highlightedZoneName: string | null,
 }
 
 const colorPalette = ['#faeabf', '#f9da98', '#f6c970', '#f1ba46', '#eaaa00'];
@@ -41,7 +44,7 @@ export default class ProductionChoroplethMap extends React.Component<Props, {}> 
 				</div> */}
 
 				<div id="urbanZoneComparisonMap" className="choropleth-map">
-					<UrbanZoneMap
+					<UrbanZonesMap
 						center={[-0.5564, 44.8431]}
 						bounds={[
 							[-0.5463, 44.8522],
@@ -54,9 +57,11 @@ export default class ProductionChoroplethMap extends React.Component<Props, {}> 
 							property: 'choroplethValue',
 							stops: colorPalette.map((color, idx) => [idx, color]),
 						}}
+						highlightedZoneName={this.props.highlightedZoneName}
 					/>
 				</div>
 
+				{/* Removed for responsive purposes
 				<div className="color-wrapper">
 					<div className="high-end-color-wrapper">
 						<div className="high-end-color-prod" />
@@ -67,6 +72,7 @@ export default class ProductionChoroplethMap extends React.Component<Props, {}> 
 						<p className="low-end-text">Faible production</p>
 					</div>
 				</div>
+				*/}
 			</div>
 		);
 	}
