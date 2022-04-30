@@ -40,7 +40,7 @@ export default class DataContainer extends React.Component<{}, State> {
                         t1={this.state.t1}
                         t2={this.state.t2}
                         indicator={this.state.indicator}
-                        highlightedZoneName={this.state.highlightedZoneName}
+                        highlightedZoneName={this.state.zoneName}
                     />
                 </div>
                 <IndicatorContainer
@@ -54,7 +54,7 @@ export default class DataContainer extends React.Component<{}, State> {
                     setT1={(t1: Date) => this.setState((state) => ({ ...state, t1 }))}
                     t2={this.state.t2}
                     setT2={(t2: Date) => this.setState((state) => ({ ...state, t2 }))}
-                    setHighlightedZone={(zoneName: string | null) => this.setState((state) => ({ ...state, highlightedZoneName: zoneName }))}
+                    setHighlightedZone={(highlightedZoneName: string | null) => this.setState((state) => ({ ...state, highlightedZoneName }))}
                 />
             </div>
         );
