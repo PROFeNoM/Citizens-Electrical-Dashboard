@@ -1,4 +1,4 @@
-export const enum IndicatorType {
+export enum IndicatorType {
 	ConsumptionDonut,
 	EnergyBalance,
 	LocalProductionInfo,
@@ -10,47 +10,54 @@ export const enum IndicatorType {
 	ChargingStations
 };
 
-export const enum IndicatorClass {
-	Global,
-	Consumption,
-	Production,
-	Station
+export enum IndicatorClass {
+	General = 'Informations globales',
+	Consumption = 'Consommation',
+	Production = 'Production',
+	Station = 'Stations de recharges'
 };
 
 export interface Indicator {
-	type: IndicatorType;
 	class: IndicatorClass;
+	type: IndicatorType;
 	name: string;
 }
 
+interface Registry {
+	[key: number]: Indicator;
+};
 
-const indicatorRegistry: { [key: string]: Indicator } = {};
+export const indicatorRegistry: Registry = {};
 
-export function registerIndicator(indicatorType: IndicatorType, indicatorClass: IndicatorClass, name: string): void {
+export function registerIndicator(indicatorClass: IndicatorClass, indicatorType: IndicatorType, name: string): void {
 	indicatorRegistry[indicatorType] = {
-		type: indicatorType,
 		class: indicatorClass,
+		type: indicatorType,
 		name: name
 	};
 }
 
-export function getIndicator(indicatorType: IndicatorType): Indicator {
+export function getIndicatorFromType(indicatorType: IndicatorType): Indicator {
 	return indicatorRegistry[indicatorType];
 }
 
+export function getAllIndicators(): Indicator[] {
+	return Object.values(indicatorRegistry);
+}
+
 // Indicateurs globaux
-registerIndicator(IndicatorType.EnergyBalance, IndicatorClass.Global, 'Bilan général');
+registerIndicator(IndicatorClass.General, IndicatorType.EnergyBalance, 'Bilan général');
 
 // Indicateurs de consommation
-registerIndicator(IndicatorType.TotalConsumption, IndicatorClass.Consumption, 'Consommation totale');
-registerIndicator(IndicatorType.TypicalConsumptionDay, IndicatorClass.Consumption, 'Journée type de consommation');
-registerIndicator(IndicatorType.ConsumptionDonut, IndicatorClass.Consumption, 'Consommation par type de batiment');
+registerIndicator(IndicatorClass.Consumption, IndicatorType.TotalConsumption, 'Consommation totale');
+registerIndicator(IndicatorClass.Consumption, IndicatorType.TypicalConsumptionDay, 'Journée type de consommation');
+registerIndicator(IndicatorClass.Consumption, IndicatorType.ConsumptionDonut, 'Consommation par type de batiment');
 
 // Indicateurs de production
-registerIndicator(IndicatorType.LocalProductionInfo, IndicatorClass.Production, 'Production locale');
-registerIndicator(IndicatorType.SolarDonut, IndicatorClass.Production, 'Production solaire');
-registerIndicator(IndicatorType.TypicalProductionDay, IndicatorClass.Production, 'Journée type de production');
-registerIndicator(IndicatorType.WeeklyProduction, IndicatorClass.Production, 'Production hebdomadaire');
+registerIndicator(IndicatorClass.Production, IndicatorType.LocalProductionInfo, 'Production locale');
+registerIndicator(IndicatorClass.Production, IndicatorType.SolarDonut, 'Production solaire');
+registerIndicator(IndicatorClass.Production, IndicatorType.TypicalProductionDay, 'Journée type de production');
+registerIndicator(IndicatorClass.Production, IndicatorType.WeeklyProduction, 'Production hebdomadaire');
 
 // Indicateurs de stations
-registerIndicator(IndicatorType.ChargingStations, IndicatorClass.Station, 'Stations de recharge');
+registerIndicator(IndicatorClass.Station, IndicatorType.ChargingStations, 'Stations de recharge');

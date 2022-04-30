@@ -1,12 +1,12 @@
 import React from 'react';
-import { IndicatorClass } from 'constants/indicator';
+import { Indicator, IndicatorClass } from 'constants/indicator';
 import { HomeMap, ConsumptionChoroplethMap, ProductionChoroplethMap } from 'components/Maps';
 
 interface Props {
-    t1: Date,
-    t2: Date,
-    indicatorClass: IndicatorClass,
-    highlightedZoneName: string | null,
+    indicator: Indicator;
+    t1: Date;
+    t2: Date;
+    highlightedZoneName: string | null;
 }
 
 /**
@@ -16,7 +16,7 @@ interface Props {
  */
 export default class MapContainer extends React.Component<Props> {
     render() {
-        switch (this.props.indicatorClass) {
+        switch (this.props.indicator.class) {
             case IndicatorClass.Production:
                 return (
                     <ProductionChoroplethMap
@@ -33,7 +33,7 @@ export default class MapContainer extends React.Component<Props> {
                         highlightedZoneName={this.props.highlightedZoneName}
                     />
                 );
-            case IndicatorClass.Global:
+            case IndicatorClass.General:
             default:
                 return (
                     <HomeMap />

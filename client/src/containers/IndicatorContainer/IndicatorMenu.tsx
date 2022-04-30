@@ -3,80 +3,58 @@ import './IndicatorMenu.css';
 import React from 'react';
 import { Button, DatePicker, TreePicker } from 'rsuite';
 
-import { IndicatorType, IndicatorClass } from 'constants/indicator';
+import {Indicator, IndicatorType, IndicatorClass, getIndicatorFromType, getAllIndicators } from 'constants/indicator';
 import { ConsumerProfile } from 'scripts/api';
 import { zones } from 'geodata';
 
-interface tree { label: string, value?: IndicatorType, children?: tree[] }
+/**
+ * Type of a tree representing a menu with depth 1
+ */
+type tree<T> = {
+    label: string,
+    children: {
+        label: string,
+        value: T
+    }[]
+}[];
 
-const indicatorTree: tree[] = [
-	{
-		label: 'Informations globales',
-		value: IndicatorType.EnergyBalance,
-	},
-	{
-		label: 'Consommation',
-		children: [
-			{
-				label: 'Répartition selon le type de bâtiment',
-				value: IndicatorType.ConsumptionDonut,
-			},
-			{
-				label: 'Totale',
-				value: IndicatorType.TotalConsumption,
-			},
-			{
-				label: 'Journée type',
-				value: IndicatorType.TypicalConsumptionDay,
-			},
-		],
-	},
-	{
-		label: 'Production',
-		children: [
-			{
-				label: 'Locale',
-				value: IndicatorType.LocalProductionInfo,
-			},
-			{
-				label: 'Répartion selon le type de bâtiment',
-				value: IndicatorType.SolarDonut,
-			},
-			{
-				label: 'Hebdomadaire',
-				value: IndicatorType.WeeklyProduction,
-			},
-			{
-				label: 'Journée type',
-				value: IndicatorType.TypicalProductionDay,
-			}
-		],
-	},
-    {
-        label: 'Stations de charge',
-        value: IndicatorType.ChargingStations,
-    },
-];
+/**
+ * Tree of indicators
+ */
+const indicatorTree: tree<IndicatorType> = Object.values(IndicatorClass)
+    .map((className: string) => (
+        {
+            label: className,
+            children:
+                getAllIndicators()
+                    .filter((indicator: Indicator) => indicator.class === className)
+                    .map((indicator: Indicator) => (
+                        {
+                            label: indicator.name,
+                            value: indicator.type
+                        }
+                    ))
+        }
+    ));
 
 const selectOptionsBuildings: { value: ConsumerProfile, label: string }[] = [
-	{ value: ConsumerProfile.ALL, label: "Tous les bâtiments" },
-	{ value: ConsumerProfile.RESIDENTIAL, label: "Résidentiels" },
-	{ value: ConsumerProfile.TERTIARY, label: "Tertiaires" },
-	{ value: ConsumerProfile.PROFESSIONAL, label: "Professionnels" },
-	{ value: ConsumerProfile.PUBLIC_LIGHTING, label: "Eclairage publique" },
+    { value: ConsumerProfile.ALL, label: "Tous les bâtiments" },
+    { value: ConsumerProfile.RESIDENTIAL, label: "Résidentiels" },
+    { value: ConsumerProfile.TERTIARY, label: "Tertiaires" },
+    { value: ConsumerProfile.PROFESSIONAL, label: "Professionnels" },
+    { value: ConsumerProfile.PUBLIC_LIGHTING, label: "Éclairage publique" },
 ];
 
 const selectOptionsZoneNames = zones.features.map((item) => ({ value: item.properties.libelle, label: item.properties.libelle }));
 selectOptionsZoneNames.push({ value: 'Quartier de la Bastide', label: 'Quartier de la Bastide' });
 
 interface Props {
-    setZoneName: (val: string | null) => void;
-    setIndicatorType: (val: IndicatorType) => void;
-    setIndicatorClass: (val: IndicatorClass) => void;
-    setBuildingType: (val: ConsumerProfile) => void;
-    setT1: (val: Date) => void;
-    setT2: (val: Date) => void;
-    setHighlightedZone: (val: string | null) => void;
+    setIndicator: (indicator: Indicator) => void;
+    setZoneName: (zoneName: string | null) => void;
+    setBuildingType: (buildingType: ConsumerProfile) => void;
+    setT1: (t1: Date) => void;
+    setT2: (t2: Date) => void;
+    setHighlightedZone: (zoneName: string | null) => void;
 }
 
 interface State {
@@ -95,7 +73,7 @@ interface State {
 export default class IndicatorMenu extends React.Component<Props, State> {
     constructor(props: Props) {
         super(props);
-        
+
         const today: Date = new Date();
 
         this.state = {
@@ -121,28 +99,10 @@ export default class IndicatorMenu extends React.Component<Props, State> {
             this.props.setZoneName(this.state.zoneName);
         }
 
-        this.props.setIndicatorType(this.state.indicatorType);
+        this.props.setIndicator(getIndicatorFromType(this.state.indicatorType));
         this.props.setBuildingType(this.state.buildingType);
         this.props.setT1(this.state.t1);
         this.props.setT2(this.state.t2);
-
-        switch (this.state.indicatorType) {
-            case IndicatorType.ConsumptionDonut:
-            case IndicatorType.TotalConsumption:
-            case IndicatorType.TypicalConsumptionDay:
-                this.props.setIndicatorClass(IndicatorClass.Consumption);
-                break;
-            case IndicatorType.LocalProductionInfo:
-            case IndicatorType.SolarDonut:
-            case IndicatorType.WeeklyProduction:
-            case IndicatorType.TypicalProductionDay:
-                this.props.setIndicatorClass(IndicatorClass.Production);
-                break;
-            case IndicatorType.EnergyBalance:
-            default:
-                this.props.setIndicatorClass(IndicatorClass.Global);
-                break;
-        }
     }
 
     render(): React.ReactNode {
@@ -160,6 +120,7 @@ export default class IndicatorMenu extends React.Component<Props, State> {
                     className="indicator-menu tree-picker" data={indicatorTree}
                     placeholder="Indicateur"
                     placement="bottomEnd"
+                    defaultExpandAll={true}
                 />
                 <TreePicker
                     onChange={(value: ConsumerProfile) => { this.setState({ buildingType: value }); }}

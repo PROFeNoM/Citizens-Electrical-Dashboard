@@ -2,7 +2,7 @@ import './IndicatorViewer.css';
 
 import React from 'react';
 
-import { IndicatorType, getIndicator } from 'constants/indicator';
+import { Indicator, IndicatorType } from 'constants/indicator';
 import { ConsumerProfile } from 'scripts/api';
 import {
     EnergyBalance,
@@ -12,8 +12,8 @@ import {
 } from 'components/Indicators';
 
 interface Props {
+    indicator: Indicator;
     zoneName: string | null;
-    indicatorType: IndicatorType;
     buildingType: ConsumerProfile;
     t1: Date;
     t2: Date;
@@ -27,8 +27,14 @@ export default class IndicatorViewer extends React.Component<Props, {}> {
         this.renderIndicator = this.renderIndicator.bind(this);
     }
 
-    renderIndicator(indicatorType: IndicatorType) {
-        switch (indicatorType) {
+    /**
+     * Return the component corresponding to the indicator given.
+     * 
+     * @param indicator The indicator to render
+     * @returns The component corresponding to the given indicator
+     */
+    renderIndicator(indicator: Indicator) {
+        switch (indicator.type) {
             case IndicatorType.TypicalConsumptionDay:
                 return (
                     <TypicalConsumptionDay
@@ -117,12 +123,11 @@ export default class IndicatorViewer extends React.Component<Props, {}> {
     }
 
     render() {
-        const indicator = getIndicator(this.props.indicatorType);
         return (
             <div id="indicator-wrapper">
-                <h2 id="indicator-name">{indicator.name}</h2>
+                <h2 id="indicator-name">{this.props.indicator.name}</h2>
                 <div id="indicator-content">
-                    {this.renderIndicator(indicator.type)}
+                    {this.renderIndicator(this.props.indicator)}
                 </div>
             </div>
         );

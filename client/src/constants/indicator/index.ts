@@ -1,1 +1,2 @@
-export { IndicatorType, IndicatorClass, getIndicator } from './Indicator';
+export { IndicatorType, IndicatorClass, getIndicatorFromType, getAllIndicators } from './Indicator';
+export type { Indicator } from './Indicator';
