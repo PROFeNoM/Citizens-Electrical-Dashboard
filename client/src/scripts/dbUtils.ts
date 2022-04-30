@@ -1,15 +1,15 @@
 import * as turf from '@turf/turf';
-import { buildings, zones, publicLighting, ZoneFeatureProperties } from 'geodata';
+import { buildingsGeoJSON, zonesGeoJSON, publicLightingGeoJSON, ZoneFeatureProperties } from 'geodata';
 import { Feature, MultiPolygon } from 'geojson';
 import { ConsumerProfile } from './api';
 
 const zonesNbOfBuildings: Record<string, number> = {};
-for (const zone of zones.features) {
-	zonesNbOfBuildings[zone.properties.libelle] = buildings.features.filter(building => isContained(zone, building)).length;
+for (const zone of zonesGeoJSON.features) {
+	zonesNbOfBuildings[zone.properties.libelle] = buildingsGeoJSON.features.filter(building => isContained(zone, building)).length;
 }
 
 const zonesArea: Record<string, number> = {};
-for (const zone of zones.features) {
+for (const zone of zonesGeoJSON.features) {
 	zonesArea[zone.properties.libelle] = turf.area(zone);
 }
 
@@ -51,11 +51,11 @@ export function getZoneArea(zoneName: string): number {
  * @param zoneName Urban Zone for which the feature section shall be returned
  */
 function getZone(zoneName: string): Feature<MultiPolygon, ZoneFeatureProperties> {
-	return zones.features.filter(data => data.properties.libelle === zoneName)[0];
+	return zonesGeoJSON.features.filter(data => data.properties.libelle === zoneName)[0];
 }
 
 export function getZonesNames(): string[] {
-	return zones.features.map(zone => zone.properties.libelle);
+	return zonesGeoJSON.features.map(zone => zone.properties.libelle);
 }
 
 /**
@@ -75,7 +75,7 @@ export function getZoneNbOfCollectionSites(zoneName: string, profile?: ConsumerP
 		case ConsumerProfile.TERTIARY:
 			return zoneProperties.ENT;
 		case ConsumerProfile.PUBLIC_LIGHTING:
-			return publicLighting.filter(pl => turf.booleanWithin(turf.point(pl.geometry.coordinates), zone)).length;
+			return publicLightingGeoJSON.filter(pl => turf.booleanWithin(turf.point(pl.geometry.coordinates), zone)).length;
 		default:
 			return getZoneNbOfCollectionSites(zoneName, ConsumerProfile.RESIDENTIAL)
 				+ getZoneNbOfCollectionSites(zoneName, ConsumerProfile.PROFESSIONAL)

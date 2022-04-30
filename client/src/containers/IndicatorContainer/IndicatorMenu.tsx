@@ -5,7 +5,7 @@ import { Button, DatePicker, TreePicker } from 'rsuite';
 
 import { Indicator, IndicatorType, IndicatorClass, getIndicatorFromType, getAllIndicators } from 'constants/indicator';
 import { ConsumerProfile } from 'scripts/api';
-import { zones } from 'geodata';
+import { zonesGeoJSON } from 'geodata';
 
 /**
  * Type of a tree representing a menu with depth 1
@@ -47,7 +47,7 @@ const selectOptionsBuildings: { value: ConsumerProfile, label: string }[] = [
     { value: ConsumerProfile.PUBLIC_LIGHTING, label: "Éclairage publique" },
 ];
 
-const selectOptionsZoneNames: { value: string, label: string }[] = zones.features
+const selectOptionsZoneNames: { value: string, label: string }[] = zonesGeoJSON.features
     .map((item) => ({ value: item.properties.libelle, label: item.properties.libelle }));
 selectOptionsZoneNames.push({ value: 'Quartier de la Bastide', label: 'Quartier de la Bastide' });
 

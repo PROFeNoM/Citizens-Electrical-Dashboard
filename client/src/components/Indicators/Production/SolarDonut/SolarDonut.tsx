@@ -1,6 +1,6 @@
 import React from 'react';
 import { getTotalProduction, ProducerProfile } from 'scripts/api';
-import { zones } from 'geodata';
+import { zonesGeoJSON } from 'geodata';
 import { CanvasJSChart } from 'canvasjs-react-charts';
 
 interface Props {
@@ -20,7 +20,7 @@ interface State {
 export default class SolarDonut extends React.Component<Props, State> {
 	constructor(props: Props) {
 		super(props);
-		const tmpPoints = zones.features.map(f => {
+		const tmpPoints = zonesGeoJSON.features.map(f => {
 			return { name: f.properties.libelle, y: 0 };
 		})
 
@@ -43,10 +43,10 @@ export default class SolarDonut extends React.Component<Props, State> {
 			return { name: p.name, y: p.value / totalProduction * 100 };
 		});
 		*/
-		const productions = zones.features.map(f => {
+		const productions = zonesGeoJSON.features.map(f => {
 			return { name: f.properties.libelle, value: f.properties.PROD_F5 };
 		});
-		const totalProduction = zones.features.reduce((acc, f) => acc + f.properties.PROD_F5, 0);
+		const totalProduction = zonesGeoJSON.features.reduce((acc, f) => acc + f.properties.PROD_F5, 0);
 		const productionDistribution = productions.map(p => {
 			return { name: p.name, y: p.value / totalProduction * 100 };
 		}).filter(p => p.y > 0);

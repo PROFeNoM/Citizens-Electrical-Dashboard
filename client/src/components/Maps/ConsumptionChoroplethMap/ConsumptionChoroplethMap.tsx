@@ -1,6 +1,8 @@
 import './ConsumptionChoroplethMap.css';
+
 import React from 'react';
-import UrbanZoneMap from '../UrbanZonesMap/UrbanZoneMap';
+
+import { UrbanZonesMap } from 'components/Maps';
 import { FeatureCollection } from 'geojson';
 import { changeRange } from 'scripts/utils';
 import { getTotalConsumption } from 'scripts/api';
@@ -40,7 +42,7 @@ export default class ConsumptionChoroplethMap extends React.Component<Props, {}>
 				</div> */}
 
 				<div id="urbanZoneComparisonMap" className="choropleth-map">
-					<UrbanZoneMap
+					<UrbanZonesMap
 						center={[-0.5564, 44.8431]}
 						bounds={[
 							[-0.5463, 44.8522],
