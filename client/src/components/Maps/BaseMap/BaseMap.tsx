@@ -3,8 +3,6 @@ import React, { MutableRefObject } from 'react';
 import { LngLatBoundsLike, LngLatLike, Map } from 'mapbox-gl';
 
 const MAPBOX_TOKEN = 'pk.eyJ1IjoicHJvZmVub20iLCJhIjoiY2wwNDR3NnNoMGE2NTNpb2dxazg4NW1tdCJ9.hCeP49duNV1x-13qb2aMtA';
-const defaultCenter: LngLatLike = [-0.5564, 44.8431];
-const defaultBounds: LngLatBoundsLike = [[-0.5463, 44.8522], [-0.5665, 44.8382]];
 
 export interface BaseMapProps {
 	center?: LngLatLike;
@@ -12,6 +10,13 @@ export interface BaseMapProps {
 	zoom?: number;
 	pitch?: number;
 }
+
+const defaultProps: BaseMapProps = {
+	center: [-0.5564, 44.8431],
+	bounds: [[-0.5463, 44.8522], [-0.5665, 44.8382]],
+	zoom: 15.5,
+	pitch: 42,
+};
 
 /**
  * Base map
@@ -33,9 +38,9 @@ export default class BaseMap extends React.Component<BaseMapProps, {}> {
 			container: this.mapContainerRef.current,
 			style: 'mapbox://styles/mapbox/streets-v9',
 			accessToken: MAPBOX_TOKEN,
-			zoom: this.props.zoom ?? 15.5,
-			center: this.props.center ?? defaultCenter,
-			pitch: this.props.pitch ?? 42,
+			zoom: this.props.zoom ?? defaultProps.zoom,
+			center: this.props.center ?? defaultProps.center,
+			pitch: this.props.pitch ?? defaultProps.pitch,
 			interactive: false,
 		});
 
@@ -55,8 +60,8 @@ export default class BaseMap extends React.Component<BaseMapProps, {}> {
 	}
 
 	private fitBounds(animate: boolean) {
-		this.map.fitBounds(this.props.bounds ?? defaultBounds, {
-			center: this.props.center ?? defaultCenter,
+		this.map.fitBounds(this.props.bounds ?? defaultProps.bounds, {
+			center: this.props.center ?? defaultProps.center,
 			animate: animate,
 			padding: -80,
 		});
