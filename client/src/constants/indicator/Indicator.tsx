@@ -14,7 +14,7 @@ export enum IndicatorClass {
 	General = 'Informations globales',
 	Consumption = 'Consommation',
 	Production = 'Production',
-	Station = 'Stations de recharges'
+	Station = 'Stations de recharge'
 };
 
 export interface Indicator {

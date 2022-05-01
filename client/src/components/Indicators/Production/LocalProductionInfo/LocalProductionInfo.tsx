@@ -47,6 +47,7 @@ export default class LocalProductionInfo extends React.Component<Props, State> {
 	}
 
 	async componentDidMount() {
+		// TODO: check, often error here
 		await this.fetchData();
 	}
 
@@ -63,7 +64,7 @@ export default class LocalProductionInfo extends React.Component<Props, State> {
 				<div className="typical-c-day-title-wrapper">{this.props.title}</div>
 				<div className="local-production-info-text-wrapper">
 					<p className="local-production-paragraph">
-						La production d'énergie solaire {plural ? `des <b className='local-production-bold'>${this.state.productionPoints}</b> points` : 'du point'} de production {district ? 'du quartier' : 'de la zone'} <b className='local-production-bold'>{district ? 'Bastide' : this.props.urbanZone}</b> s'élève à <b className='local-production-bold'>{new Intl.NumberFormat().format(this.state.totalProduction)} kWh</b>.
+						La production d'énergie solaire {plural ? 'des ' : ''}{plural ? <b className='local-production-bold'>{this.state.productionPoints} points</b> : 'du point'} de production {district ? 'du quartier' : 'de la zone'} <b className='local-production-bold'>{district ? 'Bastide' : this.props.urbanZone}</b> s'élève à <b className='local-production-bold'>{new Intl.NumberFormat().format(this.state.totalProduction)} kWh</b>.
 					</p>
 					<p>
 						Cette production a permis d'éviter l'émission de <b className='local-production-bold'>{Math.round(29 * this.state.totalProduction / 1000 / 1000 / 1000)}</b> kilotonnes de CO2 lors de cette période.
