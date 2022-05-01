@@ -119,6 +119,8 @@ export default class IndicatorMenu extends React.Component<Props, State> {
                         data={selectOptionsZoneNames}
                         placeholder="Zone"
                         placement="bottomEnd"
+                        defaultValue={'Quartier de la Bastide'}
+                        cleanable={false}
                     />
                 </div>
                 <div id="indicator-menu-indicator-type">
@@ -128,6 +130,8 @@ export default class IndicatorMenu extends React.Component<Props, State> {
                         onChange={(value: IndicatorType | IndicatorClass) => { if (typeof value === 'number') { this.setState({ indicatorType: value }); } }}
                         placeholder="Indicateur"
                         placement="bottomEnd"
+                        defaultValue={IndicatorType.EnergyBalance}
+                        cleanable={false}
                         defaultExpandAll={true}
                     />
                 </div>
@@ -140,6 +144,8 @@ export default class IndicatorMenu extends React.Component<Props, State> {
                         data={selectOptionsBuildings}
                         placeholder="Filière"
                         placement="bottomEnd"
+                        defaultValue={ConsumerProfile.ALL}
+                        cleanable={false}
                     />
                 </div>
                 <div id="indicator-menu-start-date">
@@ -150,6 +156,7 @@ export default class IndicatorMenu extends React.Component<Props, State> {
                         onChange={(value) => { this.setState({ t1: value }); }}
                         placeholder="Date début"
                         defaultValue={this.state.t1}
+                        cleanable={false}
                     />
                 </div>
                 <div id="indicator-menu-end-date">
@@ -160,6 +167,7 @@ export default class IndicatorMenu extends React.Component<Props, State> {
                         onChange={(value) => { this.setState({ t2: value }); }}
                         placeholder="Date fin"
                         defaultValue={this.state.t2}
+                        cleanable={false}
                     />
                 </div>
                 <div id="indicator-menu-validate">
