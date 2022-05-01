@@ -4,6 +4,8 @@ import { getConnection } from 'typeorm';
 import { logger } from './logger';
 import { config } from './config';
 import { apiReqCheckerParser } from './validation';
+import {ProducerProfile, Production} from "./db/entities/Production";
+import {ConsumerProfile, Consumption} from "./db/entities/Consumption";
 
 const app = express();
 const wwwDir = resolve(config.devMode ? '../client/build' : 'www');
@@ -61,6 +63,27 @@ app.get('/api/v1/:entity/hourly-mean', apiReqCheckerParser, async (req, res) => 
 			result.splice(hour, 0, { hour, mean: 0 });
 		}
 	}
+
+	res.send(result);
+});
+
+app.get('/api/v1/:entity/max-timestamp', async (req, res) => {
+	let entity: typeof Production | typeof  Consumption;
+	if (req.params.entity === 'production') {
+		entity = Production;
+	} else if (req.params.entity === 'consumption') {
+		entity = Consumption;
+	} else {
+		res.status(400).send('unknown entity: ' + req.params.entity);
+		return;
+	}
+
+	let query = await getConnection().createQueryBuilder()
+		.select('max(timestamp) AS maxTimestamp')
+		.from(entity, 'e')
+		.where('e.prediction = false'); // don't include past predictions
+
+	const result = await query.getRawOne() as { maxTimestamp: Date };
 
 	res.send(result);
 });
