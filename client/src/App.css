@@ -10,7 +10,7 @@
 }
 
 
-.home, .about, .connection, .legal, .error {
+.home, .about, .legal, .error {
     display: flex;
     /* align-items: center; */
     /* justify-content: center; */

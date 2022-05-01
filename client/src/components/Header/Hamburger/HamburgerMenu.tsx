@@ -11,11 +11,6 @@ const hamburgerMenuData = [
         icon: <AiIcons.AiOutlineHome />
     },
     {
-        title: 'Connexion',
-        path: '/connection',
-        icon: <AiIcons.AiOutlineDisconnect />
-    },
-    {
         title: 'à propos',
         path: '/about',
         icon: <AiIcons.AiOutlineInfoCircle />
