@@ -35,14 +35,12 @@ export default class DataContainer extends React.Component<{}, State> {
     render() {
         return (
             <div id="data-container">
-                <div id="map-container">
                     <MapContainer
                         t1={this.state.t1}
                         t2={this.state.t2}
                         indicator={this.state.indicator}
                         highlightedZoneName={this.state.zoneName}
                     />
-                </div>
                 <IndicatorContainer
                     indicator={this.state.indicator}
                     setIndicator={(indicator: Indicator) => this.setState((state) => ({ ...state, indicator }))}

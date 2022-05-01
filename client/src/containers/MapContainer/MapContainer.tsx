@@ -1,6 +1,7 @@
 import React from 'react';
-import { Indicator, IndicatorClass } from 'constants/indicator';
-import { HomeMap, ConsumptionChoroplethMap, ProductionChoroplethMap } from 'components/Maps';
+
+import { Indicator } from 'constants/indicator';
+import { UrbanZonesMap } from 'components/Maps';
 
 interface Props {
     indicator: Indicator;
@@ -16,28 +17,15 @@ interface Props {
  */
 export default class MapContainer extends React.Component<Props> {
     render() {
-        switch (this.props.indicator.class) {
-            case IndicatorClass.Production:
-                return (
-                    <ProductionChoroplethMap
-                        t1={this.props.t1.getTime()}
-                        t2={this.props.t2.getTime()}
-                        highlightedZoneName={this.props.highlightedZoneName}
-                    />
-                );
-            case IndicatorClass.Consumption:
-                return (
-                    <ConsumptionChoroplethMap
-                        t1={this.props.t1.getTime()}
-                        t2={this.props.t2.getTime()}
-                        highlightedZoneName={this.props.highlightedZoneName}
-                    />
-                );
-            case IndicatorClass.General:
-            default:
-                return (
-                    <HomeMap />
-                );
-        }
+        return (
+            <div id="map-container">
+                <UrbanZonesMap
+                    indicator={this.props.indicator}
+                    highlightedZoneName={this.props.highlightedZoneName}
+                    t1={this.props.t1.getTime()}
+                    t2={this.props.t2.getTime()}
+                />
+            </div>
+        );
     }
 }
