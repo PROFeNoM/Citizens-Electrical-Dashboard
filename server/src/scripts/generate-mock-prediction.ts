@@ -2,7 +2,7 @@ import {downloadRandomAddresses, generateMock, getCoefficients, readCsv} from ".
 import {logger} from "../logger";
 
 // Usage:
-// node generate-prediction-mock-data.js <srcPath> <destPath> <consumption|production>
+// node generate-mock-prediction.js <srcPath> <destPath> <consumption|production>
 
 // Retrieve the command line arguments
 const srcPath = process.argv[2];
