@@ -1,6 +1,6 @@
 import React from 'react';
-import { CanvasJSChart } from 'canvasjs-react-charts';
-import { getTotalProduction, ProducerProfile } from 'scripts/api';
+import {CanvasJSChart} from 'canvasjs-react-charts';
+import {DataType, getMaxTimestamp, getTotalProduction, ProducerProfile} from 'scripts/api';
 
 interface Props {
 	t1: number;
@@ -13,6 +13,7 @@ interface Props {
 interface State {
 	districtProductionData: { x: Date, y: number }[];
 	urbanZoneProductionData: { x: Date, y: number }[];
+	maxTimestamp: Date;
 	renderMe: boolean;
 }
 
@@ -28,6 +29,7 @@ export default class WeeklyProduction extends React.Component<Props, State> {
 		this.state = {
 			districtProductionData: tmpPoints,
 			urbanZoneProductionData: tmpPoints,
+			maxTimestamp: new Date(),
 			renderMe: false,
 		};
 	}
@@ -81,9 +83,11 @@ export default class WeeklyProduction extends React.Component<Props, State> {
 	async fetchData() {
 		const districtProductionData = await this.getDistrictProductionData();
 		const urbanZoneProductionData = await this.getUrbanZoneProductionData();
+		const maxTimestamp = await getMaxTimestamp(DataType.PRODUCTION)
 		this.setState({
 			districtProductionData: districtProductionData,
 			urbanZoneProductionData: urbanZoneProductionData,
+			maxTimestamp: new Date(maxTimestamp),
 			renderMe: true,
 		});
 	}
@@ -97,6 +101,25 @@ export default class WeeklyProduction extends React.Component<Props, State> {
 	}
 
 	render() {
+		// Retrieve database's max timestamp of historical data
+		console.log(this.state.maxTimestamp);
+
+		const historicalDistrictProductionData = this.state.districtProductionData.filter((point) => {
+			return point.x.getTime() <= this.state.maxTimestamp.getTime();
+		});
+
+		const historicalUrbanZoneProductionData = this.state.urbanZoneProductionData.filter((point) => {
+			return point.x.getTime() <= this.state.maxTimestamp.getTime();
+		});
+
+		const forecastedDistrictProductionData = this.state.districtProductionData.filter((point) => {
+			return point.x.getTime() > this.state.maxTimestamp.getTime();
+		});
+
+		const forecastedUrbanZoneProductionData = this.state.urbanZoneProductionData.filter((point) => {
+			return point.x.getTime() > this.state.maxTimestamp.getTime();
+		});
+
 		const chartOptions = {
 			exportEnabled: true,
 			animationEnabled: true,
@@ -115,17 +138,33 @@ export default class WeeklyProduction extends React.Component<Props, State> {
 				{
 					type: "column",
 					name: "Production de La Bastide (kWh)",
-					dataPoints: this.state.districtProductionData,
+					dataPoints: historicalDistrictProductionData,
 					color: "#688199",
 					click: this.onClick
 				},
 				{
 					type: "column",
 					name: "Production de " + this.props.urbanZone + " (kWh)",
-					dataPoints: this.state.urbanZoneProductionData,
+					dataPoints: historicalUrbanZoneProductionData,
 					color: "#e63b11",
 					click: this.onClick
-				}
+				},
+				{
+					type: "column",
+					name: "Prédiction de production de " + this.props.urbanZone + " (kWh)",
+					dataPoints: forecastedUrbanZoneProductionData,
+					color: "#e63b11",
+					click: this.onClick,
+					fillOpacity: .3,
+				},
+				{
+					type: "column",
+					name: "Prédiction de production de La Bastide (kWh)",
+					dataPoints: forecastedDistrictProductionData,
+					color: "#688199",
+					click: this.onClick,
+					fillOpacity: .3,
+				},
 			]
 		}
 

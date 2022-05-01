@@ -16,6 +16,11 @@ export enum ProducerProfile {
 	TOTAL = 'TOTAL',
 }
 
+export enum DataType {
+	CONSUMPTION = 'CONSUMPTION',
+	PRODUCTION = 'PRODUCTION',
+}
+
 /**
  * Get the total consumption in Wh on the given time period.
  * @param t1 start of the time period (Unix epoch millis)
@@ -72,7 +77,14 @@ export async function getHourlyMeanProduction(t1: number, t2: number, profiles?:
 	}))
 }
 
-async function apiCall(endpoint: string, t1: number, t2: number, profiles?: string[], zoneName?: string): Promise<any> {
+export async function getMaxTimestamp(dataType: DataType): Promise<Date> {
+	const entity = dataType === DataType.CONSUMPTION ? 'consumption' : 'production';
+	const result = await apiCall(`${entity}/max-timestamp`) as { maxtimestamp: Date };
+	console.log(result);
+	return result.maxtimestamp;
+}
+
+async function apiCall(endpoint: string, t1?: number, t2?: number, profiles?: string[], zoneName?: string): Promise<any> {
 	const host = window.location.hostname === 'localhost' ? 'http://localhost:5000' : 'https://pfa.c-saccoccio.fr';
 	let url = `${host}/api/v1/${endpoint}?minDate=${t1}&maxDate=${t2}`;
 

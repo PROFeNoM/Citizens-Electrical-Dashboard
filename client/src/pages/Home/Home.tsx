@@ -14,7 +14,7 @@ export default class Home extends React.Component<{}, {}>{
         return (
             <div id="home-container">
                 <header>
-                    <Header title='Tableau éléctrique citoyen' />
+                    <Header title='Tableau électrique citoyen' />
                 </header>
                 <main>
                     <DataContainer />
