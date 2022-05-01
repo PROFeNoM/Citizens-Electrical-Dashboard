@@ -258,15 +258,15 @@ export async function getZones(tx: EntityManager): Promise<Record<string, Zone>>
 	return zones;
 }
 
-export async function loadCsvToTable<P>(tx: EntityManager, path: string, tableType: new () => DataTable<P>, profileParser: (raw: string) => P, zones: Record<string, Zone>, prediction: boolean = false) {
+export async function loadCsvToTable<P>(tx: EntityManager, path: string, tableType: new () => DataTable<P>, profileParser: (raw: string) => P, zones: Record<string, Zone>, prediction: boolean = false, predBatchSize: number = 100) {
 	let jobs: Promise<void>[] = [];
 	let batchIndex = 0;
 	let jobIndexInBatch = 0;
-
+	const _batchSize = prediction ? predBatchSize : batchSize;
 	for await (const line of readCsv(path)) {
 		// if about to start a third batch, terminate the first one so only a max of 2 are running concurrently
-		if (jobs.length === 2 * batchSize) {
-			await Promise.all(jobs.splice(0, batchSize));
+		if (jobs.length === 2 * _batchSize) {
+			await Promise.all(jobs.splice(0, _batchSize));
 		}
 
 		// push a new job
@@ -280,7 +280,7 @@ export async function loadCsvToTable<P>(tx: EntityManager, path: string, tableTy
 				houseNumber: line.houseNumber,
 				streetName: line.streetName,
 				cityCode: line.cityCode,
-			}, batchIndex);
+			}, batchIndex, _batchSize);
 
 			if (entry.zone === null) {
 				// logger.warn('failed to map address to zone');
@@ -291,7 +291,7 @@ export async function loadCsvToTable<P>(tx: EntityManager, path: string, tableTy
 		})());
 
 		// keep track of batch and job indices
-		if (++jobIndexInBatch == batchSize) {
+		if (++jobIndexInBatch == _batchSize) {
 			jobIndexInBatch = 0;
 			++batchIndex;
 		}
@@ -301,10 +301,10 @@ export async function loadCsvToTable<P>(tx: EntityManager, path: string, tableTy
 	{
 		// Make the getCoordinatesFromAddress function "think" that it's called a number of time that is a multiple of
 		// batchSize, so that the final call to the resolveAddresses function can be made.
-		nbOfCallsPerBatch[batchIndex] = (nbOfCallsPerBatch[batchIndex] ?? 0) + batchSize - jobIndexInBatch - 1;
+		nbOfCallsPerBatch[batchIndex] = (nbOfCallsPerBatch[batchIndex] ?? 0) + _batchSize - jobIndexInBatch - 1;
 		// But wait, what if no more calls to the getCoordinatesFromAddress function will be made? Then we have to do
 		// its job of making the final call to the resolveAddresses function.
-		if (nbOfCallsPerBatch[batchIndex] === batchSize) {
+		if (nbOfCallsPerBatch[batchIndex] === _batchSize || nbOfCallsPerBatch[batchIndex] === _batchSize - 1) {
 			const tmp = addressesToResolve;
 			addressesToResolve = {};
 			await resolveAddresses(tmp);
@@ -315,8 +315,8 @@ export async function loadCsvToTable<P>(tx: EntityManager, path: string, tableTy
 	await Promise.all(jobs);
 }
 
-async function getZoneFromAddress(zones: Record<string, Zone>, address: Address, batchIndex: number): Promise<Zone | null> {
-	const coo = await getCoordinatesFromAddress(address, batchIndex);
+async function getZoneFromAddress(zones: Record<string, Zone>, address: Address, batchIndex: number, _batchSize: number): Promise<Zone | null> {
+	const coo = await getCoordinatesFromAddress(address, batchIndex, _batchSize);
 	const point = turf.point([coo.long, coo.lat]);
 
 	let zoneName: string | null = null;
@@ -338,7 +338,7 @@ const addressCache: Record<string, Coordinates> = {};
 const nbOfCallsPerBatch: number[] = [];
 let addressesToResolve: Record<string, AddressResolutionCtx> = {};
 
-async function getCoordinatesFromAddress(address: Address, batchIndex: number): Promise<Coordinates> {
+async function getCoordinatesFromAddress(address: Address, batchIndex: number, _batchSize: number): Promise<Coordinates> {
 	// keep track of how many times this function was called for each batch
 	nbOfCallsPerBatch[batchIndex] = (nbOfCallsPerBatch[batchIndex] ?? 0) + 1;
 
@@ -364,8 +364,8 @@ async function getCoordinatesFromAddress(address: Address, batchIndex: number): 
 		}
 	}
 
-	// If all jobs of the current batch called this function, then it's time to resolved all the addresses.
-	if (nbOfCallsPerBatch[batchIndex] == batchSize) {
+	// If all jobs of the current batch called this function, then it's time to resolve all the addresses.
+	if (nbOfCallsPerBatch[batchIndex] == _batchSize) {
 		// resolve addresses with one API call for the whole batch (and probably a bit of the next batch), instead of flooding the API
 		const tmp = addressesToResolve;
 		addressesToResolve = {};
@@ -420,7 +420,6 @@ async function resolveAddresses(toResolve: Record<string, AddressResolutionCtx>)
 		addressCache[hash] = { long, lat };
 		toResolve[hash].callback();
 	}
-	console.log("resolved");
 }
 
 export function parseConsumerProfile(raw: string): ConsumerProfile {
