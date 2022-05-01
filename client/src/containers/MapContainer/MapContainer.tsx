@@ -1,3 +1,5 @@
+import './MapContainer.css';
+
 import React from 'react';
 
 import { Indicator } from 'constants/indicator';

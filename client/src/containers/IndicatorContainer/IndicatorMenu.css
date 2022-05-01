@@ -1,6 +1,6 @@
-@import "rsuite/dist/rsuite.css";
+@import 'rsuite/dist/rsuite.css';
 
-#indicator-menu-wrapper {
+#indicator-menu {
     padding: 0 50px;
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -10,11 +10,11 @@
     justify-items: center;
 }
 
-#indicator-menu-wrapper > div {
+#indicator-menu>div {
     width: 100%;
 }
 
-#indicator-menu-wrapper > div > p {
+#indicator-menu>div>p {
     display: none;
     font-size: small;
     text-align: center;

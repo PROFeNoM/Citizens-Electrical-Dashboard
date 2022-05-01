@@ -2,3 +2,8 @@
     width: 100%;
     padding: 15px;
 }
+
+#indicator-container>div {
+    width: 100%;
+    height: 100%;
+}

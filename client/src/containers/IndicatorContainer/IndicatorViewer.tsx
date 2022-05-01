@@ -125,7 +125,7 @@ export default class IndicatorViewer extends React.Component<Props, {}> {
 
     render() {
         return (
-            <div id="indicator-wrapper">
+            <div id="indicator-viewer">
                 <div id="indicator-name">
                     <h2>{this.props.indicator.name}</h2>
                 </div>

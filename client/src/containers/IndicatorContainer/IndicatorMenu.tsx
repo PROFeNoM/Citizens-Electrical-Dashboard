@@ -110,7 +110,7 @@ export default class IndicatorMenu extends React.Component<Props, State> {
 
     render(): React.ReactNode {
         return (
-            <div id="indicator-menu-wrapper">
+            <div id="indicator-menu">
                 <div id="indicator-menu-zone">
                     <p>Zone géographique</p>
                     <TreePicker

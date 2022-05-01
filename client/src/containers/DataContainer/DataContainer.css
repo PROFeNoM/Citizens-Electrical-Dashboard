@@ -3,3 +3,21 @@
     grid-template-columns: 4fr 4fr;
     height: 100%;
 }
+
+#map-container-wrapper {
+    height: 100%;
+    width: 100%;
+    opacity: 1;
+	animation-name: fadeIn;
+	animation-iteration-count: 1;
+	animation-timing-function: ease-in;
+	animation-duration: 2s;
+}
+
+#indicator-container {
+	opacity: 1;
+	animation-name: fadeInRight;
+	animation-iteration-count: 1;
+	animation-timing-function: ease-in;
+	animation-duration: 1.5s;
+}

@@ -25,8 +25,6 @@ const layers: { id: string; data: FillExtrusionLayer | FillLayer | LineLayer | C
 
 interface Props extends BaseMapProps {
 	indicator?: Indicator;
-	zonesData?: Promise<FeatureCollection>;
-	zonesFillColor?: FillColor;
 	/** Triggered on a click on the map. If the click is performed outside a zone, featureId and zoneName are null. */
 	onZoneClick?: (featureId: string | number | null, zoneName: string | null) => void;
 	highlightedZoneName?: string;
@@ -153,7 +151,6 @@ export default class UrbanZonesMap extends React.Component<Props, State> {
 		await this.mapRef.current.ensureMapLoading();
 
 		if (this.props.highlightedZoneName) {
-			// TODO: check that for consumption and production
 			const featureId = zonesGeoJSON.features.findIndex(f => f.properties.libelle === this.props.highlightedZoneName);
 			this.hoverZone(featureId);
 		}
@@ -164,6 +161,13 @@ export default class UrbanZonesMap extends React.Component<Props, State> {
 		this.updateLayers();
 	}
 
+	/**
+	 * Highlight a zone by thickening its border.
+	 * TODO: hover also for consumption and production
+	 * 
+	 * @param id 
+	 * @returns 
+	 */
 	private hoverZone(id: string | number) {
 		if (this.state.hoveredZone === id) {
 			return;
