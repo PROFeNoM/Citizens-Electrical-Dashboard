@@ -1,3 +1,5 @@
+import './BaseMap.css';
+
 import React, { MutableRefObject } from 'react';
 
 import { LngLatBoundsLike, LngLatLike, Map } from 'mapbox-gl';
@@ -69,7 +71,7 @@ export default class BaseMap extends React.Component<BaseMapProps, {}> {
 
 	render() {
 		return (
-			<div className="map-container" ref={this.mapContainerRef} />
+			<div id="base-map" ref={this.mapContainerRef} />
 		);
 	}
 }
