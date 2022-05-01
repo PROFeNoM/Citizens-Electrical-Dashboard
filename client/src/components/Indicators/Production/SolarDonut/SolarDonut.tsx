@@ -1,4 +1,7 @@
+import './SolarDonut.css';
+
 import React from 'react';
+
 import { getTotalProduction, ProducerProfile } from 'scripts/api';
 import { zonesGeoJSON } from 'geodata';
 import { CanvasJSChart } from 'canvasjs-react-charts';
@@ -31,7 +34,7 @@ export default class SolarDonut extends React.Component<Props, State> {
 		};
 	}
 
-	async fetchData(){
+	async fetchData() {
 		const { t1, t2, urbanZone } = this.props;
 		/*
 		const productions = await Promise.all(zones.features.map(async f => {
@@ -88,14 +91,11 @@ export default class SolarDonut extends React.Component<Props, State> {
 		}
 
 		return (
-			<div className="typical-c-day-wrapper">
-				<div className="typical-c-day-title-wrapper">{this.props.title}</div>
-				<div className="typical-consumption-day-graph-wrapper">
+			<div id="solar-production" className="graph-indicator">
+				<div id="solar-production-graph-wrapper" className="graph-wrapper">
 					<CanvasJSChart options={chartOptions} />
 				</div>
 			</div>
-		)
+		);
 	}
-
 }
-

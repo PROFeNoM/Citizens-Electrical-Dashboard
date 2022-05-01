@@ -1,0 +1,44 @@
+.graph-indicator {
+    background-color: white;
+    border-radius: 10px;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+}
+
+.graph-legend {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+.graph-legend-item {
+    display: flex;
+    flex-direction: row;
+    padding-top: 10px;
+    padding-right: 10px;
+}
+
+.graph-legend-item-color {
+    width: 20px;
+    height: 20px;
+    border-radius: 20%;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.graph-legend-item-text {
+    height: auto;
+    width: available;
+    text-align: left;
+    display: inline-block;
+    color: black;
+    vertical-align: middle;
+    padding-left: 10px;
+}
+
+.canvasjs-chart-credit {
+    display: none;
+}

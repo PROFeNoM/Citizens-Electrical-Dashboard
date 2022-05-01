@@ -1,67 +1,9 @@
-.typical-c-day-wrapper {
-    width: 100%;
-    height: auto;
-}
+@import 'styles/graph.css';
 
-.typical-consumption-day-graph-wrapper {
-    width: 100%;
-}
-
-.typical-c-day-title-wrapper {
-    background-color: #005eb8;
-    color: white;
-    margin-bottom: 5px;
-    padding: 10px;
-    text-align: center;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.typical-c-day-legend-wrapper {
-    display: inline-block;
-    vertical-align: middle;
-}
-
-.typical-c-day-urbanZone-legend-wrapper, .typical-c-day-district-legend-wrapper, .typical-c-day-selfCons-legend-wrapper {
-    padding: 5px;
-    vertical-align: middle;
-    display: inline-block;
-}
-
-.typical-c-day-urbanZone-color {
-    width: 20px;
-    height: 20px;
+#typical-c-day-legend-urban-zone-color {
     background-color: #e63b11;
-    display: inline-block;
-    margin: 5px;
-    vertical-align: middle;
 }
 
-.typical-c-day-district-color {
-    width: 20px;
-    height: 20px;
+#typical-c-day-legend-district-color {
     background-color: #688199;
-    display: inline-block;
-    margin: 5px;
-    vertical-align: middle;
-}
-
-.typical-c-day-selfCons-color {
-    width: 20px;
-    height: 3px;
-    background-color: #93c90e;
-    display: inline-block;
-    margin: 5px;
-    vertical-align: middle;
-}
-
-.typical-c-day-urbanZone-text, .typical-c-day-district-text, .typical-c-day-selfCons-text {
-    height: auto;
-    width: available;
-    text-align: left;
-    display: inline-block;
-    color: white;
-    vertical-align: middle;
-    padding-left: 20px;
 }

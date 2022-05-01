@@ -1,4 +1,7 @@
+import './ConsumptionDonut.css';
+
 import React from 'react';
+
 import { getTotalConsumption, ConsumerProfile } from 'scripts/api';
 import { zonesGeoJSON } from 'geodata';
 import { CanvasJSChart } from 'canvasjs-react-charts';
@@ -86,8 +89,8 @@ export default class ConsumptionDonut extends React.Component<Props, State> {
 		}
 
 		return (
-			<div className="typical-c-day-wrapper">
-				<div className="typical-consumption-day-graph-wrapper">
+			<div id="consumption-donut" className="graph-indicator">
+				<div id="consumption-donut-graph-wrapper" className="graph-wrapper">
 					<CanvasJSChart options={chartOptions} />
 				</div>
 			</div>

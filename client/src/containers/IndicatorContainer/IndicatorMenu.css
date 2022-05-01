@@ -1,7 +1,7 @@
 @import 'rsuite/dist/rsuite.css';
 
 #indicator-menu {
-    padding: 0 50px;
+    padding: 20px 50px;
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     grid-template-rows: repeat(4, auto);

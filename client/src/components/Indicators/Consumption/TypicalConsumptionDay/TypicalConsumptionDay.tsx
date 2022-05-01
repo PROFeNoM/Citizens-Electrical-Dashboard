@@ -1,6 +1,8 @@
 import './TypicalConsumptionDay.css';
+
 import React from 'react';
 import { CanvasJSChart } from 'canvasjs-react-charts';
+
 import {
 	ConsumerProfile,
 	getHourlyMeanConsumption,
@@ -158,21 +160,20 @@ export default class TypicalConsumptionDay extends React.Component<Props, State>
 		};
 
 		return (
-			<div className="typical-c-day-wrapper">
-				<div className="typical-c-day-title-wrapper">{this.props.title}</div>
-				<div className="typical-consumption-day-graph-wrapper">
+			<div id="typical-c-day" className="graph-indicator">
+				<div id="typical-c-day-graph-wrapper" className="graph-wrapper">
 					<CanvasJSChart options={chartOptions} />
 				</div>
-				<div className="typical-c-day-legend-wrapper">
-					<div className="typical-c-day-urbanZone-legend-wrapper">
-						<div className="typical-c-day-urbanZone-color" />
-						<p className="typical-c-day-urbanZone-text">
+				<div id="typical-c-day-legend" className="graph-legend">
+					<div id="typical-c-day-legend-urban-zone" className="graph-legend-item">
+						<div id="typical-c-day-legend-urban-zone-color" className="graph-legend-item-color" />
+						<p className="graph-legend-item-text">
 							Consommation moyenne de la zone urbaine
 						</p>
 					</div>
-					<div className="typical-c-day-district-legend-wrapper">
-						<div className="typical-c-day-district-color" />
-						<p className="typical-c-day-district-text">
+					<div id="typical-c-day-legend-district" className="graph-legend-item">
+						<div id="typical-c-day-legend-district-color" className="graph-legend-item-color" />
+						<p className="graph-legend-item-text">
 							Consommation moyenne du quartier
 						</p>
 					</div>

@@ -46,7 +46,7 @@ export default class TotalConsumption extends React.Component<Props, State> {
 		];
 	}
 
-	async fetchData(){
+	async fetchData() {
 		const districtConsumptionData = await this.getDistrictConsumptionData();
 		const urbanZoneConsumptionData = await this.getUrbanZoneConsumptionData();
 		this.setState({
@@ -105,19 +105,22 @@ export default class TotalConsumption extends React.Component<Props, State> {
 		}
 
 		return (
-			<div className="typical-c-day-wrapper">
-				<div className="typical-c-day-title-wrapper">
-					{this.props.title}
-				</div>
-				<div className="typical-consumption-day-graph-wrapper">
+			<div id="total-consumption" className="graph-indicator">
+				<div id="total-consumption-graph-wrapper" className="graph-wrapper">
 					<CanvasJSChart options={chartOptions} />
 				</div>
-				<div className="typical-c-day-legend-wrapper">
-					<div className="typical-c-day-urbanZone-legend-wrapper">
-						<p className="typical-c-day-urbanZone-text"><div className="typical-c-day-urbanZone-color" />Consommation par filière dans la zone urbaine</p>
+				<div id="total-consumption-legend" className="graph-legend">
+					<div id="total-consumption-legend-urban-zone" className="graph-legend-item">
+						<div id="total-consumption-legend-urban-zone-color" className="graph-legend-item-color" />
+						<p className="graph-legend-item-text">
+							Consommation par filière dans la zone urbaine
+						</p>
 					</div>
-					<div className="typical-c-day-district-legend-wrapper">
-						<p className="typical-c-day-district-text"><div className="typical-c-day-district-color" />Consommation par filière dans le quartier</p>
+					<div id="total-consumption-legend-district" className="graph-legend-item">
+						<div id="total-consumption-legend-district-color" className="graph-legend-item-color" />
+						<p className="graph-legend-item-text">
+							Consommation par filière dans le quartier
+						</p>
 					</div>
 				</div>
 			</div>

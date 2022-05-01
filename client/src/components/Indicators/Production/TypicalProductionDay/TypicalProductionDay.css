@@ -1,9 +1,9 @@
 @import 'styles/graph.css';
 
-#total-consumption-legend-urban-zone-color {
+#typical-p-day-legend-urban-zone-color {
     background-color: #e63b11;
 }
 
-#total-consumption-legend-district-color {
+#typical-p-day-legend-district-color {
     background-color: #688199;
 }

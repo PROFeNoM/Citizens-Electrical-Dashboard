@@ -1,25 +1,29 @@
 #indicator-viewer {
     width: 100%;
     height: auto;
-    margin-top: 1em;
     display: flex;
     flex-direction: column;
 }
 
-#indicator-name {
+#indicator-name-wrapper {
     width: 100%;
-    padding: 0 50px;
-    align-self: center;
     margin: 0.5em 0;
+    padding: 0 75px;
+    align-self: center;
 }
 
-#indicator-name>h2 {
+#indicator-name-wrapper>* {
     color: var(--color-text);
     font-size: x-large;
     font-weight: bold;
     text-align: center;
     border: 3px solid var(--color-text);
     border-radius: 20px;
+    padding: 5px;
+}
+
+#indicator-content {
+    padding: 20px 30px;
 }
 
 #indicator-content>* {
