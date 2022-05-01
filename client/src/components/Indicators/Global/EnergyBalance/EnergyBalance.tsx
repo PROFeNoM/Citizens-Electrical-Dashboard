@@ -122,8 +122,7 @@ export default class EnergyBalance extends React.Component<Props, State> {
 		const ratio = data.consumption !== undefined && data.production !== undefined ? formatter.format(Math.round(data.production / data.consumption * 100)) : '...';
 
 		return (
-			<div id="energy-balance-wrapper">
-				<div id="energy-balance">
+				<div id="energy-balance" className="text-indicator">
 					<ul>
 					<li><span className="data">{area}</span> m²</li>
 						<li><span className="data">{nbBuildings}</span> bâtiments</li>
@@ -133,7 +132,6 @@ export default class EnergyBalance extends React.Component<Props, State> {
 						<li><span className="data">{ratio}</span> % de ratio production/consommation</li>
 					</ul>
 				</div>
-			</div>
 		);
 	}
 }

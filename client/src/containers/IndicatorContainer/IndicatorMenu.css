@@ -31,10 +31,6 @@
     color: var(--color-secondary);
 }
 
-.indicator-menu-item * {
-    color: var(--color-secondary);
-}
-
 .indicator-menu-item.validate-button {
     background-color: white;
     margin-top: 10px;

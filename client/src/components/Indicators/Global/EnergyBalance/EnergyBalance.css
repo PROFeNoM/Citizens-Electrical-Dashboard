@@ -1,23 +1,12 @@
-#energy-balance-wrapper {
-    padding: 0 5%;
-}
+@import 'styles/text-indicator.css';
 
-#energy-balance {
-    color: var(--color-text);
-    font-size: medium;
-}
 
-#zone-name {
-    text-transform: uppercase;
-    font-size: 2.5em;
-}
 
 #energy-balance ul {
     margin-bottom: 0;
 }
 
 #energy-balance li {
-    font-size: 1.5em;
     margin: .5em 0;
     list-style: none;
 }

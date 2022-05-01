@@ -60,16 +60,13 @@ export default class LocalProductionInfo extends React.Component<Props, State> {
 		const district: boolean = this.props.urbanZone === null;
 
 		return (
-			<div className="typical-c-day-wrapper">
-				<div className="typical-c-day-title-wrapper">{this.props.title}</div>
-				<div className="local-production-info-text-wrapper">
-					<p className="local-production-paragraph">
-						La production d'énergie solaire {plural ? 'des ' : ''}{plural ? <b className='local-production-bold'>{this.state.productionPoints} points</b> : 'du point'} de production {district ? 'du quartier' : 'de la zone'} <b className='local-production-bold'>{district ? 'Bastide' : this.props.urbanZone}</b> s'élève à <b className='local-production-bold'>{new Intl.NumberFormat().format(this.state.totalProduction)} kWh</b>.
-					</p>
-					<p>
-						Cette production a permis d'éviter l'émission de <b className='local-production-bold'>{Math.round(29 * this.state.totalProduction / 1000 / 1000 / 1000)}</b> kilotonnes de CO2 lors de cette période.
-					</p>
-				</div>
+			<div id="local-production-info" className="text-indicator">
+				<p>
+					La production d'énergie solaire {plural ? 'des ' : ''}{plural ? <strong>{this.state.productionPoints} points</strong> : 'du point'} de production {district ? 'du quartier' : 'de la zone'} <strong>{district ? 'Bastide' : this.props.urbanZone}</strong> s'élève à <strong>{new Intl.NumberFormat().format(this.state.totalProduction)}&nbsp;kWh</strong>.
+				</p>
+				<p>
+					Cette production a permis d'éviter l'émission de <strong>{Math.round(29 * this.state.totalProduction / 1000 / 1000 / 1000)}&nbsp;kilotonnes</strong> de CO2 lors de cette période.
+				</p>
 			</div>
 		);
 	}

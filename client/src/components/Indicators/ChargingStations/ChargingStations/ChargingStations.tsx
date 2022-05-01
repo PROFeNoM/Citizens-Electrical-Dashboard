@@ -86,13 +86,11 @@ export default class ChargingStationIndicator extends React.Component<Props, Sta
 		const district: boolean = this.props.zoneName === null;
 
 		return (
-			<div id="charging-stations-info-wrapper">
-				<div id="charging-stations-info">
+				<div id="charging-stations-info" className="text-indicator">
 					<p>
 						{district ? 'Le quartier' : 'La zone'} <strong>{district ? 'Bastide' : `${title}`}</strong> compte <strong>{nbStations}&nbsp;station{plural ? 's' : ''}</strong> de recharge électrique pour <strong>{nbChargingPoints}&nbsp;borne{plural ? 's' : ''}</strong> au total.
 					</p>
 				</div>
-			</div>
 		);
 	}
 }
