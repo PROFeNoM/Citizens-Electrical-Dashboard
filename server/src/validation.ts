@@ -1,10 +1,8 @@
 import { NextFunction, Request, Response } from 'express';
 import { ProducerProfile, Production } from './db/entities/Production';
 import { ConsumerProfile, Consumption } from './db/entities/Consumption';
-
-// TODO clean that
-export type Zone = 'Bastide Niel' | 'Quartier historique Nord Thiers' | 'Coeur de Bastide' | 'sieges sociaux' | 'residence autre quai' | 'batiments publics' | 'batiments professionnels et residentiels' | 'mixte urbain' | 'quartier historique sud avenue thiers';
-const zones: Zone[] = ['Bastide Niel', 'Quartier historique Nord Thiers', 'Coeur de Bastide', 'sieges sociaux', 'residence autre quai', 'batiments publics', 'batiments professionnels et residentiels', 'mixte urbain', 'quartier historique sud avenue thiers'];
+import { getManager } from 'typeorm';
+import { Zone } from './db/entities/Zone';
 
 // the apiReqCheckerParser middleware will create the following fields by side effect
 declare global {
@@ -15,12 +13,12 @@ declare global {
 			minDate: Date,
 			maxDate: Date,
 			profiles: (ProducerProfile | ConsumerProfile)[],
-			zone: Zone | undefined,
+			zoneId: number | undefined,
 		}
 	}
 }
 
-export function apiReqCheckerParser(req: Request, res: Response, next: NextFunction) {
+export async function apiReqCheckerParser(req: Request, res: Response, next: NextFunction) {
 	let entity: typeof Production | typeof  Consumption;
 	let profileEnum: typeof ProducerProfile | typeof ConsumerProfile;
 
@@ -53,11 +51,22 @@ export function apiReqCheckerParser(req: Request, res: Response, next: NextFunct
 		return;
 	}
 
-	const zone = req.query.zone;
+	const zoneName = req.query.zone;
+	let zoneId: number | undefined;
 	// zone isn't required but if it's defined it must be valid
-	if (zone !== undefined && !zones.includes(zone as any)) {
-		res.status(400).send('zone is invalid');
-		return;
+	if (zoneName !== undefined) {
+		if (typeof zoneName !== 'string') {
+			res.status(400).send('zone is invalid');
+			return;
+		}
+
+		const zone = await getManager().findOne(Zone, { where: { name: zoneName }});
+		if (zone === undefined) {
+			res.status(400).send('the given zone is not known');
+			return;
+		}
+
+		zoneId = zone.id;
 	}
 
 	req.entity = entity;
@@ -65,7 +74,7 @@ export function apiReqCheckerParser(req: Request, res: Response, next: NextFunct
 	req.minDate = minDate;
 	req.maxDate = maxDate;
 	req.profiles = profiles;
-	req.zone = zone as Zone;
+	req.zoneId = zoneId;
 
 	next();
 }

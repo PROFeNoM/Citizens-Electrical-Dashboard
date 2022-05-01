@@ -1,134 +1,75 @@
 import * as express from 'express';
 import { resolve } from 'path';
-import {getConnection, SelectQueryBuilder} from 'typeorm';
+import { getConnection } from 'typeorm';
 import { logger } from './logger';
 import { config } from './config';
 import { apiReqCheckerParser } from './validation';
-import { regionDataToDistrictData, regionDataToZoneData } from './mock';
 
 const app = express();
-const cors = require('cors');
-const wwwDir = resolve(process.env.NODE_ENV === 'production' ? 'www' : '../client/build');
+const wwwDir = resolve(config.devMode ? '../client/build' : 'www');
+
+if (config.devMode) {
+	app.use(require('cors')());
+}
 
 // middleware
-app.use(cors());
 app.use(express.json());
 app.use(express.static(wwwDir));
 
 app.get('/api/v1/:entity/total', apiReqCheckerParser, async (req, res) => {
-	// TODO clean that
-	let field = req.params.entity === 'consumption'
-		? 'drained_energy'
-		: 'injected_energy';
+	let query = await getConnection().createQueryBuilder()
+		.select('coalesce(sum(energy), 0) AS total')
+		.from(req.entity, 'e')
+		.where('e.timestamp BETWEEN :minDate AND :maxDate', { minDate: req.minDate, maxDate: req.maxDate })
+		.andWhere('(e.timestamp <= current_timestamp OR e.prediction)'); // don't include past predictions
 
-	let query: SelectQueryBuilder<any>;
-	let result: { total: number };
-	if (new Date(req.maxDate) < new Date()) {
-		query = await getConnection().createQueryBuilder()
-			.select(`sum(${field}) AS total`)
-			.from(req.entity, 'x')
-			.where('x.isPrediction IS FALSE AND x.timestamp BETWEEN :minDate AND :maxDate', { minDate: req.minDate, maxDate: req.maxDate })
-		if (req.profiles.length > 0) {
-			query = query.andWhere('x.profile IN (:...profiles)', { profiles: req.profiles });
-		}
-
-		result = await query.getRawOne() as { total: number }
-	} else {
-		let actualRecordsQuery = await getConnection().createQueryBuilder()
-			.select(`sum(${field}) AS total`)
-			.from(req.entity, 'x')
-			.where('x.timestamp BETWEEN :minDate AND :maxDate', { minDate: req.minDate, maxDate: new Date().getTime() })
-			.andWhere('x.isPrediction IS FALSE', {});
-		let predictionRecordsQuery = await getConnection().createQueryBuilder()
-			.select(`sum(${field}) AS total`)
-			.from(req.entity, 'x')
-			.where('x.timestamp BETWEEN :minDate AND :maxDate', { minDate: new Date().getTime(), maxDate: req.maxDate })
-			.andWhere('x.isPrediction IS TRUE', {});
-		if (req.profiles.length > 0) {
-			actualRecordsQuery = actualRecordsQuery.andWhere('x.profile IN (:...profiles)', { profiles: req.profiles });
-			predictionRecordsQuery = predictionRecordsQuery.andWhere('x.profile IN (:...profiles)', { profiles: req.profiles });
-		}
-
-		result = {
-			total: (await actualRecordsQuery.getRawOne() as { total: number }).total + (await predictionRecordsQuery.getRawOne() as { total: number }).total
-		}
+	if (req.zoneId !== undefined) {
+		query = query.andWhere('e.zoneId = :zoneId', { zoneId: req.zoneId });
 	}
 
-	// TODO don't use a mock
-	if (req.zone) {
-		result.total = regionDataToZoneData(req.zone, result.total);
-	} else {
-		result.total = regionDataToDistrictData(result.total);
+	if (req.profiles.length > 0) {
+		query = query.andWhere('e.profile IN (:...profiles)', { profiles: req.profiles });
 	}
+
+	const result = await query.getRawOne() as { total: number };
 
 	res.send(result);
 });
 
 app.get('/api/v1/:entity/hourly-mean', apiReqCheckerParser, async (req, res) => {
-	// TODO clean that
-	let field = req.params.entity === 'consumption'
-		? 'drained_energy'
-		: 'injected_energy';
+	let query = await getConnection().createQueryBuilder()
+		.select('extract(hour from timestamp)::int AS hour, avg(energy) * 2 AS mean') // multiplying by 2, because each line correspond to 30 min and not 1 hour
+		.from(req.entity, 'e')
+		.groupBy('hour')
+		.where('e.timestamp BETWEEN :minDate AND :maxDate', { minDate: req.minDate, maxDate: req.maxDate })
+		.andWhere('(e.timestamp <= current_timestamp OR e.prediction)') // don't include past predictions
+		.orderBy('hour');
 
-	let query: SelectQueryBuilder<any>;
-	let result: { hour: number, mean: number }[];
-
-	if (new Date(req.maxDate) < new Date()) {
-		query = await getConnection().createQueryBuilder()
-			.select(`extract(hour from timestamp)::int AS hour, avg(${field}) * 2 AS mean`)
-			.from(req.entity, 'x')
-			.groupBy('hour')
-			.where('x.timestamp BETWEEN :minDate AND :maxDate', { minDate: req.minDate, maxDate: req.maxDate })
-			.andWhere('x.isPrediction IS FALSE', {})
-			.orderBy('hour')
-		if (req.profiles.length > 0) {
-			query = query.andWhere('x.profile IN (:...profiles)', { profiles: req.profiles });
-		}
-
-		result = await query.getRawMany() as { hour: number, mean: number }[];
-	} else {
-		let actualRecordsQuery = await getConnection().createQueryBuilder()
-			.select(`extract(hour from timestamp)::int AS hour, avg(${field}) * 2 AS mean`)
-			.from(req.entity, 'x')
-			.groupBy('hour')
-			.where('x.timestamp BETWEEN :minDate AND :maxDate', {minDate: req.minDate, maxDate: new Date().getTime()})
-			.andWhere('x.isPrediction IS FALSE', {})
-			.orderBy('hour')
-		let predictionRecordsQuery = await getConnection().createQueryBuilder()
-			.select(`extract(hour from timestamp)::int AS hour, avg(${field}) * 2 AS mean`)
-			.from(req.entity, 'x')
-			.groupBy('hour')
-			.where('x.timestamp BETWEEN :minDate AND :maxDate', {minDate: new Date().getTime(), maxDate: req.maxDate})
-			.andWhere('x.isPrediction IS TRUE', {})
-			.orderBy('hour')
-		if (req.profiles.length > 0) {
-			actualRecordsQuery = actualRecordsQuery.andWhere('x.profile IN (:...profiles)', {profiles: req.profiles});
-			predictionRecordsQuery = predictionRecordsQuery.andWhere('x.profile IN (:...profiles)', {profiles: req.profiles});
-		}
-
-		result = (await actualRecordsQuery.getRawMany() as { hour: number, mean: number }[])
-			.concat(await predictionRecordsQuery.getRawMany() as { hour: number, mean: number }[])
+	if (req.zoneId !== undefined) {
+		query = query.andWhere('e.zoneId = :zoneId', { zoneId: req.zoneId });
 	}
 
-	// TODO don't use a mock
-	result = result.map(({ hour, mean }) => {
-		if (req.zone) {
-			mean = regionDataToZoneData(req.zone, mean);
-		} else {
-			mean = regionDataToDistrictData(mean);
+	if (req.profiles.length > 0) {
+		query = query.andWhere('e.profile IN (:...profiles)', { profiles: req.profiles });
+	}
+
+	let result = await query.getRawMany() as { hour: number, mean: number }[];
+
+	// add missing hourly means (note: array is sorted by hour)
+	for (let hour = 0; hour < 24; ++hour) {
+		if (result.length <= hour || result[hour].hour < hour) {
+			result.splice(hour, 0, { hour, mean: 0 });
 		}
-		return { hour, mean };
-	})
+	}
 
 	res.send(result);
 });
-
-// TODO properly catch 404 requests
 
 app.get('/api/*', (req, res) => {
 	res.status(404).send();
 })
 
+// FIXME every non API call will result in a 200 response, this isn't a good practice
 app.get('*', (req, res) => {
 	res.sendFile(wwwDir + '/index.html');
 });

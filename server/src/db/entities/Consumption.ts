@@ -1,4 +1,6 @@
-import { Column, Entity, Index, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, Index, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Zone } from './Zone';
+import { DataTable } from './DataTable';
 
 export enum ConsumerProfile {
 	PUBLIC_LIGHTING = 'PUBLIC_LIGHTING',
@@ -8,7 +10,7 @@ export enum ConsumerProfile {
 }
 
 @Entity('consumption')
-export class Consumption {
+export class Consumption implements DataTable<ConsumerProfile> {
 	@PrimaryGeneratedColumn({ type: 'int' })
 	public id: number;
 
@@ -16,18 +18,15 @@ export class Consumption {
 	@Index()
 	public timestamp: Date;
 
+	@ManyToOne(() => Zone, { nullable: false })
+	public zone: Zone;
+
 	@Column({ type: 'enum', enum: ConsumerProfile, nullable: false })
 	public profile: ConsumerProfile;
 
-	@Column({ name: 'drain_points', type: 'float', nullable: false })
-	public drainPoints: number;
+	@Column({ type: 'float', nullable: false })
+	public energy: number;
 
-	@Column({ name: 'drained_energy', type: 'float', nullable: false })
-	public drainedEnergy: number;
-
-	@Column({ name: 'mean_curve', type: 'float', nullable: false })
-	public meanCurve: number;
-
-	@Column({ name: 'is_prediction', type: 'boolean', nullable: false })
-	public isPrediction: boolean;
+	@Column({ type: 'boolean', nullable: false })
+	public prediction: boolean;
 }

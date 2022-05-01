@@ -1,18 +1,30 @@
 import './Header.css';
-import logo from '../../images/logo.png';
 
-interface HeaderProps {
+import React from 'react';
+
+import logoEnedis from 'images/logoEnedis.png';
+import logoEnedisSmall from 'images/logoEnedisSmall.png';
+import { Hamburger } from 'components/Header';
+
+interface Props {
 	title: string;
 }
 
-function Header({ title }: HeaderProps) {
-	return (
-		<header>
-			<div />
-			<h1 className="header-title">{title}</h1>
-			<img src={logo} className="logo" alt="Logo Enedis" color="#fff" />
-		</header>
-	);
+export default class Header extends React.Component<Props, {}> {
+	render() {
+		return (
+			<div id="header-container">
+				<div id="hamburger-menu-wrapper">
+					<Hamburger />
+				</div>
+				<div id="title-wrapper">
+					<p id="title">{this.props.title}</p>
+				</div>
+				<div id="logo-wrapper">
+					<img src={logoEnedis} id="enedis-logo" alt="Logo Enedis" color="#fff" />
+					<img src={logoEnedisSmall} id="enedis-logo-small" alt="Logo Enedis petit" color="#fff" />
+				</div>
+			</div>
+		);
+	}
 }
-
-export default Header;

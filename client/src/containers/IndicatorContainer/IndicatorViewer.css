@@ -1,0 +1,31 @@
+#indicator-viewer {
+    width: 100%;
+    height: auto;
+    margin-top: 1em;
+    display: flex;
+    flex-direction: column;
+}
+
+#indicator-name {
+    width: 100%;
+    padding: 0 50px;
+    align-self: center;
+    margin: 0.5em 0;
+}
+
+#indicator-name>h2 {
+    color: var(--color-text);
+    font-size: x-large;
+    font-weight: bold;
+    text-align: center;
+    border: 3px solid var(--color-text);
+    border-radius: 20px;
+}
+
+#indicator-content>* {
+    opacity: 1;
+    animation-name: fadeInRight;
+    animation-iteration-count: 1;
+    animation-timing-function: ease-in;
+    animation-duration: 1.5s;
+}

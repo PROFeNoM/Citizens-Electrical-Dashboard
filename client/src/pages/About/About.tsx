@@ -1,5 +1,5 @@
 import './About.css';
-import { Header } from '../../containers';
+import { Header } from 'containers';
 
 function About() {
 	return (

@@ -1,10 +1,12 @@
-import React from 'react';
 import './Error.css';
-import {Header} from "../../containers";
+
+import React from 'react';
+
+import { Header } from 'containers';
 
 function Error() {
     return (
-        <Header title={'ERROR'} />
+        <Header title={'Error'} />
     );
 }
 

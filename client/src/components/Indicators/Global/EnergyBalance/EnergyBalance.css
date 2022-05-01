@@ -1,0 +1,61 @@
+#energy-balance-wrapper {
+    padding: 0 5%;
+}
+
+#energy-balance {
+    color: var(--color-text);
+    font-size: medium;
+}
+
+#zone-name {
+    text-transform: uppercase;
+    font-size: 2.5em;
+}
+
+#energy-balance ul {
+    margin-bottom: 0;
+}
+
+#energy-balance li {
+    font-size: 1.5em;
+    margin: .5em 0;
+    list-style: none;
+}
+
+#energy-balance .data {
+    font-weight: bold;
+}
+
+/* @media (max-width: 1350px) {
+    #energy-balance {
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 1150px) {
+    #energy-balance {
+        font-size: 12px;
+    }
+}
+
+@media (max-width: 1150px) {
+    #energy-balance {
+        font-size: 10px;
+    }
+}
+
+@media (max-width: 800px) {
+    #energy-balance {
+        font-size: 12px;
+    }
+
+    #energy-balance h2 {
+        max-width: 90vw;
+    }
+}
+
+@media (max-width: 450px) {
+    #energy-balance {
+        font-size: 10px;
+    }
+} */
