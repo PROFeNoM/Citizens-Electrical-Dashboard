@@ -60,4 +60,4 @@ registerIndicator(IndicatorClass.Production, IndicatorType.TypicalProductionDay,
 registerIndicator(IndicatorClass.Production, IndicatorType.WeeklyProduction, 'Production hebdomadaire');
 
 // Indicateurs de stations
-registerIndicator(IndicatorClass.Station, IndicatorType.ChargingStations, 'Stations de recharge');
+registerIndicator(IndicatorClass.Station, IndicatorType.ChargingStations, 'Répartition des stations');

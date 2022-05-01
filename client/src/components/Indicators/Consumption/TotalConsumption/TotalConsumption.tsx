@@ -4,11 +4,10 @@ import { CanvasJSChart } from 'canvasjs-react-charts';
 import { ConsumerProfile, getTotalConsumption } from 'scripts/api';
 
 interface Props {
-	t1: number,
-	t2: number,
-	urbanZone: string,
-	title: string,
-	setHighlightedZone: (val: string | null) => void
+	t1: number;
+	t2: number;
+	urbanZone: string;
+	setHighlightedZone: (val: string | null) => void;
 }
 
 interface State {

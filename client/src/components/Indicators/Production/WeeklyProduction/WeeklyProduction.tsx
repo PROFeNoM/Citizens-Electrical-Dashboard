@@ -1,12 +1,14 @@
+import './WeeklyProduction.css';
+
 import React from 'react';
-import {CanvasJSChart} from 'canvasjs-react-charts';
-import {DataType, getMaxTimestamp, getTotalProduction, ProducerProfile} from 'scripts/api';
+import { CanvasJSChart } from 'canvasjs-react-charts';
+
+import { DataType, getMaxTimestamp, getTotalProduction, ProducerProfile } from 'scripts/api';
 
 interface Props {
 	t1: number;
 	t2: number;
 	urbanZone: string;
-	title: string;
 	setHighlightedZone: (val: string | null) => void;
 }
 
@@ -169,21 +171,20 @@ export default class WeeklyProduction extends React.Component<Props, State> {
 		}
 
 		return (
-			<div className="typical-c-day-wrapper">
-				<div className="typical-c-day-title-wrapper">{this.props.title}</div>
-				<div className="typical-consumption-day-graph-wrapper">
+			<div id="weekly-production" className="graph-indicator">
+				<div id="weekly-production-graph-wrapper" className="graph-wrapper">
 					<CanvasJSChart options={chartOptions} />
 				</div>
-				<div className="typical-c-day-legend-wrapper">
-					<div className="typical-c-day-urbanZone-legend-wrapper">
-						<div className="typical-c-day-urbanZone-color" />
-						<p className="typical-c-day-urbanZone-text">
+				<div id="weekly-production-legend" className="graph-legend">
+					<div id="weekly-production-legend-urban-zone" className="graph-legend-item">
+						<div id="weekly-production-legend-urban-zone-color" className="graph-legend-item-color" />
+						<p className="graph-legend-item-text">
 							Production solaire de la zone urbaine
 						</p>
 					</div>
-					<div className="typical-c-day-district-legend-wrapper">
-						<div className="typical-c-day-district-color" />
-						<p className="typical-c-day-district-text">
+					<div id="weekly-production-legend-district" className="graph-legend-item">
+						<div id="weekly-production-legend-district-color" className="graph-legend-item-color" />
+						<p className="graph-legend-item-text">
 							Production solaire du quartier
 						</p>
 					</div>

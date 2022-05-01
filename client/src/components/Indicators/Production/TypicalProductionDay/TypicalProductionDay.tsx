@@ -16,7 +16,6 @@ interface Props {
 	t1: number;
 	t2: number;
 	urbanZone: string;
-	title: string;
 	setHighlightedZone: (val: string | null) => void;
 }
 

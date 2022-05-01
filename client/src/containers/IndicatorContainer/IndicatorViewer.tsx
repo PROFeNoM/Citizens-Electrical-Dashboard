@@ -42,7 +42,6 @@ export default class IndicatorViewer extends React.Component<Props, {}> {
                         t2={this.props.t2.getTime()}
                         urbanZone={this.props.zoneName}
                         buildingType={this.props.buildingType}
-                        title={'Journée type de consommation'}
                         setHighlightedZone={this.props.setHighlightedZone}
                     />
                 );
@@ -52,7 +51,6 @@ export default class IndicatorViewer extends React.Component<Props, {}> {
                         t1={this.props.t1.getTime()}
                         t2={this.props.t2.getTime()}
                         urbanZone={this.props.zoneName}
-                        title={'Consommation totale'}
                         setHighlightedZone={this.props.setHighlightedZone}
                     />
                 );
@@ -63,7 +61,6 @@ export default class IndicatorViewer extends React.Component<Props, {}> {
                         t2={this.props.t2.getTime()}
                         urbanZone={this.props.zoneName}
                         buildingType={this.props.buildingType}
-                        title={'Evolution de la consommation'}
                         setHighlightedZone={this.props.setHighlightedZone}
                     />
                 );
@@ -73,7 +70,6 @@ export default class IndicatorViewer extends React.Component<Props, {}> {
                         t1={this.props.t1.getTime()}
                         t2={this.props.t2.getTime()}
                         urbanZone={this.props.zoneName}
-                        title={'Production locale'}
                     />
                 );
             case IndicatorType.TypicalProductionDay:
@@ -82,7 +78,6 @@ export default class IndicatorViewer extends React.Component<Props, {}> {
                         t1={this.props.t1.getTime()}
                         t2={this.props.t2.getTime()}
                         urbanZone={this.props.zoneName}
-                        title={'Journée type de production'}
                         setHighlightedZone={this.props.setHighlightedZone}
                     />
                 );
@@ -92,7 +87,6 @@ export default class IndicatorViewer extends React.Component<Props, {}> {
                         t1={this.props.t1.getTime()}
                         t2={this.props.t2.getTime()}
                         urbanZone={this.props.zoneName}
-                        title={'Production globale'}
                         setHighlightedZone={this.props.setHighlightedZone}
                     />
                 );
@@ -102,7 +96,6 @@ export default class IndicatorViewer extends React.Component<Props, {}> {
                         t1={this.props.t1.getTime()}
                         t2={this.props.t2.getTime()}
                         urbanZone={this.props.zoneName}
-                        title={'Production hebdomadaire'}
                         setHighlightedZone={this.props.setHighlightedZone}
                     />
                 );

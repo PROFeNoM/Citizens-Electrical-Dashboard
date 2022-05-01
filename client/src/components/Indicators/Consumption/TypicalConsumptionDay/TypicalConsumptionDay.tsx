@@ -21,7 +21,6 @@ interface Props {
 	t2: number;
 	urbanZone: string;
 	buildingType: ConsumerProfile;
-	title: string;
 	setHighlightedZone: (val: string | null) => void;
 }
 
