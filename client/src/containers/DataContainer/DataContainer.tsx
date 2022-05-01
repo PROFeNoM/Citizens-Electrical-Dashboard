@@ -40,7 +40,7 @@ export default class DataContainer extends React.Component<{}, State> {
                         t1={this.state.t1}
                         t2={this.state.t2}
                         indicator={this.state.indicator}
-                        highlightedZoneName={this.state.zoneName}
+                        highlightedZoneName={this.state.highlightedZoneName}
                     />
                 </div>
                 <div id="indicator-container-wrapper">

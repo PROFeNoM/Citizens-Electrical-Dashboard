@@ -8,11 +8,11 @@ export const zonesBorder: LineLayer = {
 	type: 'line',
 	source: 'urban-zones',
 	paint: {
-		'line-color': '#005eb8',
+		'line-color': '#0d47a1',
 		'line-width': [
 			'case',
 			['boolean', ['feature-state', 'hover'], false],
-			4,
+			7,
 			1,
 		],
 	},
@@ -38,11 +38,11 @@ export const consumptionBorder: LineLayer = {
 	type: 'line',
 	source: 'consumption',
 	paint: {
-		'line-color': '#005eb8',
+		'line-color': '#0d47a1',
 		'line-width': [
 			'case',
 			['boolean', ['feature-state', 'hover'], false],
-			4,
+			7,
 			1,
 		],
 	},
@@ -54,12 +54,6 @@ export const consumptionFill = (fillColor: FillColor) => ({
 	source: 'consumption',
 	paint: {
 		'fill-color': fillColor,
-		'fill-opacity': [
-			'case',
-			['boolean', ['feature-state', 'hover'], false],
-			1,
-			0.8,
-		],
 	},
 }) as FillLayer;
 
@@ -68,11 +62,11 @@ export const productionBorder: LineLayer = {
 	type: 'line',
 	source: 'production',
 	paint: {
-		'line-color': '#005eb8',
+		'line-color': '#fbc02d',
 		'line-width': [
 			'case',
 			['boolean', ['feature-state', 'hover'], false],
-			4,
+			7,
 			1,
 		],
 	},
@@ -84,12 +78,6 @@ export const productionFill = (fillColor: FillColor) => ({
 	source: 'production',
 	paint: {
 		'fill-color': fillColor,
-		'fill-opacity': [
-			'case',
-			['boolean', ['feature-state', 'hover'], false],
-			1,
-			0.8,
-		],
 	},
 }) as FillLayer;
 

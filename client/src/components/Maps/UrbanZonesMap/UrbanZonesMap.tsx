@@ -25,6 +25,7 @@ const colorPalette = {
 	yellow: ['#fff9c4', '#fff59d', '#fff176', '#ffee58', '#ffeb3b', '#fdd835', '#fbc02d', '#f9a825', '#f57f17']
 }
 
+const sources: { id: string; data: FeatureCollection }[] = [];
 const layers: { id: string; data: FillExtrusionLayer | FillLayer | LineLayer | CircleLayer }[] = [];
 
 interface Props extends BaseMapProps {
@@ -37,7 +38,7 @@ interface Props extends BaseMapProps {
 }
 
 interface State {
-	hoveredZone: string | number;
+	highlightedZone: string | number;
 }
 
 /**
@@ -53,11 +54,11 @@ export default class UrbanZonesMap extends React.Component<Props, State> {
 		super(props);
 
 		this.state = {
-			hoveredZone: null
+			highlightedZone: null
 		};
 
-		this.cancelZoneHover = this.cancelZoneHover.bind(this);
-		this.hoverZone = this.hoverZone.bind(this);
+		this.cancelZoneHighlighting = this.cancelZoneHighlighting.bind(this);
+		this.highlightZone = this.highlightZone.bind(this);
 		this.cursorStyle = this.cursorStyle.bind(this);
 		this.updateLayers = this.updateLayers.bind(this);
 	}
@@ -68,8 +69,6 @@ export default class UrbanZonesMap extends React.Component<Props, State> {
 
 	async componentDidMount() {
 		await this.mapRef.current.ensureMapLoading();
-
-		const sources: { id: string; data: FeatureCollection }[] = [];
 
 		// Add zones sources and layers
 		sources.push({ id: 'urban-zones', data: zonesGeoJSON });
@@ -128,13 +127,11 @@ export default class UrbanZonesMap extends React.Component<Props, State> {
 			this.map.addLayer(layer.data);
 		});
 
-		// .on('mouseenter', 'data', e => this.hoverZone(e.features[0].id))
-		// .on('mousemove', 'data', e => this.hoverZone(e.features[0].id))
-		// .on('mouseleave', 'data', () => this.cancelZoneHover());
+		// .on('mouseenter', 'data', e => this.highlightZone(e.features[0].id))
+		// .on('mousemove', 'data', e => this.highlightZone(e.features[0].id))
+		// .on('mouseleave', 'data', () => this.cancelZoneHighlighting());
 
 		this.updateLayers();
-
-		this.cancelZoneHover();
 
 		if (this.props.onZoneClick) {
 			// detect click on a zone
@@ -156,10 +153,10 @@ export default class UrbanZonesMap extends React.Component<Props, State> {
 
 		if (this.props.highlightedZoneName) {
 			const featureId = zonesGeoJSON.features.findIndex(f => f.properties.libelle === this.props.highlightedZoneName);
-			this.hoverZone(featureId);
+			this.highlightZone(featureId);
 		}
 		else {
-			this.cancelZoneHover();
+			this.cancelZoneHighlighting();
 		}
 
 		this.updateLayers();
@@ -167,52 +164,52 @@ export default class UrbanZonesMap extends React.Component<Props, State> {
 
 	/**
 	 * Highlight a zone by thickening its border.
-	 * TODO: hover also for consumption and production
 	 * 
-	 * @param id 
-	 * @returns 
+	 * @param id The id of the zone to highlight.
 	 */
-	private hoverZone(id: string | number) {
-		if (this.state.hoveredZone === id) {
+	private highlightZone(id: string | number) {
+		console.log('id:', id);
+		if (this.state.highlightedZone === id) {
 			return;
 		}
 
-		if (this.state.hoveredZone !== null) {
+		sources.forEach(source => {
 			this.map.setFeatureState(
-				{ source: 'urban-zones', id: this.state.hoveredZone },
+				{ source: source.id, id: this.state.highlightedZone },
 				{ hover: false }
 			);
-		}
-
-		this.map.setFeatureState(
-			{ source: 'urban-zones', id },
-			{ hover: true }
-		);
+			this.map.setFeatureState(
+				{ source: source.id, id: id },
+				{ hover: true }
+			);
+		});
 
 		this.setState((state) => ({
 			...state,
-			hoveredZone: id
+			highlightedZone: id
 		}));
 	}
 
-	private cancelZoneHover() {
-		if (this.state.hoveredZone === null) {
+	private cancelZoneHighlighting() {
+		if (this.state.highlightedZone === null) {
 			return;
 		}
 
-		this.map.setFeatureState(
-			{ source: 'urban-zones', id: this.state.hoveredZone },
-			{ hover: false }
-		);
+		sources.forEach(source => {
+			this.map.setFeatureState(
+				{ source: source.id, id: this.state.highlightedZone },
+				{ hover: false }
+			);
+		});
 
 		this.setState((state) => ({
 			...state,
-			hoveredZone: null,
+			highlightedZone: null,
 		}));
 	}
 
 	private cursorStyle() {
-		return this.state.hoveredZone !== null && this.props.onZoneClick !== undefined
+		return this.state.highlightedZone !== null && this.props.onZoneClick !== undefined
 			? 'pointer' : 'inherit';
 	}
 

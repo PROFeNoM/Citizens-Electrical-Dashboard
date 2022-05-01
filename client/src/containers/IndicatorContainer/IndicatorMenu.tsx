@@ -94,12 +94,12 @@ export default class IndicatorMenu extends React.Component<Props, State> {
     * Validate the indicator parameters and update the state.
     */
     validateRequest() {
-        this.props.setHighlightedZone(null);
-
         if (this.state.zoneName === null || this.state.zoneName === "Quartier de la Bastide") {
             this.props.setZoneName(null);
+            this.props.setHighlightedZone(null);
         } else {
             this.props.setZoneName(this.state.zoneName);
+            this.props.setHighlightedZone(this.state.zoneName);
         }
 
         this.props.setIndicator(getIndicatorFromType(this.state.indicatorType));
