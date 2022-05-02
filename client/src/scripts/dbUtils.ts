@@ -1,7 +1,7 @@
 import * as turf from '@turf/turf';
 
 import { buildingsGeoJSON, zonesGeoJSON, publicLightingGeoJSON, chargingStationsGeoJSON, ZoneFeatureProperties } from 'geodata';
-import { Feature, MultiPolygon, Point } from 'geojson';
+import { Feature, MultiPolygon } from 'geojson';
 import { ConsumerProfile } from './api';
 
 // Compute zones area in square meters
@@ -47,6 +47,7 @@ function polygonIsContained(containedFeature: Feature<MultiPolygon, any>, contai
 
 /**
  * Return the number of buildings in an urban zone
+ * 
  * @param zoneName Urban zone to search into
  */
 export function getZoneNbOfBuildings(zoneName: string): number {
@@ -55,6 +56,7 @@ export function getZoneNbOfBuildings(zoneName: string): number {
 
 /**
  * Return the area in square meters of the urban zone
+ * 
  * @param zoneName Urban zone for which the area should be computed
  */
 export function getZoneArea(zoneName: string): number {
@@ -72,6 +74,7 @@ export function getZoneChargingStationsData(zoneName: string) {
 
 /**
  * Return the features section of an urban zone
+ * 
  * @param zoneName urban zone for which the feature section shall be returned
  */
 function getZone(zoneName: string): Feature<MultiPolygon, ZoneFeatureProperties> {
@@ -84,6 +87,7 @@ export function getZonesNames(): string[] {
 
 /**
  * Return the number of sites in an urban zone
+ * 
  * @param zoneName Urban zone to search into
  * @param profile Building type searched, all if undefined
  */

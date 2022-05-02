@@ -44,7 +44,7 @@ export default class IndicatorContainer extends React.Component<Props, {}> {
                     <IndicatorViewer
                         indicator={this.props.indicator}
                         zoneName={this.props.zoneName}
-                        buildingType={this.props.buildingType}
+                        sector={this.props.buildingType}
                         t1={this.props.t1}
                         t2={this.props.t2}
                         setHighlightedZone={this.props.setHighlightedZone}

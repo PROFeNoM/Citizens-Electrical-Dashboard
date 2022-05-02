@@ -1,3 +1,5 @@
+import './UrbanZonesMap.css';
+
 import React from 'react';
 import { FillExtrusionLayer, FillLayer, LineLayer, CircleLayer } from 'react-map-gl';
 
@@ -29,8 +31,6 @@ const layers: { id: string; data: FillExtrusionLayer | FillLayer | LineLayer | C
 
 interface Props extends BaseMapProps {
 	indicator?: Indicator;
-	/** Triggered on a click on the map. If the click is performed outside a zone, featureId and zoneName are null. */
-	onZoneClick?: (featureId: string | number | null, zoneName: string | null) => void;
 	highlightedZoneName?: string;
 	t1: number;
 	t2: number;
@@ -45,7 +45,6 @@ interface State {
  * Urban zones map
  * 
  * Base map with a layer for the zones and a layer for the buildings.
- * // TODO: add a layer for the lighting points
  */
 export default class UrbanZonesMap extends React.Component<Props, State> {
 	private mapRef = React.createRef<BaseMap>();
@@ -113,19 +112,19 @@ export default class UrbanZonesMap extends React.Component<Props, State> {
 	}
 
 	private cursorStyle() {
-		return this.state.highlightedZone !== null && this.props.onZoneClick !== undefined
+		return this.state.highlightedZone !== null
 			? 'pointer' : 'inherit';
 	}
 
 	/**
 	 * Display or hide layers according to the current indicator.
-	 * TODO: show residential or lighting points layers if chosen
 	 */
 	private updateLayers() {
+		const { indicator, buildingType } = this.props;
 		const layersToShow: string[] = [];
 		layersToShow.push('3d-buildings');
 
-		switch (this.props.indicator.class) {
+		switch (indicator.class) {
 			case IndicatorClass.Consumption:
 				layersToShow.push('consumption-data', 'consumption-border');
 				break;
@@ -141,7 +140,7 @@ export default class UrbanZonesMap extends React.Component<Props, State> {
 				break;
 		}
 
-		switch (this.props.buildingType) {
+		switch (buildingType) {
 			case ConsumerProfile.RESIDENTIAL:
 				layersToShow.push('3d-residential-buildings');
 				break;
@@ -199,7 +198,7 @@ export default class UrbanZonesMap extends React.Component<Props, State> {
 	}
 
 	/**
-	 * @brief Add the map's sources and layers.
+	 * Add the map's sources and layers.
 	 * 
 	 * Fetch the consumption and production data for the zones,
 	 * add the source and the layers
@@ -265,29 +264,11 @@ export default class UrbanZonesMap extends React.Component<Props, State> {
 			this.map.addLayer(layer.data);
 		});
 
-		// .on('mouseenter', 'data', e => this.highlightZone(e.features[0].id))
-		// .on('mousemove', 'data', e => this.highlightZone(e.features[0].id))
-		// .on('mouseleave', 'data', () => this.cancelZoneHighlighting());
-
 		this.updateLayers();
-
-		if (this.props.onZoneClick) {
-			// detect click on a zone
-			this.map.on('click', 'data', e => {
-				e.preventDefault();
-				this.props.onZoneClick(e.features[0].id, e.features[0].properties.libelle);
-			});
-			// detect click outside a zone
-			this.map.on('click', e => {
-				if (!e.defaultPrevented) {
-					this.props.onZoneClick(null, null);
-				}
-			});
-		}
 	}
 
 	/**
-	 * @brief Highlight a zone if necessary and update the display of the layers.
+	 * Highlight a zone if necessary and update the display of the layers.
 	 */
 	async componentDidUpdate() {
 		await this.mapRef.current.ensureMapLoading();
@@ -304,7 +285,7 @@ export default class UrbanZonesMap extends React.Component<Props, State> {
 	}
 
 	/**
-	 * @brief Unload the map.
+	 * Unload the map.
 	 * 
 	 * Remove all layers and sources from the map, empty sources and layers arrays.
 	 */
@@ -327,13 +308,7 @@ export default class UrbanZonesMap extends React.Component<Props, State> {
 
 	render() {
 		return (
-			<div
-				id="urban-zones-map"
-				style={{
-					cursor: this.cursorStyle(),
-					height: '100%',
-				}}
-			>
+			<div id="urban-zones-map">
 				<BaseMap
 					ref={this.mapRef}
 					center={this.props.center}
