@@ -6,33 +6,28 @@ import { getZonesNames, getZoneArea, getZoneNbOfBuildings, getZoneNbOfCollection
 import { ConsumerProfile, getTotalConsumption, getTotalProduction } from 'scripts/api';
 import { wattsToMegawatts } from 'scripts/utils';
 
-interface Data {
-	area: number;
-	nbOfBuildings: number;
-	nbOfConsumers: number;
-	consumption?: number;
-	production?: number;
-}
-
 interface Props {
 	zoneName: string; // Name of the selected zone
-	setHighlightedZone: (val: string | null) => void;
-	t1: number;
-	t2: number;
+	sector: ConsumerProfile; // Selected sector
+	t1: number; // Start time
+	t2: number; // End time
 }
 
 interface State {
-	districtData: Data; // Data for the entire district
-	zonesData: { [name: string]: Data }; // Data for a specific zone
+	area: number; // Area of the selected zone
+	nbOfBuildings: number; // Number of buildings in the selected zone
+	nbOfConsumers: number; // Number of consumers in the selected zone for the given sector
+	consumption: number; // Total consumption of the selected zone for the given sector and time period
+	production: number; // Total production of the selected zone for the given time period
 }
 
 /**
- * Component that displays general informations about a zone.
+ * Textual indicator that displays general informations about a zone.
  * - The area of the zone (m²)
  * - The number of buildings in the zone
- * - The number of consumers in the zone
- * - The total consumption of the zone in the given time (MWh)
- * - The total production of the zone in the given time (MWh)
+ * - The number of consumptions points in the zone for the given sector
+ * - The consumption of the zone in the given time for the given sector (MWh)
+ * - The production of the zone in the given time (MWh)
  * - The ratio between the total consumption and the total production of the zone
  */
 export default class EnergyBalance extends React.Component<Props, State> {
@@ -40,74 +35,52 @@ export default class EnergyBalance extends React.Component<Props, State> {
 		super(props);
 
 		this.state = {
-			districtData: {
-				area: 0,
-				nbOfBuildings: 0,
-				nbOfConsumers: 0
-			},
-			zonesData: {}
+			area: null,
+			nbOfBuildings: null,
+			nbOfConsumers: null,
+			consumption: null,
+			production: null
 		};
-
-		for (const zoneName of getZonesNames()) {
-			this.state.zonesData[zoneName] = {
-				area: getZoneArea(zoneName),
-				nbOfBuildings: getZoneNbOfBuildings(zoneName),
-				nbOfConsumers: getZoneNbOfCollectionSites(zoneName, ConsumerProfile.RESIDENTIAL)
-					+ getZoneNbOfCollectionSites(zoneName, ConsumerProfile.PROFESSIONAL)
-					+ getZoneNbOfCollectionSites(zoneName, ConsumerProfile.TERTIARY)
-			};
-
-			this.state.districtData.area += this.state.zonesData[zoneName].area;
-			this.state.districtData.nbOfBuildings += this.state.zonesData[zoneName].nbOfBuildings;
-			this.state.districtData.nbOfConsumers += this.state.zonesData[zoneName].nbOfConsumers;
-		}
-	}
-
-	private get currentData(): Data {
-		return this.props.zoneName !== null
-			? this.state.zonesData[this.props.zoneName]
-			: this.state.districtData;
 	}
 
 	/**
 	 * Fetch the data for the current zone and update the state.
 	 */
 	async fetchData() {
-		const { t1, t2 } = this.props;
-		// Store data to set state only once and avoid multiple rendering
-		const districtData: Data = {
-			area: this.state.districtData.area,
-			nbOfBuildings: this.state.districtData.nbOfBuildings,
-			nbOfConsumers: this.state.districtData.nbOfConsumers,
-			consumption: 0,
-			production: 0
-		};
-		const zonesData: { [name: string]: Data } = {};
+		const { zoneName, sector, t1, t2 } = this.props;
 
-		await Promise.all(getZonesNames().map(async zoneName => {
-			const [zoneConsumption, zoneProduction] = await Promise.all([
-				getTotalConsumption(t1, t2, undefined, zoneName),
-				getTotalProduction(t1, t2, undefined, zoneName),
-			]);
+		const area = zoneName === null ?
+			getZonesNames().reduce((acc, zone) => acc + getZoneArea(zone), 0)
+			: getZoneArea(zoneName);
 
-			zonesData[zoneName] = {
-				area: this.state.zonesData[zoneName].area,
-				nbOfBuildings: this.state.zonesData[zoneName].nbOfBuildings,
-				nbOfConsumers: this.state.zonesData[zoneName].nbOfConsumers,
-				consumption: zoneConsumption,
-				production: zoneProduction
-			};
+		const nbOfBuildings = zoneName === null ?
+			getZonesNames().reduce((acc, zone) => acc + getZoneNbOfBuildings(zone), 0)
+			: getZoneNbOfBuildings(zoneName);
 
-			districtData.consumption += zoneConsumption;
-			districtData.production += zoneProduction;
-		}));
+		const nbOfConsumers = zoneName === null ?
+			getZonesNames().reduce((acc, zone) => acc + getZoneNbOfCollectionSites(zone, sector), 0)
+			: getZoneNbOfCollectionSites(zoneName, sector);
 
 		this.setState({
-			districtData,
-			zonesData
+			area,
+			nbOfBuildings,
+			nbOfConsumers
+		});
+
+		const [consumption, production] = await Promise.all([
+			getTotalConsumption(t1, t2, [sector], zoneName),
+			getTotalProduction(t1, t2, undefined, zoneName),
+		]);
+
+		this.setState({
+			consumption,
+			production
 		});
 	}
 
+	/**
+	 * Update the state initially when the component is mounted.
+	 */
 	async componentDidMount() {
 		try {
 			await this.fetchData();
@@ -117,26 +90,28 @@ export default class EnergyBalance extends React.Component<Props, State> {
 		}
 	}
 
+	/**
+	 * Update the state only if the props have changed.
+	 * 
+	 * @param prevProps Previous props
+	 */
 	async componentDidUpdate(prevProps: Props) {
-		if (prevProps.zoneName !== this.props.zoneName || prevProps.t1 !== this.props.t1 || prevProps.t2 !== this.props.t2) {
-			try {
-				await this.fetchData();
-			}
-			catch (e) {
-				console.error('Error while fetching data', e);
-			}
+		if (prevProps.zoneName === this.props.zoneName && prevProps.sector === this.props.sector && prevProps.t1 === this.props.t1 && prevProps.t2 === this.props.t2) {
+			return;
+		}
+
+		try {
+			await this.fetchData();
+		}
+		catch (e) {
+			console.error('Error while fetching data', e);
 		}
 	}
 
 	render() {
-		const { area, nbOfBuildings, nbOfConsumers, consumption, production } = this.currentData;
-		const formatter = new Intl.NumberFormat(
-			'fr-FR',
-			{
-				style: 'decimal',
-				maximumFractionDigits: 2
-			}
-		);
+		const { sector } = this.props;
+		const { area, nbOfBuildings, nbOfConsumers, consumption, production } = this.state;
+		const formatter = new Intl.NumberFormat('fr-FR', { style: 'decimal', maximumFractionDigits: 2 });
 		const consumptionMegaWatts = consumption !== undefined ?
 			formatter.format(wattsToMegawatts(consumption))
 			: undefined;
@@ -149,12 +124,31 @@ export default class EnergyBalance extends React.Component<Props, State> {
 				: formatter.format(production / consumption * 100)
 			: undefined;
 
+		let sectorText: string;
+		switch (sector) {
+			case ConsumerProfile.RESIDENTIAL:
+				sectorText = 'résidentiels';
+				break;
+			case ConsumerProfile.PROFESSIONAL:
+				sectorText = 'professionnels';
+				break;
+			case ConsumerProfile.TERTIARY:
+				sectorText = 'tertiaires';
+				break;
+			case ConsumerProfile.PUBLIC_LIGHTING:
+				sectorText = 'd\'éclairage publique';
+				break;
+			case ConsumerProfile.ALL:
+			default:
+				sectorText = 'au total';
+		}
+
 		return (
 			<div id="energy-balance" className="text-indicator">
 				<ul>
-					<li><span className="data">{Intl.NumberFormat('fr-FR', {style: 'decimal', maximumFractionDigits: 0}).format(area)}</span> m²</li>
-					<li><span className="data">{nbOfBuildings}</span> bâtiments</li>
-					<li><span className="data">{nbOfConsumers ?? '...'}</span> consommateurs</li>
+					<li><span className="data">{Intl.NumberFormat('fr-FR', { style: 'decimal', maximumFractionDigits: 0 }).format(area)}</span> m²</li>
+					<li><span className="data">{nbOfBuildings ?? '...'}</span> bâtiment{nbOfBuildings > 1 ? 's' : ''} au total</li>
+					<li><span className="data">{nbOfConsumers ?? '...'}</span> point{nbOfConsumers > 1 ? 's' : ''} de consommation {sectorText}</li>
 					<li><span className="data">{consumptionMegaWatts ?? '...'}</span> MWh d'électricité consommée</li>
 					<li><span className="data">{productionMegaWatts ?? '...'}</span> MWh d'électricité produite</li>
 					<li><span className="data">{ratio ?? '...'}</span> % de ratio production/consommation</li>

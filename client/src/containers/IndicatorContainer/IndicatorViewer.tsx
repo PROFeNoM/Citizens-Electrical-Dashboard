@@ -109,10 +109,10 @@ export default class IndicatorViewer extends React.Component<Props, {}> {
             default:
                 return (
                     <EnergyBalance
+                        zoneName={this.props.zoneName}
+                        sector={this.props.buildingType}
                         t1={this.props.t1.getTime()}
                         t2={this.props.t2.getTime()}
-                        zoneName={this.props.zoneName}
-                        setHighlightedZone={this.props.setHighlightedZone}
                     />
                 );
         }

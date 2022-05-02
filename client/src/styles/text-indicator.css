@@ -1,6 +1,5 @@
 .text-indicator {
-    margin: 0 20px;
     padding: 20px 30px;
     color: var(--color-text);
-    font-size: x-large;
+    font-size: 1.4rem;
 }

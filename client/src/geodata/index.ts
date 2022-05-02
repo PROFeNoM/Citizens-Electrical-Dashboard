@@ -2,7 +2,7 @@ import { FeatureCollection, MultiPolygon, Point, Feature } from 'geojson';
 
 export const buildingsGeoJSON = require('./buildings.json') as FeatureCollection<MultiPolygon, BuildingFeatureProperties>;
 export const zonesGeoJSON = require('./zones.json') as FeatureCollection<MultiPolygon, ZoneFeatureProperties>;
-export const bornesGeoJSON = require('./BornesVE_Bordeaux_Bastide.json') as FeatureCollection<Point, { [name: string]: any; }>
+export const chargingStationsGeoJSON = require('./BornesVE_Bordeaux_Bastide.json') as FeatureCollection<Point, { [name: string]: any; }>
 
 // Convert data to valid GeoJSON
 const publicLightingData = require('./public-lighting.json') as PublicLightingRecord[];

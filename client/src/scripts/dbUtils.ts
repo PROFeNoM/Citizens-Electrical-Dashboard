@@ -1,6 +1,6 @@
 import * as turf from '@turf/turf';
 
-import { buildingsGeoJSON, zonesGeoJSON, publicLightingGeoJSON, bornesGeoJSON, ZoneFeatureProperties } from 'geodata';
+import { buildingsGeoJSON, zonesGeoJSON, publicLightingGeoJSON, chargingStationsGeoJSON, ZoneFeatureProperties } from 'geodata';
 import { Feature, MultiPolygon, Point } from 'geojson';
 import { ConsumerProfile } from './api';
 
@@ -19,13 +19,13 @@ for (const zone of zonesGeoJSON.features) {
 // Compute number of stations and charging points in each zone
 const zonesStations: Record<string, { nbOfStations: number, nbOfChargingPoints: number }> = {};
 for (const zone of zonesGeoJSON.features) {
-	const stations = bornesGeoJSON.features.filter(station => pointIsContained(station, zone));
+	const stations = chargingStationsGeoJSON.features.filter(station => turf.booleanWithin(station, zone));
 	const nbOfStations = stations.length;
 	const nbOfChargingPoints = stations.reduce((acc, station) => acc + station.properties['Nb. de bornes total'], 0);
 	zonesStations[zone.properties.libelle] = {
 		nbOfStations,
 		nbOfChargingPoints
-	}
+	};
 }
 
 // FIXME client shouldn't have to compute that, client shouldn't have to compute anything
@@ -40,19 +40,6 @@ function polygonIsContained(containedFeature: Feature<MultiPolygon, any>, contai
 			)) {
 				return true;
 			}
-		}
-	}
-	return false;
-}
-
-/** Exactly like booleanPointInPolygon of @turf/turf, but it works with MultiPolygon and Point. */
-function pointIsContained(pointFeature: Feature<Point, any>, multiPolygonFeature: Feature<MultiPolygon, any>) {
-	// each "for" will loop only once if the given features are made of only one polygon each (which is most likely the case)
-	for (const polygonCoordinates of multiPolygonFeature.geometry.coordinates) {
-		const point = turf.point(pointFeature.geometry.coordinates);
-		const polygon = turf.polygon(polygonCoordinates);
-		if (turf.booleanPointInPolygon(point, polygon)) {
-			return true;
 		}
 	}
 	return false;
@@ -79,13 +66,13 @@ export function getZoneArea(zoneName: string): number {
  * 
  * @param zoneName Urban zone to search into
  */
- export function getZoneChargingStationsData(zoneName: string)  {
+export function getZoneChargingStationsData(zoneName: string) {
 	return zonesStations[zoneName];
 }
 
 /**
  * Return the features section of an urban zone
- * @param zoneName Urban Zone for which the feature section shall be returned
+ * @param zoneName urban zone for which the feature section shall be returned
  */
 function getZone(zoneName: string): Feature<MultiPolygon, ZoneFeatureProperties> {
 	return zonesGeoJSON.features.filter(data => data.properties.libelle === zoneName)[0];
@@ -113,6 +100,7 @@ export function getZoneNbOfCollectionSites(zoneName: string, profile?: ConsumerP
 			return zoneProperties.ENT;
 		case ConsumerProfile.PUBLIC_LIGHTING:
 			return publicLightingGeoJSON.features.filter(publicLighting => turf.booleanWithin(turf.point(publicLighting.geometry.coordinates), zone)).length;
+		case ConsumerProfile.ALL:
 		default:
 			return getZoneNbOfCollectionSites(zoneName, ConsumerProfile.RESIDENTIAL)
 				+ getZoneNbOfCollectionSites(zoneName, ConsumerProfile.PROFESSIONAL)
