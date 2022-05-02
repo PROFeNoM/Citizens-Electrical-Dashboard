@@ -152,7 +152,7 @@ export default class EnergyBalance extends React.Component<Props, State> {
 		return (
 			<div id="energy-balance" className="text-indicator">
 				<ul>
-					<li><span className="data">{Math.round(area)}</span> m²</li>
+					<li><span className="data">{Intl.NumberFormat('fr-FR', {style: 'decimal', maximumFractionDigits: 0}).format(area)}</span> m²</li>
 					<li><span className="data">{nbOfBuildings}</span> bâtiments</li>
 					<li><span className="data">{nbOfConsumers ?? '...'}</span> consommateurs</li>
 					<li><span className="data">{consumptionMegaWatts ?? '...'}</span> MWh d'électricité consommée</li>

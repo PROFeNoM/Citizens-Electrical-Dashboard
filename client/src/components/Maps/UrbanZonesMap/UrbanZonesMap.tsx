@@ -12,7 +12,7 @@ import {
 	lightingPoints,
 	bornesPoints,
 } from '../layers';
-import { zonesGeoJSON, buildingsGeoJSON, lightingGeoJSON, bornesGeoJSON } from 'geodata';
+import { zonesGeoJSON, buildingsGeoJSON, publicLightingGeoJSON, bornesGeoJSON } from 'geodata';
 import { ConsumerProfile, ProducerProfile, getTotalConsumption, getTotalProduction } from 'scripts/api';
 import { changeRange } from 'scripts/utils';
 
@@ -145,6 +145,9 @@ export default class UrbanZonesMap extends React.Component<Props, State> {
 			case ConsumerProfile.RESIDENTIAL:
 				layersToShow.push('3d-residential-buildings');
 				break;
+			case ConsumerProfile.PUBLIC_LIGHTING:
+				layersToShow.push('lighting-points');
+				break;
 			default:
 				break;
 		}
@@ -245,8 +248,8 @@ export default class UrbanZonesMap extends React.Component<Props, State> {
 		sources.push({ id: 'district-buildings', data: buildingsGeoJSON });
 		layers.push({ id: '3d-buildings', data: allBuildings3D });
 		layers.push({ id: '3d-residential-buildings', data: residentialBuildings3D });
-		// sources.push({ id: 'lighting-data', data: lightingGeoJSON });
-		// layers.push({ id: 'lighting-points', data: lightingPoints });
+		sources.push({ id: 'public-lighting', data: publicLightingGeoJSON });
+		layers.push({ id: 'lighting-points', data: lightingPoints });
 		sources.push({ id: 'charging-stations', data: bornesGeoJSON });
 		layers.push({ id: 'charging-stations-points', data: bornesPoints });
 

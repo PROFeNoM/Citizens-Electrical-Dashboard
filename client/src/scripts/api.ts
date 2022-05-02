@@ -80,7 +80,6 @@ export async function getHourlyMeanProduction(t1: number, t2: number, profiles?:
 export async function getMaxTimestamp(dataType: DataType): Promise<Date> {
 	const entity = dataType === DataType.CONSUMPTION ? 'consumption' : 'production';
 	const result = await apiCall(`${entity}/max-timestamp`) as { maxtimestamp: Date };
-	console.log(result);
 	return result.maxtimestamp;
 }
 

@@ -84,10 +84,10 @@ export const productionFill = (fillColor: FillColor) => ({
 export const lightingPoints: CircleLayer = {
 	'id': 'lighting-points',
 	'type': 'circle',
-	'source': 'Lighting-source',
+	'source': 'public-lighting',
 	'paint': {
-		'circle-radius': 12,
-		'circle-color': '#e06666',
+		'circle-radius': 3,
+		'circle-color': '#93c90e',
 	},
 	'layout': {
 		'visibility': 'none'

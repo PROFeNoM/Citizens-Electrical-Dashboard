@@ -112,7 +112,7 @@ export function getZoneNbOfCollectionSites(zoneName: string, profile?: ConsumerP
 		case ConsumerProfile.TERTIARY:
 			return zoneProperties.ENT;
 		case ConsumerProfile.PUBLIC_LIGHTING:
-			return publicLightingGeoJSON.filter(pl => turf.booleanWithin(turf.point(pl.geometry.coordinates), zone)).length;
+			return publicLightingGeoJSON.features.filter(publicLighting => turf.booleanWithin(turf.point(publicLighting.geometry.coordinates), zone)).length;
 		default:
 			return getZoneNbOfCollectionSites(zoneName, ConsumerProfile.RESIDENTIAL)
 				+ getZoneNbOfCollectionSites(zoneName, ConsumerProfile.PROFESSIONAL)
