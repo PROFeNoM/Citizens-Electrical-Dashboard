@@ -67,101 +67,6 @@ export default class UrbanZonesMap extends React.Component<Props, State> {
 		return this.mapRef.current.map;
 	}
 
-	async componentDidMount() {
-		await this.mapRef.current.ensureMapLoading();
-
-		// Add zones sources and layers
-		sources.push({ id: 'urban-zones', data: zonesGeoJSON });
-		layers.push({ id: 'urban-zones-data', data: zonesFill(zonesFillColor) });
-		layers.push({ id: 'urban-zones-border', data: zonesBorder });
-
-
-		// Add energy sources
-		try {
-			// Get zones consumption and production data
-			const [consumptionData, productionData] = await Promise.all([
-				this.getConsumptionData(zonesGeoJSON),
-				this.getProductionData(zonesGeoJSON)
-			]);
-
-			sources.push({ id: 'consumption', data: consumptionData });
-			layers.push({
-				id: 'consumption-data',
-				data: consumptionFill({
-					property: 'choroplethValue',
-					stops: colorPalette.blue.map((color, idx) => [idx, color]),
-				})
-			});
-			layers.push({ id: 'consumption-border', data: consumptionBorder });
-
-			sources.push({ id: 'production', data: productionData });
-			layers.push({
-				id: 'production-data',
-				data: productionFill({
-					property: 'choroplethValue',
-					stops: colorPalette.yellow.map((color, idx) => [idx, color]),
-				})
-			});
-			layers.push({ id: 'production-border', data: productionBorder });
-		} catch (e) {
-			console.error('Cannot load energy data', e);
-		}
-
-		// Add in last layers that should be on top (buildings and points)
-		sources.push({ id: 'district-buildings', data: buildingsGeoJSON });
-		layers.push({ id: '3d-buildings', data: allBuildings3D });
-		// sources.push({ id: 'lighting-data', data: lightingGeoJSON });
-		// layers.push({ id: 'lighting-points', data: lightingPoints });
-		sources.push({ id: 'charging-stations', data: bornesGeoJSON });
-		layers.push({ id: 'charging-stations-points', data: bornesPoints });
-
-		sources.forEach(source => {
-			this.map.addSource(source.id, {
-				type: 'geojson',
-				data: source.data,
-				generateId: true
-			});
-		});
-
-		layers.forEach(layer => {
-			this.map.addLayer(layer.data);
-		});
-
-		// .on('mouseenter', 'data', e => this.highlightZone(e.features[0].id))
-		// .on('mousemove', 'data', e => this.highlightZone(e.features[0].id))
-		// .on('mouseleave', 'data', () => this.cancelZoneHighlighting());
-
-		this.updateLayers();
-
-		if (this.props.onZoneClick) {
-			// detect click on a zone
-			this.map.on('click', 'data', e => {
-				e.preventDefault();
-				this.props.onZoneClick(e.features[0].id, e.features[0].properties.libelle);
-			});
-			// detect click outside a zone
-			this.map.on('click', e => {
-				if (!e.defaultPrevented) {
-					this.props.onZoneClick(null, null);
-				}
-			});
-		}
-	}
-
-	async componentDidUpdate() {
-		await this.mapRef.current.ensureMapLoading();
-
-		if (this.props.highlightedZoneName) {
-			const featureId = zonesGeoJSON.features.findIndex(f => f.properties.libelle === this.props.highlightedZoneName);
-			this.highlightZone(featureId);
-		}
-		else {
-			this.cancelZoneHighlighting();
-		}
-
-		this.updateLayers();
-	}
-
 	/**
 	 * Highlight a zone by thickening its border.
 	 * 
@@ -278,6 +183,132 @@ export default class UrbanZonesMap extends React.Component<Props, State> {
 				return { ...f, properties };
 			}),
 		};
+	}
+
+	/**
+	 * @brief Add the map's sources and layers.
+	 * 
+	 * Fetch the consumption and production data for the zones,
+	 * add the source and the layers
+	 * and display the layers based on the selected parameters.
+	 */
+	async componentDidMount() {
+		await this.mapRef.current.ensureMapLoading();
+
+		// Add zones sources and layers
+		sources.push({ id: 'urban-zones', data: zonesGeoJSON });
+		layers.push({ id: 'urban-zones-data', data: zonesFill(zonesFillColor) });
+		layers.push({ id: 'urban-zones-border', data: zonesBorder });
+
+		// Add energy sources
+		try {
+			// Get zones consumption and production data
+			const [consumptionData, productionData] = await Promise.all([
+				this.getConsumptionData(zonesGeoJSON),
+				this.getProductionData(zonesGeoJSON)
+			]);
+
+			sources.push({ id: 'consumption', data: consumptionData });
+			layers.push({
+				id: 'consumption-data',
+				data: consumptionFill({
+					property: 'choroplethValue',
+					stops: colorPalette.blue.map((color, idx) => [idx, color]),
+				})
+			});
+			layers.push({ id: 'consumption-border', data: consumptionBorder });
+
+			sources.push({ id: 'production', data: productionData });
+			layers.push({
+				id: 'production-data',
+				data: productionFill({
+					property: 'choroplethValue',
+					stops: colorPalette.yellow.map((color, idx) => [idx, color]),
+				})
+			});
+			layers.push({ id: 'production-border', data: productionBorder });
+		} catch (e) {
+			console.error('Cannot load energy data', e);
+		}
+
+		// Add in last layers that should be on top (buildings and points)
+		sources.push({ id: 'district-buildings', data: buildingsGeoJSON });
+		layers.push({ id: '3d-buildings', data: allBuildings3D });
+		// sources.push({ id: 'lighting-data', data: lightingGeoJSON });
+		// layers.push({ id: 'lighting-points', data: lightingPoints });
+		sources.push({ id: 'charging-stations', data: bornesGeoJSON });
+		layers.push({ id: 'charging-stations-points', data: bornesPoints });
+
+		sources.forEach(source => {
+			this.map.addSource(source.id, {
+				type: 'geojson',
+				data: source.data,
+				generateId: true
+			});
+		});
+
+		layers.forEach(layer => {
+			this.map.addLayer(layer.data);
+		});
+
+		// .on('mouseenter', 'data', e => this.highlightZone(e.features[0].id))
+		// .on('mousemove', 'data', e => this.highlightZone(e.features[0].id))
+		// .on('mouseleave', 'data', () => this.cancelZoneHighlighting());
+
+		this.updateLayers();
+
+		if (this.props.onZoneClick) {
+			// detect click on a zone
+			this.map.on('click', 'data', e => {
+				e.preventDefault();
+				this.props.onZoneClick(e.features[0].id, e.features[0].properties.libelle);
+			});
+			// detect click outside a zone
+			this.map.on('click', e => {
+				if (!e.defaultPrevented) {
+					this.props.onZoneClick(null, null);
+				}
+			});
+		}
+	}
+
+	/**
+	 * @brief Highlight a zone if necessary and update the display of the layers.
+	 */
+	async componentDidUpdate() {
+		await this.mapRef.current.ensureMapLoading();
+
+		if (this.props.highlightedZoneName) {
+			const featureId = zonesGeoJSON.features.findIndex(f => f.properties.libelle === this.props.highlightedZoneName);
+			this.highlightZone(featureId);
+		}
+		else {
+			this.cancelZoneHighlighting();
+		}
+
+		this.updateLayers();
+	}
+
+	/**
+	 * @brief Unload the map.
+	 * 
+	 * Remove all layers and sources from the map, empty sources and layers arrays.
+	 */
+	componentWillUnmount(): void {
+		layers.forEach(layer => {
+			if (this.map.getLayer(layer.id)) {
+				this.map.removeLayer(layer.id);
+			}
+		});
+
+		sources.forEach(source => {
+			if (this.map.getSource(source.id)) {
+				this.map.removeSource(source.id);
+			}
+		});
+
+		layers.length = 0;
+		sources.length = 0;
 	}
 
 	render() {
