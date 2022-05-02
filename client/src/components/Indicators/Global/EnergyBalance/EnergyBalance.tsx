@@ -1,12 +1,10 @@
 import './EnergyBalance.css';
 
 import React from 'react';
-import copy from 'fast-copy';
 
 import { getZonesNames, getZoneArea, getZoneNbOfBuildings, getZoneNbOfCollectionSites } from 'scripts/dbUtils';
 import { ConsumerProfile, getTotalConsumption, getTotalProduction } from 'scripts/api';
-
-const formatter = new Intl.NumberFormat();
+import { wattsToMegawatts } from 'scripts/utils';
 
 interface Data {
 	area: number;
@@ -19,6 +17,8 @@ interface Data {
 interface Props {
 	zoneName: string; // Name of the selected zone
 	setHighlightedZone: (val: string | null) => void;
+	t1: number;
+	t2: number;
 }
 
 interface State {
@@ -63,15 +63,26 @@ export default class EnergyBalance extends React.Component<Props, State> {
 		}
 	}
 
+	private get currentData(): Data {
+		return this.props.zoneName !== null
+			? this.state.zonesData[this.props.zoneName]
+			: this.state.districtData;
+	}
+
 	/**
 	 * Fetch the data for the current zone and update the state.
 	 */
 	async fetchData() {
-		const t1 = new Date('2021-12-01T00:30:00').getTime();
-		const t2 = new Date('2021-12-31T23:30:00').getTime();
-
-		let districtConsumption = 0;
-		let districtProduction = 0;
+		const { t1, t2 } = this.props;
+		// Store data to set state only once and avoid multiple rendering
+		const districtData: Data = {
+			area: this.state.districtData.area,
+			nbOfBuildings: this.state.districtData.nbOfBuildings,
+			nbOfConsumers: this.state.districtData.nbOfConsumers,
+			consumption: 0,
+			production: 0
+		};
+		const zonesData: { [name: string]: Data } = {};
 
 		await Promise.all(getZonesNames().map(async zoneName => {
 			const [zoneConsumption, zoneProduction] = await Promise.all([
@@ -79,59 +90,76 @@ export default class EnergyBalance extends React.Component<Props, State> {
 				getTotalProduction(t1, t2, undefined, zoneName),
 			]);
 
-			this.setState(oldState => {
-				const newState = copy(oldState);
-				newState.zonesData[zoneName].consumption = zoneConsumption;
-				newState.zonesData[zoneName].production = zoneProduction;
-				return newState
-			});
+			zonesData[zoneName] = {
+				area: this.state.zonesData[zoneName].area,
+				nbOfBuildings: this.state.zonesData[zoneName].nbOfBuildings,
+				nbOfConsumers: this.state.zonesData[zoneName].nbOfConsumers,
+				consumption: zoneConsumption,
+				production: zoneProduction
+			};
 
-			districtConsumption += zoneConsumption;
-			districtProduction += zoneProduction;
+			districtData.consumption += zoneConsumption;
+			districtData.production += zoneProduction;
 		}));
 
-		this.setState(oldState => {
-			const newState = copy(oldState);
-			newState.districtData.consumption = districtConsumption;
-			newState.districtData.production = districtProduction;
-			return newState;
-		})
+		this.setState({
+			districtData,
+			zonesData
+		});
 	}
 
 	async componentDidMount() {
-		await this.fetchData();
+		try {
+			await this.fetchData();
+		}
+		catch (e) {
+			console.error('Error while fetching data', e);
+		}
 	}
 
-	async componentDidUpdate() {
-		// await this.fetchData();
-	}
-
-	private get currentData(): Data {
-		return this.props.zoneName !== null
-			? this.state.zonesData[this.props.zoneName]
-			: this.state.districtData;
+	async componentDidUpdate(prevProps: Props) {
+		if (prevProps.zoneName !== this.props.zoneName || prevProps.t1 !== this.props.t1 || prevProps.t2 !== this.props.t2) {
+			try {
+				await this.fetchData();
+			}
+			catch (e) {
+				console.error('Error while fetching data', e);
+			}
+		}
 	}
 
 	render() {
-		const data = this.currentData;
-		const nbBuildings = formatter.format(data.nbOfBuildings);
-		const area = formatter.format(Math.round(data.area));
-		const nbOfConsumers = formatter.format(data.nbOfConsumers);
-		const consumption = data.consumption !== undefined ? formatter.format(Math.round(data.consumption / 1_000_000)) : '...';
-		const production = data.production !== undefined ? formatter.format(Math.round(data.production / 1_000_000)) : '...';
-		const ratio = data.consumption !== undefined && data.production !== undefined ? formatter.format(Math.round(data.production / data.consumption * 100)) : '...';
+		const { area, nbOfBuildings, nbOfConsumers, consumption, production } = this.currentData;
+		const formatter = new Intl.NumberFormat(
+			'fr-FR',
+			{
+				style: 'decimal',
+				maximumFractionDigits: 2
+			}
+		);
+		const consumptionMegaWatts = consumption !== undefined ?
+			formatter.format(wattsToMegawatts(consumption))
+			: undefined;
+		const productionMegaWatts = production !== undefined ?
+			formatter.format(wattsToMegawatts(production))
+			: undefined;
+		const ratio = consumption !== undefined && production !== undefined ?
+			consumption === 0 ?
+				0
+				: formatter.format(production / consumption * 100)
+			: undefined;
 
 		return (
-				<div id="energy-balance" className="text-indicator">
-					<ul>
-					<li><span className="data">{area}</span> m²</li>
-						<li><span className="data">{nbBuildings}</span> bâtiments</li>
-						<li><span className="data">{nbOfConsumers}</span> consommateurs</li>
-						<li><span className="data">{consumption}</span> MWh/mois d'électricité consommée</li>
-						<li><span className="data">{production}</span> MWh/mois d'électricité produite</li>
-						<li><span className="data">{ratio}</span> % de ratio production/consommation</li>
-					</ul>
-				</div>
+			<div id="energy-balance" className="text-indicator">
+				<ul>
+					<li><span className="data">{Math.round(area)}</span> m²</li>
+					<li><span className="data">{nbOfBuildings}</span> bâtiments</li>
+					<li><span className="data">{nbOfConsumers ?? '...'}</span> consommateurs</li>
+					<li><span className="data">{consumptionMegaWatts ?? '...'}</span> MWh d'électricité consommée</li>
+					<li><span className="data">{productionMegaWatts ?? '...'}</span> MWh d'électricité produite</li>
+					<li><span className="data">{ratio ?? '...'}</span> % de ratio production/consommation</li>
+				</ul>
+			</div>
 		);
 	}
 }

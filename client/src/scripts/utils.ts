@@ -10,9 +10,9 @@ export function changeRange(n: number, minOld: number, maxOld: number, minNew: n
 }
 
 export function wattsToKilowatts(watts: number) {
-	return Math.round(watts / 1000);
+	return watts / 1000;
 }
 
-export function wattsToMegaWatts(watts: number) {
-	return Math.round(watts / 1000000);
+export function wattsToMegawatts(watts: number) {
+	return watts / 1_000_000;
 }

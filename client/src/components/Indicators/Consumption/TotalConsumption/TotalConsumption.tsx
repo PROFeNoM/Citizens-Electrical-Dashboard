@@ -27,21 +27,21 @@ export default class TotalConsumption extends React.Component<Props, State> {
 
 	private async getDistrictConsumptionData(): Promise<{ label: string, y: number }[]> {
 		return Promise.all([
-			{ label: "Total", y: wattsToKilowatts(await getTotalConsumption(this.props.t1, this.props.t2)) },
-			{ label: "Residentiels", y: wattsToKilowatts(await getTotalConsumption(this.props.t1, this.props.t2, [ConsumerProfile.RESIDENTIAL])) },
-			{ label: "Tertiaires", y: wattsToKilowatts(await getTotalConsumption(this.props.t1, this.props.t2, [ConsumerProfile.TERTIARY])) },
-			{ label: "Professionnels", y: wattsToKilowatts(await getTotalConsumption(this.props.t1, this.props.t2, [ConsumerProfile.PROFESSIONAL])) },
-			{ label: "Eclairage", y: wattsToKilowatts(await getTotalConsumption(this.props.t1, this.props.t2, [ConsumerProfile.PUBLIC_LIGHTING])) },
+			{ label: "Total", y: Math.round(wattsToKilowatts(await getTotalConsumption(this.props.t1, this.props.t2))) },
+			{ label: "Residentiels", y: Math.round(wattsToKilowatts(await getTotalConsumption(this.props.t1, this.props.t2, [ConsumerProfile.RESIDENTIAL]))) },
+			{ label: "Tertiaires", y: Math.round(wattsToKilowatts(await getTotalConsumption(this.props.t1, this.props.t2, [ConsumerProfile.TERTIARY]))) },
+			{ label: "Professionnels", y: Math.round(wattsToKilowatts(await getTotalConsumption(this.props.t1, this.props.t2, [ConsumerProfile.PROFESSIONAL]))) },
+			{ label: "Eclairage", y: Math.round(wattsToKilowatts(await getTotalConsumption(this.props.t1, this.props.t2, [ConsumerProfile.PUBLIC_LIGHTING]))) },
 		]);
 	}
 
 	private async getUrbanZoneConsumptionData(): Promise<{ label: string, y: number }[]> {
 		return Promise.all([
-			{ label: "Total", y: wattsToKilowatts(await getTotalConsumption(this.props.t1, this.props.t2, undefined, this.props.urbanZone)) },
-			{ label: "Residentiels", y: wattsToKilowatts(await getTotalConsumption(this.props.t1, this.props.t2, [ConsumerProfile.RESIDENTIAL], this.props.urbanZone)) },
-			{ label: "Tertiaires", y: wattsToKilowatts(await getTotalConsumption(this.props.t1, this.props.t2, [ConsumerProfile.TERTIARY], this.props.urbanZone)) },
-			{ label: "Professionnels", y: wattsToKilowatts(await getTotalConsumption(this.props.t1, this.props.t2, [ConsumerProfile.PROFESSIONAL], this.props.urbanZone)) },
-			{ label: "Eclairage", y: wattsToKilowatts(await getTotalConsumption(this.props.t1, this.props.t2, [ConsumerProfile.PUBLIC_LIGHTING], this.props.urbanZone)) },
+			{ label: "Total", y: Math.round(wattsToKilowatts(await getTotalConsumption(this.props.t1, this.props.t2, undefined, this.props.urbanZone))) },
+			{ label: "Residentiels", y: Math.round(wattsToKilowatts(await getTotalConsumption(this.props.t1, this.props.t2, [ConsumerProfile.RESIDENTIAL], this.props.urbanZone))) },
+			{ label: "Tertiaires", y: Math.round(wattsToKilowatts(await getTotalConsumption(this.props.t1, this.props.t2, [ConsumerProfile.TERTIARY], this.props.urbanZone))) },
+			{ label: "Professionnels", y: Math.round(wattsToKilowatts(await getTotalConsumption(this.props.t1, this.props.t2, [ConsumerProfile.PROFESSIONAL], this.props.urbanZone))) },
+			{ label: "Eclairage", y: Math.round(wattsToKilowatts(await getTotalConsumption(this.props.t1, this.props.t2, [ConsumerProfile.PUBLIC_LIGHTING], this.props.urbanZone))) },
 		]);
 	}
 
