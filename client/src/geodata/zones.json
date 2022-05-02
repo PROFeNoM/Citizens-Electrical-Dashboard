@@ -58,7 +58,7 @@
             "type": "Feature",
             "properties": {
                 "gid": 8.0,
-                "libelle": "sieges sociaux",
+                "libelle": "Sièges sociaux",
                 "RES1": 0,
                 "RES2": 0,
                 "PRO1": 0,
@@ -75,7 +75,7 @@
             "type": "Feature",
             "properties": {
                 "gid": 7.0,
-                "libelle": "residence autre quai",
+                "libelle": "Résidence autre quai",
                 "RES1": 0,
                 "RES2": 300,
                 "PRO1": 0,
@@ -92,7 +92,7 @@
             "type": "Feature",
             "properties": {
                 "gid": 6.0,
-                "libelle": "batiments publics",
+                "libelle": "Bâtiments publics",
                 "RES1": 0,
                 "RES2": 0,
                 "PRO1": 3,
@@ -109,7 +109,7 @@
             "type": "Feature",
             "properties": {
                 "gid": 5.0,
-                "libelle": "batiments professionnels et residentiels",
+                "libelle": "Bâtiments professionnels et résidentiels",
                 "RES1": 0,
                 "RES2": 300,
                 "PRO1": 0,
@@ -126,7 +126,7 @@
             "type": "Feature",
             "properties": {
                 "gid": 4.0,
-                "libelle": "mixte urbain",
+                "libelle": "Mixte urbain",
                 "RES1": 0,
                 "RES2": 600,
                 "PRO1": 0,
@@ -143,7 +143,7 @@
             "type": "Feature",
             "properties": {
                 "gid": 3.0,
-                "libelle": "quartier historique sud avenue thiers",
+                "libelle": "Quartier historique Sud Avenue Thiers",
                 "RES1": 1200,
                 "RES2": 800,
                 "PRO1": 50,
