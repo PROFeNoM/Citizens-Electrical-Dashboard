@@ -2,7 +2,8 @@ import './LocalProductionInfo.css';
 
 import React from 'react';
 
-import { getTotalProduction, ProducerProfile } from 'scripts/api';
+import { ProducerProfile } from 'constants/profiles';
+import { getTotalProduction } from 'scripts/api';
 import { zonesGeoJSON } from 'geodata';
 
 interface Props {

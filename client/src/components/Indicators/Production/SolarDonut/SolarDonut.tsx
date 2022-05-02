@@ -1,10 +1,11 @@
 import './SolarDonut.css';
 
 import React from 'react';
-
-import { getTotalProduction, ProducerProfile } from 'scripts/api';
-import { zonesGeoJSON } from 'geodata';
 import { CanvasJSChart } from 'canvasjs-react-charts';
+
+import { ProducerProfile } from 'constants/profiles';
+import { getTotalProduction } from 'scripts/api';
+import { zonesGeoJSON } from 'geodata';
 
 interface Props {
 	t1: number;
@@ -87,7 +88,7 @@ export default class SolarDonut extends React.Component<Props, State> {
 				dataPoints: this.state.productionDistribution,
 				click: this.onClick
 			}]
-		}
+		};
 
 		return (
 			<div id="solar-production" className="graph-indicator">

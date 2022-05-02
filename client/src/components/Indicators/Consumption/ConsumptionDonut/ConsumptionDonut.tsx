@@ -3,7 +3,8 @@ import './ConsumptionDonut.css';
 import React from 'react';
 import { CanvasJSChart } from 'canvasjs-react-charts';
 
-import { getTotalConsumption, ConsumerProfile } from 'scripts/api';
+import { ConsumerProfile } from 'constants/profiles';
+import { getTotalConsumption } from 'scripts/api';
 import { zonesGeoJSON } from 'geodata';
 
 interface Props {

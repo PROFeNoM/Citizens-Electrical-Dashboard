@@ -2,10 +2,10 @@ import './IndicatorContainer.css';
 
 import React from 'react';
 
+import { Indicator } from 'constants/indicator';
+import { ConsumerProfile } from 'constants/profiles';
 import IndicatorMenu from './IndicatorMenu';
 import IndicatorViewer from './IndicatorViewer';
-import { Indicator } from 'constants/indicator';
-import { ConsumerProfile } from 'scripts/api';
 
 interface Props {
     indicator: Indicator;

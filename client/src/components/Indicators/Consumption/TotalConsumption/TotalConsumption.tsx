@@ -1,7 +1,10 @@
 import './TotalConsumption.css';
+
 import React from 'react';
 import { CanvasJSChart } from 'canvasjs-react-charts';
-import { ConsumerProfile, getTotalConsumption } from 'scripts/api';
+
+import { ConsumerProfile } from 'constants/profiles';
+import { getTotalConsumption } from 'scripts/api';
 import { wattsToKilowatts } from 'scripts/utils';
 
 interface Props {

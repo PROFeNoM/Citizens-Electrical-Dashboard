@@ -3,7 +3,7 @@ import './IndicatorViewer.css';
 import React from 'react';
 
 import { Indicator, IndicatorType } from 'constants/indicator';
-import { ConsumerProfile } from 'scripts/api';
+import { ConsumerProfile } from 'constants/profiles';
 import {
     EnergyBalance,
     TypicalConsumptionDay, ConsumptionDonut, TotalConsumption,

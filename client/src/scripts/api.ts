@@ -1,25 +1,4 @@
-export enum ConsumerProfile {
-	ALL = 'ALL',
-	RESIDENTIAL = 'RESIDENTIAL',
-	PROFESSIONAL = 'PROFESSIONAL',
-	TERTIARY = 'TERTIARY',
-	PUBLIC_LIGHTING = 'PUBLIC_LIGHTING'
-}
-
-export enum ProducerProfile {
-	BIOENERGY = 'BIOENERGY',
-	EOLIAN = 'EOLIAN',
-	HYDRAULIC = 'HYDRAULIC',
-	NON_RENEWABLE_THERMAL = 'NON_RENEWABLE_THERMAL',
-	OTHER = 'OTHER',
-	SOLAR = 'SOLAR',
-	TOTAL = 'TOTAL',
-}
-
-export enum DataType {
-	CONSUMPTION = 'CONSUMPTION',
-	PRODUCTION = 'PRODUCTION',
-}
+import { ConsumerProfile, ProducerProfile, DataType } from 'constants/profiles';
 
 /**
  * Get the total consumption in Wh on the given time period.

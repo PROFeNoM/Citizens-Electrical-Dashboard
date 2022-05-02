@@ -3,7 +3,8 @@ import './WeeklyProduction.css';
 import React from 'react';
 import { CanvasJSChart } from 'canvasjs-react-charts';
 
-import { DataType, getMaxTimestamp, getTotalProduction, ProducerProfile } from 'scripts/api';
+import { ProducerProfile, DataType } from 'constants/profiles';
+import { getMaxTimestamp, getTotalProduction } from 'scripts/api';
 
 interface Props {
 	t1: number;

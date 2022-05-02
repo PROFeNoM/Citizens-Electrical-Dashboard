@@ -3,11 +3,8 @@ import './TypicalConsumptionDay.css';
 import React from 'react';
 import { CanvasJSChart } from 'canvasjs-react-charts';
 
-import {
-	ConsumerProfile,
-	getHourlyMeanConsumption,
-	getHourlyMeanProduction,
-} from 'scripts/api';
+import { ConsumerProfile } from 'constants/profiles';
+import { getHourlyMeanConsumption, getHourlyMeanProduction } from 'scripts/api';
 
 const tmpPoints = Array.from(Array(24).keys()).map((h) => {
 	return {

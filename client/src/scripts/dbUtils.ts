@@ -1,8 +1,8 @@
 import * as turf from '@turf/turf';
 
+import { ConsumerProfile } from 'constants/profiles';
 import { buildingsGeoJSON, zonesGeoJSON, publicLightingGeoJSON, chargingStationsGeoJSON, ZoneFeatureProperties } from 'geodata';
 import { Feature, MultiPolygon } from 'geojson';
-import { ConsumerProfile } from './api';
 
 // Compute zones area in square meters
 const zonesArea: Record<string, number> = {};

@@ -2,8 +2,9 @@ import './EnergyBalance.css';
 
 import React from 'react';
 
+import { ConsumerProfile } from 'constants/profiles';
 import { getZonesNames, getZoneArea, getZoneNbOfBuildings, getZoneNbOfCollectionSites } from 'scripts/dbUtils';
-import { ConsumerProfile, getTotalConsumption, getTotalProduction } from 'scripts/api';
+import { getTotalConsumption, getTotalProduction } from 'scripts/api';
 import { wattsToMegawatts } from 'scripts/utils';
 
 interface Props {

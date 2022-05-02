@@ -4,7 +4,7 @@ import React from 'react';
 import { Button, DatePicker, TreePicker } from 'rsuite';
 
 import { Indicator, IndicatorType, IndicatorClass, getIndicatorFromType, getAllIndicators } from 'constants/indicator';
-import { ConsumerProfile } from 'scripts/api';
+import { ConsumerProfile } from 'constants/profiles';
 import { zonesGeoJSON } from 'geodata';
 
 /**

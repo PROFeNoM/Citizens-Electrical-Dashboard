@@ -4,6 +4,7 @@ import React from 'react';
 import { FillExtrusionLayer, FillLayer, LineLayer, CircleLayer } from 'react-map-gl';
 
 import { Indicator, IndicatorClass } from 'constants/indicator';
+import { ConsumerProfile, ProducerProfile } from 'constants/profiles';
 import BaseMap, { BaseMapProps } from '../BaseMap/BaseMap';
 import { FeatureCollection } from 'geojson';
 import {
@@ -15,7 +16,7 @@ import {
 	bornesPoints,
 } from '../layers';
 import { zonesGeoJSON, buildingsGeoJSON, publicLightingGeoJSON, chargingStationsGeoJSON } from 'geodata';
-import { ConsumerProfile, ProducerProfile, getTotalConsumption, getTotalProduction } from 'scripts/api';
+import { getTotalConsumption, getTotalProduction } from 'scripts/api';
 import { changeRange } from 'scripts/utils';
 
 const zonesFillColor = '#7fd1ef';

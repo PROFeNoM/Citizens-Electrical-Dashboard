@@ -3,7 +3,8 @@ import './TypicalProductionDay.css';
 import React from 'react';
 import { CanvasJSChart } from 'canvasjs-react-charts';
 
-import { getHourlyMeanProduction, ProducerProfile } from 'scripts/api';
+import { ProducerProfile } from 'constants/profiles';
+import { getHourlyMeanProduction } from 'scripts/api';
 
 const tmpPoints = Array.from(Array(24).keys()).map((h) => {
 	return {

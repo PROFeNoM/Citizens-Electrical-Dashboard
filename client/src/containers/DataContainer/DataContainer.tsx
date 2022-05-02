@@ -2,8 +2,8 @@ import './DataContainer.css';
 import React from 'react';
 
 import { Indicator, IndicatorType, getIndicatorFromType } from 'constants/indicator';
+import { ConsumerProfile } from 'constants/profiles';
 import { MapContainer, IndicatorContainer } from 'containers';
-import { ConsumerProfile } from 'scripts/api';
 
 interface State {
     indicator: Indicator, // Indicator selected
