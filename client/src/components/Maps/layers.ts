@@ -124,7 +124,7 @@ export const allBuildings3D: FillExtrusionLayer = {
 }
 
 export const residentialBuildings3D: FillExtrusionLayer = {
-	'id': '3d-residentialbuildings',
+	'id': '3d-residential-buildings',
 	'source': 'district-buildings',
 	'type': 'fill-extrusion',
 	'filter': ['any',

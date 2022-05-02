@@ -4,11 +4,13 @@ import React from 'react';
 
 import { Indicator } from 'constants/indicator';
 import { UrbanZonesMap } from 'components/Maps';
+import { ConsumerProfile } from 'scripts/api';
 
 interface Props {
     indicator: Indicator;
     t1: Date;
     t2: Date;
+    buildingType: ConsumerProfile;
     highlightedZoneName: string | null;
 }
 
@@ -26,6 +28,7 @@ export default class MapContainer extends React.Component<Props> {
                     highlightedZoneName={this.props.highlightedZoneName}
                     t1={this.props.t1.getTime()}
                     t2={this.props.t2.getTime()}
+                    buildingType={this.props.buildingType}
                 />
             </div>
         );

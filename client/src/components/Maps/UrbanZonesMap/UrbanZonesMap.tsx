@@ -5,7 +5,6 @@ import { Indicator, IndicatorClass } from 'constants/indicator';
 import BaseMap, { BaseMapProps } from '../BaseMap/BaseMap';
 import { FeatureCollection } from 'geojson';
 import {
-	FillColor,
 	allBuildings3D, residentialBuildings3D,
 	zonesBorder, zonesFill,
 	consumptionBorder, consumptionFill,
@@ -14,7 +13,7 @@ import {
 	bornesPoints,
 } from '../layers';
 import { zonesGeoJSON, buildingsGeoJSON, lightingGeoJSON, bornesGeoJSON } from 'geodata';
-import { getTotalConsumption, getTotalProduction, ProducerProfile } from 'scripts/api';
+import { ConsumerProfile, ProducerProfile, getTotalConsumption, getTotalProduction } from 'scripts/api';
 import { changeRange } from 'scripts/utils';
 
 const zonesFillColor = '#7fd1ef';
@@ -35,6 +34,7 @@ interface Props extends BaseMapProps {
 	highlightedZoneName?: string;
 	t1: number;
 	t2: number;
+	buildingType: ConsumerProfile;
 }
 
 interface State {
@@ -45,7 +45,7 @@ interface State {
  * Urban zones map
  * 
  * Base map with a layer for the zones and a layer for the buildings.
- * // TODO: add a layer for the lighting points and a layer for the charging stations based on the state
+ * // TODO: add a layer for the lighting points
  */
 export default class UrbanZonesMap extends React.Component<Props, State> {
 	private mapRef = React.createRef<BaseMap>();
@@ -122,31 +122,41 @@ export default class UrbanZonesMap extends React.Component<Props, State> {
 	 * TODO: show residential or lighting points layers if chosen
 	 */
 	private updateLayers() {
-		const showLayers = (layersToShow: string[]) => {
-			layers.forEach(layer => {
-				if (layersToShow.includes(layer.id)) {
-					this.map.setLayoutProperty(layer.id, 'visibility', 'visible')
-				} else {
-					this.map.setLayoutProperty(layer.id, 'visibility', 'none')
-				}
-			});
-		}
+		const layersToShow: string[] = [];
+		layersToShow.push('3d-buildings');
 
 		switch (this.props.indicator.class) {
 			case IndicatorClass.Consumption:
-				showLayers(['3d-buildings', 'consumption-data', 'consumption-border']);
+				layersToShow.push('consumption-data', 'consumption-border');
 				break;
 			case IndicatorClass.Production:
-				showLayers(['3d-buildings', 'production-data', 'production-border']);
+				layersToShow.push('production-data', 'production-border');
 				break;
 			case IndicatorClass.Station:
-				showLayers(['3d-buildings', 'urban-zones-data', 'urban-zones-border', 'charging-stations-points']);
+				layersToShow.push('urban-zones-data', 'urban-zones-border', 'charging-stations-points');
 				break;
 			case IndicatorClass.General:
 			default:
-				showLayers(['3d-buildings', 'urban-zones-data', 'urban-zones-border']);
+				layersToShow.push('urban-zones-data', 'urban-zones-border');
 				break;
 		}
+
+		switch (this.props.buildingType) {
+			case ConsumerProfile.RESIDENTIAL:
+				layersToShow.push('3d-residential-buildings');
+				break;
+			default:
+				break;
+		}
+
+		// Show the layers in layersToShow and hide the others
+		layers.forEach(layer => {
+			if (layersToShow.includes(layer.id)) {
+				this.map.setLayoutProperty(layer.id, 'visibility', 'visible')
+			} else {
+				this.map.setLayoutProperty(layer.id, 'visibility', 'none')
+			}
+		});
 	}
 
 	async getConsumptionData(zones: FeatureCollection): Promise<FeatureCollection> {
@@ -234,6 +244,7 @@ export default class UrbanZonesMap extends React.Component<Props, State> {
 		// Add in last layers that should be on top (buildings and points)
 		sources.push({ id: 'district-buildings', data: buildingsGeoJSON });
 		layers.push({ id: '3d-buildings', data: allBuildings3D });
+		layers.push({ id: '3d-residential-buildings', data: residentialBuildings3D });
 		// sources.push({ id: 'lighting-data', data: lightingGeoJSON });
 		// layers.push({ id: 'lighting-points', data: lightingPoints });
 		sources.push({ id: 'charging-stations', data: bornesGeoJSON });
