@@ -168,7 +168,6 @@ export default class UrbanZonesMap extends React.Component<Props, State> {
 	 * @param id The id of the zone to highlight.
 	 */
 	private highlightZone(id: string | number) {
-		console.log('id:', id);
 		if (this.state.highlightedZone === id) {
 			return;
 		}
