@@ -1,30 +1,58 @@
 import * as turf from '@turf/turf';
-import { buildingsGeoJSON, zonesGeoJSON, publicLightingGeoJSON, ZoneFeatureProperties } from 'geodata';
-import { Feature, MultiPolygon } from 'geojson';
+
+import { buildingsGeoJSON, zonesGeoJSON, publicLightingGeoJSON, bornesGeoJSON, ZoneFeatureProperties } from 'geodata';
+import { Feature, MultiPolygon, Point } from 'geojson';
 import { ConsumerProfile } from './api';
 
-const zonesNbOfBuildings: Record<string, number> = {};
-for (const zone of zonesGeoJSON.features) {
-	zonesNbOfBuildings[zone.properties.libelle] = buildingsGeoJSON.features.filter(building => isContained(zone, building)).length;
-}
-
+// Compute zones area in square meters
 const zonesArea: Record<string, number> = {};
 for (const zone of zonesGeoJSON.features) {
 	zonesArea[zone.properties.libelle] = turf.area(zone);
 }
 
+// Compute number of buildings in each zone
+const zonesNbOfBuildings: Record<string, number> = {};
+for (const zone of zonesGeoJSON.features) {
+	zonesNbOfBuildings[zone.properties.libelle] = buildingsGeoJSON.features.filter(building => polygonIsContained(building, zone)).length;
+}
+
+// Compute number of stations and charging points in each zone
+const zonesStations: Record<string, { nbOfStations: number, nbOfChargingPoints: number }> = {};
+for (const zone of zonesGeoJSON.features) {
+	const stations = bornesGeoJSON.features.filter(station => pointIsContained(station, zone));
+	const nbOfStations = stations.length;
+	const nbOfChargingPoints = stations.reduce((acc, station) => acc + station.properties['Nb. de bornes total'], 0);
+	zonesStations[zone.properties.libelle] = {
+		nbOfStations,
+		nbOfChargingPoints
+	}
+}
+
 // FIXME client shouldn't have to compute that, client shouldn't have to compute anything
 /** Exactly like booleanContains of @turf/turf, but it works with MultiPolygon. */
-function isContained(feature1: Feature<MultiPolygon, any>, feature2: Feature<MultiPolygon, any>) {
+function polygonIsContained(containedFeature: Feature<MultiPolygon, any>, containerFeature: Feature<MultiPolygon, any>) {
 	// each "for" will loop only once if the given features are made of only one polygon each (which is most likely the case)
-	for (const polygon1 of feature1.geometry.coordinates) {
-		for (const polygon2 of feature2.geometry.coordinates) {
+	for (const polygon1 of containerFeature.geometry.coordinates) {
+		for (const polygon2 of containedFeature.geometry.coordinates) {
 			if (turf.booleanContains(
 				{ type: 'Polygon', coordinates: polygon1 },
 				{ type: 'Polygon', coordinates: polygon2 },
 			)) {
 				return true;
 			}
+		}
+	}
+	return false;
+}
+
+/** Exactly like booleanPointInPolygon of @turf/turf, but it works with MultiPolygon and Point. */
+function pointIsContained(pointFeature: Feature<Point, any>, multiPolygonFeature: Feature<MultiPolygon, any>) {
+	// each "for" will loop only once if the given features are made of only one polygon each (which is most likely the case)
+	for (const polygonCoordinates of multiPolygonFeature.geometry.coordinates) {
+		const point = turf.point(pointFeature.geometry.coordinates);
+		const polygon = turf.polygon(polygonCoordinates);
+		if (turf.booleanPointInPolygon(point, polygon)) {
+			return true;
 		}
 	}
 	return false;
@@ -44,6 +72,15 @@ export function getZoneNbOfBuildings(zoneName: string): number {
  */
 export function getZoneArea(zoneName: string): number {
 	return zonesArea[zoneName];
+}
+
+/**
+ * Return the number of charging stations and charging points in an urban zone.
+ * 
+ * @param zoneName Urban zone to search into
+ */
+ export function getZoneChargingStationsData(zoneName: string)  {
+	return zonesStations[zoneName];
 }
 
 /**

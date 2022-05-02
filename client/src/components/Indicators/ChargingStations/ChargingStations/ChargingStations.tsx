@@ -1,12 +1,8 @@
 import './ChargingStations.css';
 
 import React from 'react';
-import copy from 'fast-copy';
 
-import { getZonesNames } from 'scripts/dbUtils';
-import { ConsumerProfile, getTotalConsumption, getTotalProduction } from 'scripts/api';
-
-const formatter = new Intl.NumberFormat();
+import { getZonesNames, getZoneChargingStationsData } from 'scripts/dbUtils';
 
 interface Data {
 	nbOfStations: number; // Number of charging stations in the zone
@@ -25,52 +21,29 @@ interface State {
 export default class ChargingStationIndicator extends React.Component<Props, State> {
 	constructor(props: Props) {
 		super(props);
+
 		this.state = {
 			districtData: {
-				nbOfStations: 4,
-				nbOfChargingPoints: 12,
+				nbOfStations: 0,
+				nbOfChargingPoints: 0
 			},
 			zonesData: {},
 		};
 
 		for (const zoneName of getZonesNames()) {
 			this.state.zonesData[zoneName] = {
-				nbOfStations: 4,
-				nbOfChargingPoints: 12,
+				nbOfStations: getZoneChargingStationsData(zoneName).nbOfStations,
+				nbOfChargingPoints: getZoneChargingStationsData(zoneName).nbOfChargingPoints,
 			};
 
-			this.state.districtData.nbOfStations = this.state.zonesData[zoneName].nbOfStations;
-			this.state.districtData.nbOfChargingPoints = this.state.zonesData[zoneName].nbOfChargingPoints;
+			this.state.districtData.nbOfStations += this.state.zonesData[zoneName].nbOfStations;
+			this.state.districtData.nbOfChargingPoints += this.state.zonesData[zoneName].nbOfChargingPoints;
 		}
-
 	}
+
 	async componentDidMount() {
-		const t1 = new Date('2021-12-01T00:30:00').getTime();
-		const t2 = new Date('2021-12-31T23:30:00').getTime();
-
-		let districtConsumption = 0;
-		let districtProduction = 0;
-
-		await Promise.all(getZonesNames().map(async zoneName => {
-			const [zoneConsumption, zoneProduction] = await Promise.all([
-				getTotalConsumption(t1, t2, undefined, zoneName),
-				getTotalProduction(t1, t2, undefined, zoneName),
-			]);
-
-			this.setState(oldState => {
-				const newState = copy(oldState);
-				return newState
-			})
-
-			districtConsumption += zoneConsumption;
-			districtProduction += zoneProduction;
-		}));
-
-		this.setState(oldState => {
-			const newState = copy(oldState);
-			return newState
-		})
 	}
+
 	private get currentData(): Data {
 		return this.props.zoneName !== null
 			? this.state.zonesData[this.props.zoneName]
@@ -78,17 +51,14 @@ export default class ChargingStationIndicator extends React.Component<Props, Sta
 	}
 
 	render() {
-		const data = this.currentData;
+		const { nbOfStations, nbOfChargingPoints } = this.currentData;
 		const title = this.props.zoneName ?? 'Quartier de la Bastide';
-		const nbStations = formatter.format(data.nbOfStations);
-		const nbChargingPoints = formatter.format(data.nbOfChargingPoints);
-		const plural: boolean = data.nbOfStations > 1;
 		const district: boolean = this.props.zoneName === null;
 
 		return (
 				<div id="charging-stations-info" className="text-indicator">
 					<p>
-						{district ? 'Le quartier' : 'La zone'} <strong>{district ? 'Bastide' : `${title}`}</strong> compte <strong>{nbStations}&nbsp;station{plural ? 's' : ''}</strong> de recharge électrique pour <strong>{nbChargingPoints}&nbsp;borne{plural ? 's' : ''}</strong> au total.
+						{district ? 'Le quartier' : 'La zone'} <strong>{district ? 'Bastide' : `${title}`}</strong> compte <strong>{nbOfStations}&nbsp;station{nbOfStations > 1 ? 's' : ''}</strong> de recharge électrique pour <strong>{nbOfChargingPoints}&nbsp;borne{nbOfChargingPoints > 1 ? 's' : ''}</strong> au total.
 					</p>
 				</div>
 		);
