@@ -2,6 +2,7 @@ import './TotalConsumption.css';
 import React from 'react';
 import { CanvasJSChart } from 'canvasjs-react-charts';
 import { ConsumerProfile, getTotalConsumption } from 'scripts/api';
+import { wattsToKilowatts } from 'scripts/utils';
 
 interface Props {
 	t1: number;
@@ -26,21 +27,21 @@ export default class TotalConsumption extends React.Component<Props, State> {
 
 	private async getDistrictConsumptionData(): Promise<{ label: string, y: number }[]> {
 		return Promise.all([
-			{ label: "Total", y: Math.round(await getTotalConsumption(this.props.t1, this.props.t2) / 1000) },
-			{ label: "Residentiels", y: Math.round(await getTotalConsumption(this.props.t1, this.props.t2, [ConsumerProfile.RESIDENTIAL]) / 1000) },
-			{ label: "Tertiaires", y: Math.round(await getTotalConsumption(this.props.t1, this.props.t2, [ConsumerProfile.TERTIARY]) / 1000) },
-			{ label: "Professionnels", y: Math.round(await getTotalConsumption(this.props.t1, this.props.t2, [ConsumerProfile.PROFESSIONAL]) / 1000) },
-			{ label: "Eclairage", y: Math.round(await getTotalConsumption(this.props.t1, this.props.t2, [ConsumerProfile.PUBLIC_LIGHTING]) / 1000) },
+			{ label: "Total", y: wattsToKilowatts(await getTotalConsumption(this.props.t1, this.props.t2)) },
+			{ label: "Residentiels", y: wattsToKilowatts(await getTotalConsumption(this.props.t1, this.props.t2, [ConsumerProfile.RESIDENTIAL])) },
+			{ label: "Tertiaires", y: wattsToKilowatts(await getTotalConsumption(this.props.t1, this.props.t2, [ConsumerProfile.TERTIARY])) },
+			{ label: "Professionnels", y: wattsToKilowatts(await getTotalConsumption(this.props.t1, this.props.t2, [ConsumerProfile.PROFESSIONAL])) },
+			{ label: "Eclairage", y: wattsToKilowatts(await getTotalConsumption(this.props.t1, this.props.t2, [ConsumerProfile.PUBLIC_LIGHTING])) },
 		]);
 	}
 
 	private async getUrbanZoneConsumptionData(): Promise<{ label: string, y: number }[]> {
 		return Promise.all([
-			{ label: "Total", y: Math.round(await getTotalConsumption(this.props.t1, this.props.t2, undefined, this.props.urbanZone) / 1000) },
-			{ label: "Residentiels", y: Math.round(await getTotalConsumption(this.props.t1, this.props.t2, [ConsumerProfile.RESIDENTIAL], this.props.urbanZone) / 1000) },
-			{ label: "Tertiaires", y: Math.round(await getTotalConsumption(this.props.t1, this.props.t2, [ConsumerProfile.TERTIARY], this.props.urbanZone) / 1000) },
-			{ label: "Professionnels", y: Math.round(await getTotalConsumption(this.props.t1, this.props.t2, [ConsumerProfile.PROFESSIONAL], this.props.urbanZone) / 1000) },
-			{ label: "Eclairage", y: Math.round(await getTotalConsumption(this.props.t1, this.props.t2, [ConsumerProfile.PUBLIC_LIGHTING], this.props.urbanZone) / 1000) },
+			{ label: "Total", y: wattsToKilowatts(await getTotalConsumption(this.props.t1, this.props.t2, undefined, this.props.urbanZone)) },
+			{ label: "Residentiels", y: wattsToKilowatts(await getTotalConsumption(this.props.t1, this.props.t2, [ConsumerProfile.RESIDENTIAL], this.props.urbanZone)) },
+			{ label: "Tertiaires", y: wattsToKilowatts(await getTotalConsumption(this.props.t1, this.props.t2, [ConsumerProfile.TERTIARY], this.props.urbanZone)) },
+			{ label: "Professionnels", y: wattsToKilowatts(await getTotalConsumption(this.props.t1, this.props.t2, [ConsumerProfile.PROFESSIONAL], this.props.urbanZone)) },
+			{ label: "Eclairage", y: wattsToKilowatts(await getTotalConsumption(this.props.t1, this.props.t2, [ConsumerProfile.PUBLIC_LIGHTING], this.props.urbanZone)) },
 		]);
 	}
 
@@ -57,17 +58,21 @@ export default class TotalConsumption extends React.Component<Props, State> {
 	}
 
 	async componentDidMount() {
-		await this.fetchData();
+		try {
+			await this.fetchData();
+		} catch (e) {
+			console.error('Error while fetching data', e);
+		}
 	}
 
 	async componentDidUpdate(prevProps: Props) {
 		if (prevProps.t1 !== this.props.t1 || prevProps.t2 !== this.props.t2 || prevProps.urbanZone !== this.props.urbanZone) {
-			await this.fetchData();
+			try {
+				await this.fetchData();
+			} catch (e) {
+				console.error('Error while fetching data', e);
+			}
 		}
-	}
-
-	private onClick = () => {
-		this.props.setHighlightedZone(this.props.urbanZone);
 	}
 
 	render() {
@@ -87,12 +92,6 @@ export default class TotalConsumption extends React.Component<Props, State> {
 				titleFontWeight: 'bold',
 				logarithmic: false
 			},
-			axisY2: {
-				lineColor: '#93c90e',
-				labelFontColor: '#93c90e',
-				tickColor: '#93c90e',
-				fontFamily: 'Ubuntu'
-			},
 			toolTip: {
 				shared: true
 			},
@@ -101,16 +100,26 @@ export default class TotalConsumption extends React.Component<Props, State> {
 				name: 'Consommation de La Bastide (kWh)',
 				axisYType: 'primary',
 				dataPoints: districtConsumptionData,
-				color: '#688199',
-				click: this.onClick
-			}, {
+				color: '#688199'
+			},
+			{
 				type: 'column',
 				name: 'Consommation de la zone urbaine (kWh)',
 				axisYType: 'primary',
 				dataPoints: urbanZoneConsumptionData,
-				color: '#e63b11',
-				click: this.onClick
-			}]
+				color: '#e63b11'
+			}],
+			subtitles: []
+		}
+
+		const totalConsumption = districtConsumptionData.find(d => d.label === "Total");
+		if (totalConsumption && totalConsumption.y === 0) {
+			chartOptions.subtitles = [{
+				text: 'Pas de données pour la période',
+				verticalAlign: 'center',
+				fontSize: 24,
+				fontFamily: 'Ubuntu'
+			}];
 		}
 
 		return (

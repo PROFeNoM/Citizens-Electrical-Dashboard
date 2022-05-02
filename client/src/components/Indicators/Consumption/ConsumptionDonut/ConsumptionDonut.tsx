@@ -108,7 +108,7 @@ export default class ConsumptionDonut extends React.Component<Props, State> {
 		const { consumptionDistribution, urbanZoneProportion } = this.state;
 		const text = consumptionDistribution === null
 			? 'Chargement...' : consumptionDistribution.length === 0
-			? 'Pas de donnée pour la période' : `${Math.round(urbanZoneProportion)}%`;
+			? 'Pas de données pour la période' : `${Math.round(urbanZoneProportion)}%`;
 
 		const chartOptions = {
 			animationEnabled: false,
@@ -116,7 +116,7 @@ export default class ConsumptionDonut extends React.Component<Props, State> {
 				text: text,
 				verticalAlign: 'center',
 				fontSize: 24,
-				fontFamily: "Ubuntu",
+				fontFamily: 'Ubuntu',
 				dockInsidePlotArea: true
 			}],
 			data: [{
