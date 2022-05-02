@@ -24,33 +24,35 @@ export default class TotalConsumption extends React.Component<Props, State> {
 		};
 	}
 
-	private async getDistrictConsumptionData() {
-		return [
+	private async getDistrictConsumptionData(): Promise<{ label: string, y: number }[]> {
+		return Promise.all([
 			{ label: "Total", y: Math.round(await getTotalConsumption(this.props.t1, this.props.t2) / 1000) },
 			{ label: "Residentiels", y: Math.round(await getTotalConsumption(this.props.t1, this.props.t2, [ConsumerProfile.RESIDENTIAL]) / 1000) },
 			{ label: "Tertiaires", y: Math.round(await getTotalConsumption(this.props.t1, this.props.t2, [ConsumerProfile.TERTIARY]) / 1000) },
 			{ label: "Professionnels", y: Math.round(await getTotalConsumption(this.props.t1, this.props.t2, [ConsumerProfile.PROFESSIONAL]) / 1000) },
 			{ label: "Eclairage", y: Math.round(await getTotalConsumption(this.props.t1, this.props.t2, [ConsumerProfile.PUBLIC_LIGHTING]) / 1000) },
-		];
+		]);
 	}
 
-	private async getUrbanZoneConsumptionData() {
-
-		return [
+	private async getUrbanZoneConsumptionData(): Promise<{ label: string, y: number }[]> {
+		return Promise.all([
 			{ label: "Total", y: Math.round(await getTotalConsumption(this.props.t1, this.props.t2, undefined, this.props.urbanZone) / 1000) },
 			{ label: "Residentiels", y: Math.round(await getTotalConsumption(this.props.t1, this.props.t2, [ConsumerProfile.RESIDENTIAL], this.props.urbanZone) / 1000) },
 			{ label: "Tertiaires", y: Math.round(await getTotalConsumption(this.props.t1, this.props.t2, [ConsumerProfile.TERTIARY], this.props.urbanZone) / 1000) },
 			{ label: "Professionnels", y: Math.round(await getTotalConsumption(this.props.t1, this.props.t2, [ConsumerProfile.PROFESSIONAL], this.props.urbanZone) / 1000) },
 			{ label: "Eclairage", y: Math.round(await getTotalConsumption(this.props.t1, this.props.t2, [ConsumerProfile.PUBLIC_LIGHTING], this.props.urbanZone) / 1000) },
-		];
+		]);
 	}
 
-	async fetchData() {
-		const districtConsumptionData = await this.getDistrictConsumptionData();
-		const urbanZoneConsumptionData = await this.getUrbanZoneConsumptionData();
-		this.setState({
-			districtConsumptionData: districtConsumptionData,
-			urbanZoneConsumptionData: urbanZoneConsumptionData
+	async fetchData(): Promise<void> {
+		Promise.all([
+			this.getDistrictConsumptionData(),
+			this.getUrbanZoneConsumptionData()
+		]).then(([districtConsumptionData, urbanZoneConsumptionData]) => {
+			this.setState({
+				districtConsumptionData,
+				urbanZoneConsumptionData
+			});
 		});
 	}
 
@@ -58,11 +60,19 @@ export default class TotalConsumption extends React.Component<Props, State> {
 		await this.fetchData();
 	}
 
+	async componentDidUpdate(prevProps: Props) {
+		if (prevProps.t1 !== this.props.t1 || prevProps.t2 !== this.props.t2 || prevProps.urbanZone !== this.props.urbanZone) {
+			await this.fetchData();
+		}
+	}
+
 	private onClick = () => {
 		this.props.setHighlightedZone(this.props.urbanZone);
 	}
 
 	render() {
+		const { districtConsumptionData, urbanZoneConsumptionData } = this.state;
+
 		const chartOptions = {
 			exportEnabled: true,
 			animationEnabled: true,
@@ -90,14 +100,14 @@ export default class TotalConsumption extends React.Component<Props, State> {
 				type: 'column',
 				name: 'Consommation de La Bastide (kWh)',
 				axisYType: 'primary',
-				dataPoints: this.state.districtConsumptionData,
+				dataPoints: districtConsumptionData,
 				color: '#688199',
 				click: this.onClick
 			}, {
 				type: 'column',
 				name: 'Consommation de la zone urbaine (kWh)',
 				axisYType: 'primary',
-				dataPoints: this.state.urbanZoneConsumptionData,
+				dataPoints: urbanZoneConsumptionData,
 				color: '#e63b11',
 				click: this.onClick
 			}]
