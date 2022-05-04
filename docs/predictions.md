@@ -38,7 +38,7 @@ Deux types de modèles sont mis à disposition:
 Chacun de ces dossiers est composés de quatre modèles, afin de correspondre aux différents profils de consommation:
 
 - Tertiaire: `ent.pickle`
-- Professionel: `pro.pickle`
+- Professionnel: `pro.pickle`
 - Résidentiel: `res.pickle`
 
 et de production:
