@@ -1,6 +1,6 @@
 #data-container {
     display: grid;
-    grid-template-columns: 4fr 4fr;
+    grid-template-columns: 1fr 1fr;
     height: 100%;
 	min-height: calc(100vh - var(--header-height));
 }
@@ -21,4 +21,11 @@
 	animation-iteration-count: 1;
 	animation-timing-function: ease-in;
 	animation-duration: 1.5s;
+}
+
+@media (max-width: 900px) {
+	#data-container {
+		grid-template-columns: 1fr;
+		grid-template-rows:  1fr 1fr;
+	}
 }

@@ -42,13 +42,11 @@
     display: none;
 }
 
-@media (max-width: 800px) {
+@media (max-width: 900px) {
     #title-wrapper #title {
         font-size: 1.5rem;
     }
-}
 
-@media (max-width: 650px) {
     #enedis-logo {
         display: none;
     }

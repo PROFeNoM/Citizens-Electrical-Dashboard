@@ -24,7 +24,9 @@
 .graph-legend-item-color {
     width: 20px;
     height: 20px;
-    border-radius: 20%;
+    min-width: 20px;
+    min-height: 20px;
+    border-radius: 5px;
     display: inline-block;
     vertical-align: middle;
 }

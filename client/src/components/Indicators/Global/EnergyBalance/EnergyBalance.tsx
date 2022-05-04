@@ -113,17 +113,17 @@ export default class EnergyBalance extends React.Component<Props, State> {
 		const { sector } = this.props;
 		const { area, nbOfBuildings, nbOfConsumers, consumption, production } = this.state;
 		const formatter = new Intl.NumberFormat('fr-FR', { style: 'decimal', maximumFractionDigits: 2 });
-		const consumptionMegaWatts = consumption !== undefined ?
+		const consumptionMegaWatts = consumption !== null ?
 			formatter.format(wattsToMegawatts(consumption))
-			: undefined;
-		const productionMegaWatts = production !== undefined ?
+			: null;
+		const productionMegaWatts = production !== null ?
 			formatter.format(wattsToMegawatts(production))
-			: undefined;
-		const ratio = consumption !== undefined && production !== undefined ?
+			: null;
+		const ratio = consumption !== null && production !== null ?
 			consumption === 0 ?
 				0
 				: formatter.format(production / consumption * 100)
-			: undefined;
+			: null;
 
 		let sectorText: string;
 		switch (sector) {
