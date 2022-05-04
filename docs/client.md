@@ -56,7 +56,7 @@ Il suffit alors d'importer le nouvel indicateur:
 import { IsometricProduction } from 'components/Indicators';
 ```
 
-puis de l'ajouter par un `case` dans la classe `IndicatorViewer` (le choix des props s'y effectue). Dans notre exemple, nous pourions alors avoir:
+puis de l'ajouter par un `case` dans la classe `IndicatorViewer` (le choix des props s'y effectue). Dans notre exemple, nous pourrions alors avoir:
 ```ts
 case IndicatorType.IsometricProduction:
     return (

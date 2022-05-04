@@ -73,7 +73,7 @@ Ainsi, il faut tout d'abord créer une dataframe viable pour les prédictions, t
 make_df(date_start, date_end, capacity, floor, extended_dataframe=False):
 ```
 
-Il est à noté qu'actuellement, seulement les prédictions de consommation professionelles nécessitent des régresseurs. Par ailleurs, les capacities/floors des différents modèles sont définies en variables globales de ce script, respectivement `CAPACITY` et `FLOOR`.
+Il est à noté qu'actuellement, seulement les prédictions de consommation professionnelles nécessitent des régresseurs. Par ailleurs, les capacities/floors des différents modèles sont définies en variables globales de ce script, respectivement `CAPACITY` et `FLOOR`.
 
 Les prédictions (standardisées) peuvent ensuite être réalisées à l'aide de la méthode `predict` d'un objet Prophet. Cependant, la fonction
 ```python
@@ -89,4 +89,4 @@ Cependant, dès lors qu'un modèle est modifié, il faut alors modifier les vale
 
 - STD correspond à la déviation standard des données d'entraînement pour la colonne cible
 - MEAN correspond à la moyenne des données d'entraînement pour la colonne cible
-- CAPACITY correspond au maximum de la colonne `y` des données standardisés (multiplée par un facteur 1.2, dans lesdits modèles).
+- CAPACITY correspond au maximum de la colonne `y` des données standardisés (multipliée par un facteur 1.2, dans lesdits modèles).
