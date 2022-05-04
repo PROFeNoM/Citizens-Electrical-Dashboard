@@ -39,6 +39,7 @@ Dans ce même fichier, il faut enregistrer ce nouvel indicateur par la fonction 
 function registerIndicator(indicatorClass: IndicatorClass, indicatorType: IndicatorType, name: string): void
 ```
 où:
+
 - indicatorClass représente la thématique de l'indicateur, et définie par l'énumération ```IndicatorClass```
 - indicatorType, correspondant au nouvel élément de l'énumération ```IndicatorType``` précédemment ajouté
 - name, correspondant au nom affiché de l'indicateur.
@@ -71,7 +72,7 @@ case IndicatorType.IsometricProduction:
 
 ### Architecture des composants de représentation spatiale
 
-La gestion des composents de représentation spatiale, i.e., les cartes, est assurée par le composant ```MapContainer```.
+La gestion des composants de représentation spatiale, i.e., les cartes, est assurée par le composant ```MapContainer```.
 
 Ce dernier a une dépendance fonctionnelle avec le composant ```UrbanZonesMap```, permettant de gérer les layers ```Mapbox``` à afficher. Cette dernière utilise le composant ```BaseMap```, correspondant à la carte du quartier de la Bastide, utilisant la librairie ```mapbox-gl```
 
@@ -81,4 +82,4 @@ L'indicateur ```SolarDonut``` (notamment) nécessite la mise à jour de la carte
 
 Cette communication est permise grâce au passage de la méthode ```setState``` de ```DataContainer```en props de son composant enfant ```IndicatorContainer```, puis en props au composant enfant ```IndicatorViewer```; méthode qui sera alors utilisée par le composant ```SolarDonut``` afin de spécifier la zone mise en valeur.
 
-La mise à jour de l'état de ```DataContainer``` permettra ainsi la mise à jour correspodante de la carte par l'update de son composant enfant ```MapContainer```.
+La mise à jour de l'état de ```DataContainer``` permettra ainsi la mise à jour correspondante de la carte par l'update de son composant enfant ```MapContainer```.

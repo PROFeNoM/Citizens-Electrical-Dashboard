@@ -10,6 +10,7 @@ Les prédictions peuvent être obtenues par l'intermédiaire du script Python ``
 python generate_csv.py -pm <pm> -pt <pt> -d <d> -e <e> -o <o> -t <t>
 ```
 où:
+
 - pm: Chemin du modèle des courbes moyennes du profil considéré
 - pt: Chemin du modèle d'énergie totale du profil considéré
 - d: Date de début des prédictions, au format ```YYYY-MM-DD```
@@ -55,6 +56,7 @@ node build/scripts/generate-mock-predictions.js <srcPath> <destPath>
 ```
 
 où:
+
 - srcPath: Chemin du CSV issues du script de prédiction Python
 - destPath: Destination du mock csv
 
@@ -74,6 +76,7 @@ node build/scripts/load-predictions-to-db.js <srcPath> <profileType>
 ```
 
 où:
+
 - srcPath: Chemin du CSV issu du script de génération de mock
 - profileType: Type de profil des prédictions (```consumption```, ou ```production```)
 
