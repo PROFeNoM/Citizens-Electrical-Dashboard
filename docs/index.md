@@ -35,7 +35,7 @@ Une dernière partie sera consacrée à l'infrastructure et au déploiement.
 ### Propriété intellectuelle
 
 Selon l'accord oral des clients, les sources du logiciel sont disponibles sous une licence open source au choix de l'équipe de développement.
-L'ensemble des sources du logiciel est donc licencié sous la [GNU General Public License 3](https://www.gnu.org/licenses/gpl-3.0.en.html).
+[L'ensemble des sources](https://gitlab.com/PROFeNoM/dashboard) du logiciel est donc licencié sous la [GNU General Public License 3](https://www.gnu.org/licenses/gpl-3.0.en.html).
 
 ### Partie prenantes
 
