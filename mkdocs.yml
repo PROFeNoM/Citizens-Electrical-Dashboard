@@ -1,0 +1,9 @@
+site_name: Dashboard
+theme:
+  name: material
+nav:
+  - Introduction: 'index.md'
+  - Serveur: 'serveur.md'
+  - Client: 'client.md'
+  - Déploiement: 'deploy.md'
+  - Prédictions: 'predictions.md'
