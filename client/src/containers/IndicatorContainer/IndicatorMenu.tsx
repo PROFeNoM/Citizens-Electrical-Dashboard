@@ -47,8 +47,12 @@ const selectOptionsBuildings: { value: ConsumerProfile, label: string }[] = [
     { value: ConsumerProfile.PUBLIC_LIGHTING, label: "Éclairage publique" },
 ];
 
+function capitalize(str: string): string {
+    return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
 const selectOptionsZoneNames: { value: string, label: string }[] = zonesGeoJSON.features
-    .map((item) => ({ value: item.properties.libelle, label: item.properties.libelle }));
+    .map((item) => ({ value: item.properties.libelle, label: capitalize(item.properties.libelle) }));
 selectOptionsZoneNames.push({ value: 'Quartier de la Bastide', label: 'Quartier de la Bastide' });
 
 interface Props {
