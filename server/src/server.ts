@@ -1,11 +1,12 @@
 import * as express from 'express';
+import * as compression from 'compression'
 import { resolve } from 'path';
 import { getConnection } from 'typeorm';
 import { logger } from './logger';
 import { config } from './config';
 import { apiReqCheckerParser } from './validation';
-import {ProducerProfile, Production} from "./db/entities/Production";
-import {ConsumerProfile, Consumption} from "./db/entities/Consumption";
+import { Production } from './db/entities/Production';
+import { Consumption } from './db/entities/Consumption';
 
 const app = express();
 const wwwDir = resolve(config.devMode ? '../client/build' : 'www');
@@ -17,6 +18,7 @@ if (config.devMode) {
 // middleware
 app.use(express.json());
 app.use(express.static(wwwDir));
+app.use(compression());
 
 app.get('/api/v1/:entity/total', apiReqCheckerParser, async (req, res) => {
 	let query = await getConnection().createQueryBuilder()
