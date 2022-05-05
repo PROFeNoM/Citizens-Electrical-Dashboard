@@ -38,7 +38,7 @@ export default class DataContainer extends React.Component<{}, State> {
     render() {
         return (
             <div id="data-container">
-                <div id="map-container-wrapper">
+                <div id="map-container-wrapper" key={this.state.t1.toString()+this.state.t2.toString()}>
                     <MapContainer
                         t1={this.state.t1}
                         t2={this.state.t2}
