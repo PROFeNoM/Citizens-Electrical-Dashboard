@@ -49,18 +49,19 @@ export default class EnergyBalance extends React.Component<Props, State> {
 	 */
 	async fetchData() {
 		const { zoneName, sector, t1, t2 } = this.props;
+		const zoneNames = await getZonesNames();
 
 		const area = zoneName === null ?
-			getZonesNames().reduce((acc, zone) => acc + getZoneArea(zone), 0)
-			: getZoneArea(zoneName);
+			(await Promise.all(zoneNames.map(getZoneArea))).reduce((a, b) => a + b)
+			: await getZoneArea(zoneName);
 
 		const nbOfBuildings = zoneName === null ?
-			getZonesNames().reduce((acc, zone) => acc + getZoneNbOfBuildings(zone), 0)
-			: getZoneNbOfBuildings(zoneName);
+			(await Promise.all(zoneNames.map(getZoneNbOfBuildings))).reduce((a, b) => a + b)
+			: await getZoneNbOfBuildings(zoneName);
 
 		const nbOfConsumers = zoneName === null ?
-			getZonesNames().reduce((acc, zone) => acc + getZoneNbOfCollectionSites(zone, sector), 0)
-			: getZoneNbOfCollectionSites(zoneName, sector);
+			(await Promise.all(zoneNames.map(zone => getZoneNbOfCollectionSites(zone, sector)))).reduce((a, b) => a + b)
+			: await getZoneNbOfCollectionSites(zoneName, sector);
 
 		this.setState({
 			area,

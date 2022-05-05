@@ -3,9 +3,7 @@ import './SolarDonut.css';
 import React from 'react';
 import { CanvasJSChart } from 'canvasjs-react-charts';
 
-import { ProducerProfile } from 'constants/profiles';
-import { getTotalProduction } from 'scripts/api';
-import { zonesGeoJSON } from 'geodata';
+import { getZonesGeoJSON } from 'geodata';
 
 interface Props {
 	t1: number;
@@ -23,18 +21,21 @@ interface State {
 export default class SolarDonut extends React.Component<Props, State> {
 	constructor(props: Props) {
 		super(props);
-		const tmpPoints = zonesGeoJSON.features.map(f => {
-			return { name: f.properties.libelle, y: 0 };
-		})
 
 		this.state = {
-			productionDistribution: tmpPoints,
+			productionDistribution: [],
 			urbanZoneProportion: 0,
 			renderMe: false
 		};
 	}
 
-	async fetchData() {
+	async componentDidMount() {
+		const zonesGeoJSON = await getZonesGeoJSON();
+
+		this.setState({
+			productionDistribution: zonesGeoJSON.features.map(f => ({ name: f.properties.libelle, y: 0 })),
+		})
+
 		const { t1, t2, urbanZone } = this.props;
 		/*
 		const productions = await Promise.all(zones.features.map(async f => {
@@ -59,10 +60,6 @@ export default class SolarDonut extends React.Component<Props, State> {
 			urbanZoneProportion: productions.find(z => z.name === urbanZone).value / totalProduction * 100,
 			renderMe: true
 		});
-	}
-
-	async componentDidMount() {
-		await this.fetchData();
 	}
 
 	private onClick = (e: any) => {

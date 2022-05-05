@@ -29,19 +29,19 @@ export default class ChargingStationIndicator extends React.Component<Props, Sta
 			},
 			zonesData: {},
 		};
+	}
 
-		for (const zoneName of getZonesNames()) {
+	async componentDidMount() {
+		for (const zoneName of await getZonesNames()) {
+			const zoneChargingStationsData = await getZoneChargingStationsData(zoneName);
 			this.state.zonesData[zoneName] = {
-				nbOfStations: getZoneChargingStationsData(zoneName).nbOfStations,
-				nbOfChargingPoints: getZoneChargingStationsData(zoneName).nbOfChargingPoints,
+				nbOfStations: zoneChargingStationsData.nbOfStations,
+				nbOfChargingPoints: zoneChargingStationsData.nbOfChargingPoints,
 			};
 
 			this.state.districtData.nbOfStations += this.state.zonesData[zoneName].nbOfStations;
 			this.state.districtData.nbOfChargingPoints += this.state.zonesData[zoneName].nbOfChargingPoints;
 		}
-	}
-
-	async componentDidMount() {
 	}
 
 	private get currentData(): Data {

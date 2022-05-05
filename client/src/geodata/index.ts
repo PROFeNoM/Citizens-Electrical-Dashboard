@@ -1,23 +1,5 @@
 import { FeatureCollection, MultiPolygon, Point, Feature } from 'geojson';
-
-export const buildingsGeoJSON = require('./buildings.json') as FeatureCollection<MultiPolygon, BuildingFeatureProperties>;
-export const zonesGeoJSON = require('./zones.json') as FeatureCollection<MultiPolygon, ZoneFeatureProperties>;
-export const chargingStationsGeoJSON = require('./charging-stations.json') as FeatureCollection<Point, { [name: string]: any; }>
-
-// Convert data to valid GeoJSON
-const publicLightingData = require('./public-lighting.json') as PublicLightingRecord[];
-
-export const publicLightingGeoJSON = {
-	"type": "FeatureCollection",
-	"name": "Public_lightings",
-	"features": []
-}  as FeatureCollection<Point, { [name: string]: any; }>;
-
-publicLightingGeoJSON.features = publicLightingData.map(publicLighting => ({
-	"type": "Feature",
-	"geometry": publicLighting.geometry,
-	"properties": {}
-})) as Feature<Point, { [name: string]: any; }>[];
+import { getApiRoot } from '../scripts/api';
 
 export interface BuildingFeatureProperties {
 	osm_id: null,
@@ -82,4 +64,55 @@ export interface PublicLightingRecord {
 		coordinates: [number, number],
 	};
 	record_timestamp: string,
+}
+
+let buildingsGeoJSON: Promise<FeatureCollection<MultiPolygon, BuildingFeatureProperties>> | null = null;
+export async function getBuildingsGeoJSON() {
+	if (buildingsGeoJSON === null) {
+		buildingsGeoJSON = fetchGeoJSON('buildings');
+	}
+	return await buildingsGeoJSON;
+}
+
+let zonesGeoJSON: Promise<FeatureCollection<MultiPolygon, ZoneFeatureProperties>> | null = null;
+export async function getZonesGeoJSON() {
+	if (zonesGeoJSON === null) {
+		zonesGeoJSON = fetchGeoJSON('zones');
+	}
+	return await zonesGeoJSON;
+}
+
+let chargingStationsGeoJSON: Promise<FeatureCollection<Point, { [name: string]: any }>> | null = null;
+export async function getChargingStationsGeoJSON() {
+	if (chargingStationsGeoJSON === null) {
+		chargingStationsGeoJSON = fetchGeoJSON('charging-stations');
+	}
+	return await chargingStationsGeoJSON;
+}
+
+let publicLightingGeoJSON: Promise<FeatureCollection<Point, { [name: string]: any }>> | null = null;
+export async function getPublicLightingGeoJSON() {
+	if (publicLightingGeoJSON === null) {
+		publicLightingGeoJSON = new Promise(resolve => {
+			fetchGeoJSON('public-lighting').then(data => {
+				const result = {
+					"type": "FeatureCollection",
+					"name": "Public_lightings",
+					"features": []
+				}  as FeatureCollection<Point, { [name: string]: any }>;
+				result.features = data.map(publicLighting => ({
+					"type": "Feature",
+					"geometry": publicLighting.geometry,
+					"properties": {}
+				})) as Feature<Point, { [name: string]: any }>[];
+				resolve(result);
+			})
+		})
+	}
+	return await publicLightingGeoJSON;
+}
+
+async function fetchGeoJSON(name: string) {
+	const res = await fetch(`${getApiRoot()}/geodata/${name}.json`);
+	return await res.json();
 }

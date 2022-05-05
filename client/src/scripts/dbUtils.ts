@@ -1,32 +1,8 @@
 import * as turf from '@turf/turf';
 
 import { ConsumerProfile } from 'constants/profiles';
-import { buildingsGeoJSON, zonesGeoJSON, publicLightingGeoJSON, chargingStationsGeoJSON, ZoneFeatureProperties } from 'geodata';
+import { getBuildingsGeoJSON, getZonesGeoJSON, getPublicLightingGeoJSON, getChargingStationsGeoJSON, ZoneFeatureProperties } from 'geodata';
 import { Feature, MultiPolygon } from 'geojson';
-
-// Compute zones area in square meters
-const zonesArea: Record<string, number> = {};
-for (const zone of zonesGeoJSON.features) {
-	zonesArea[zone.properties.libelle] = turf.area(zone);
-}
-
-// Compute number of buildings in each zone
-const zonesNbOfBuildings: Record<string, number> = {};
-for (const zone of zonesGeoJSON.features) {
-	zonesNbOfBuildings[zone.properties.libelle] = buildingsGeoJSON.features.filter(building => polygonIsContained(building, zone)).length;
-}
-
-// Compute number of stations and charging points in each zone
-const zonesStations: Record<string, { nbOfStations: number, nbOfChargingPoints: number }> = {};
-for (const zone of zonesGeoJSON.features) {
-	const stations = chargingStationsGeoJSON.features.filter(station => turf.booleanWithin(station, zone));
-	const nbOfStations = stations.length;
-	const nbOfChargingPoints = stations.reduce((acc, station) => acc + station.properties['Nb. de bornes total'], 0);
-	zonesStations[zone.properties.libelle] = {
-		nbOfStations,
-		nbOfChargingPoints
-	};
-}
 
 // FIXME client shouldn't have to compute that, client shouldn't have to compute anything
 /** Exactly like booleanContains of @turf/turf, but it works with MultiPolygon. */
@@ -45,30 +21,72 @@ function polygonIsContained(containedFeature: Feature<MultiPolygon, any>, contai
 	return false;
 }
 
+let zonesNbOfBuildings: Record<string, number> | null = null;
+
 /**
  * Return the number of buildings in an urban zone
  * 
  * @param zoneName Urban zone to search into
  */
-export function getZoneNbOfBuildings(zoneName: string): number {
+export async function getZoneNbOfBuildings(zoneName: string): Promise<number> {
+	if (zonesNbOfBuildings === null) {
+		// Compute number of buildings in each zone
+		const [zones, buildingsGeoJSON] = await Promise.all([
+			getZonesGeoJSON(),
+			getBuildingsGeoJSON(),
+		]);
+		zonesNbOfBuildings = {};
+		for (const zone of zones.features) {
+			zonesNbOfBuildings[zone.properties.libelle] = buildingsGeoJSON.features.filter(building => polygonIsContained(building, zone)).length;
+		}
+	}
 	return zonesNbOfBuildings[zoneName];
 }
+
+let zonesArea: Record<string, number> | null = null;
 
 /**
  * Return the area in square meters of the urban zone
  * 
  * @param zoneName Urban zone for which the area should be computed
  */
-export function getZoneArea(zoneName: string): number {
+export async function getZoneArea(zoneName: string): Promise<number> {
+	if (zonesArea == null) {
+		// Compute zones area in square meters
+		zonesArea = {};
+		for (const zone of (await getZonesGeoJSON()).features) {
+			zonesArea[zone.properties.libelle] = turf.area(zone);
+		}
+	}
 	return zonesArea[zoneName];
 }
+
+// Compute number of stations and charging points in each zone
+let zonesStations: Record<string, { nbOfStations: number, nbOfChargingPoints: number }> | null = null;
 
 /**
  * Return the number of charging stations and charging points in an urban zone.
  * 
  * @param zoneName Urban zone to search into
  */
-export function getZoneChargingStationsData(zoneName: string) {
+export async function getZoneChargingStationsData(zoneName: string) {
+	if (zonesStations == null) {
+		// Compute number of stations and charging points in each zone
+		const [zonesGeoJSON, chargingStationsGeoJSON] = await Promise.all([
+			getZonesGeoJSON(),
+			getChargingStationsGeoJSON(),
+		]);
+		zonesStations = {};
+		for (const zone of zonesGeoJSON.features) {
+			const stations = chargingStationsGeoJSON.features.filter(station => turf.booleanWithin(station, zone));
+			const nbOfStations = stations.length;
+			const nbOfChargingPoints = stations.reduce((acc, station) => acc + station.properties['Nb. de bornes total'], 0);
+			zonesStations[zone.properties.libelle] = {
+				nbOfStations,
+				nbOfChargingPoints
+			};
+		}
+	}
 	return zonesStations[zoneName];
 }
 
@@ -77,12 +95,12 @@ export function getZoneChargingStationsData(zoneName: string) {
  * 
  * @param zoneName urban zone for which the feature section shall be returned
  */
-function getZone(zoneName: string): Feature<MultiPolygon, ZoneFeatureProperties> {
-	return zonesGeoJSON.features.filter(data => data.properties.libelle === zoneName)[0];
+async function getZone(zoneName: string): Promise<Feature<MultiPolygon, ZoneFeatureProperties>> {
+	return (await getZonesGeoJSON()).features.filter(data => data.properties.libelle === zoneName)[0];
 }
 
-export function getZonesNames(): string[] {
-	return zonesGeoJSON.features.map(zone => zone.properties.libelle);
+export async function getZonesNames(): Promise<string[]> {
+	return (await getZonesGeoJSON()).features.map(zone => zone.properties.libelle);
 }
 
 /**
@@ -91,8 +109,8 @@ export function getZonesNames(): string[] {
  * @param zoneName Urban zone to search into
  * @param profile Building type searched, all if undefined
  */
-export function getZoneNbOfCollectionSites(zoneName: string, profile?: ConsumerProfile): number {
-	const zone = getZone(zoneName);
+export async function getZoneNbOfCollectionSites(zoneName: string, profile?: ConsumerProfile): Promise<number> {
+	const zone = await getZone(zoneName);
 	const zoneProperties = zone.properties;
 
 	switch (profile) {
@@ -103,12 +121,16 @@ export function getZoneNbOfCollectionSites(zoneName: string, profile?: ConsumerP
 		case ConsumerProfile.TERTIARY:
 			return zoneProperties.ENT;
 		case ConsumerProfile.PUBLIC_LIGHTING:
-			return publicLightingGeoJSON.features.filter(publicLighting => turf.booleanWithin(turf.point(publicLighting.geometry.coordinates), zone)).length;
+			return (await getPublicLightingGeoJSON()).features.filter(publicLighting => turf.booleanWithin(turf.point(publicLighting.geometry.coordinates), zone)).length;
 		case ConsumerProfile.ALL:
 		default:
-			return getZoneNbOfCollectionSites(zoneName, ConsumerProfile.RESIDENTIAL)
-				+ getZoneNbOfCollectionSites(zoneName, ConsumerProfile.PROFESSIONAL)
-				+ getZoneNbOfCollectionSites(zoneName, ConsumerProfile.TERTIARY)
-				+ getZoneNbOfCollectionSites(zoneName, ConsumerProfile.PUBLIC_LIGHTING)
+			return (
+				await Promise.all([
+					getZoneNbOfCollectionSites(zoneName, ConsumerProfile.RESIDENTIAL),
+					getZoneNbOfCollectionSites(zoneName, ConsumerProfile.PROFESSIONAL),
+					getZoneNbOfCollectionSites(zoneName, ConsumerProfile.TERTIARY),
+					getZoneNbOfCollectionSites(zoneName, ConsumerProfile.PUBLIC_LIGHTING),
+				])
+			).reduce((a, b) => a + b);
 	}
 }

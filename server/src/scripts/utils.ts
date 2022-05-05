@@ -5,19 +5,20 @@ import * as FormData from "form-data";
 import axios from "axios";
 import {EOL} from "os";
 import * as turf from "@turf/turf";
-import * as zones from "../geodata/zones.json";
 import {FeatureCollection, MultiPolygon} from "@turf/turf";
 import {ConsumerProfile} from "../db/entities/Consumption";
 import {ProducerProfile} from "../db/entities/Production";
 import {EntityManager} from "typeorm";
 import {Zone} from "../db/entities/Zone";
-import * as zonesGeodata from "../geodata/zones.json";
 import {DataTable} from "../db/entities/DataTable";
 import {createHash} from "crypto";
+import { config } from '../config';
 
 export const dataDir = 'raw-data'
 export const mockDataDir = dataDir + '/mock'
 export const mockSrcDataDir = dataDir + '/mock-src'
+
+const zonesGeodata = require(config.geodataDir + '/zones.json') as FeatureCollection<MultiPolygon>;
 
 export function exists(path: PathLike): Promise<boolean> {
 	return new Promise((resolve, reject) => {
@@ -99,7 +100,7 @@ export async function downloadRandomAddresses(): Promise<Addresses> {
 			// find in which zone is the address
 			let zoneName: string = null;
 			const point = turf.point([a.longitude, a.latitude]);
-			for (const zone of (zones as FeatureCollection<MultiPolygon>).features) {
+			for (const zone of zonesGeodata.features) {
 				if (turf.booleanContains({ type: 'Polygon', coordinates: zone.geometry.coordinates[0] }, point)) {
 					zoneName = zone.properties.libelle;
 					break;
@@ -137,7 +138,7 @@ export async function downloadRandomAddresses(): Promise<Addresses> {
 export function getCoefficients(): Coefficients {
 	const coefficients: Coefficients = {};
 
-	for (const zone of (zones as FeatureCollection).features) {
+	for (const zone of zonesGeodata.features) {
 		const coeff = coefficients[zone.properties.libelle] = {} as Record<string, number>;
 		coeff[ConsumerProfile.PROFESSIONAL] = zone.properties.PRO1 + zone.properties.PRO2;
 		coeff[ConsumerProfile.RESIDENTIAL] = zone.properties.RES1 + zone.properties.RES2;
@@ -242,7 +243,7 @@ const batchSize = 1000;
 export async function getZones(tx: EntityManager): Promise<Record<string, Zone>> {
 	const zones: Record<string, Zone> = {};
 
-	for (const zoneGeodata of (zonesGeodata as FeatureCollection<MultiPolygon>).features) {
+	for (const zoneGeodata of zonesGeodata.features) {
 		const zoneName = zoneGeodata.properties.libelle;
 
 		let zone = await tx.findOne(Zone, { where: { name: zoneName }});
@@ -320,7 +321,7 @@ async function getZoneFromAddress(zones: Record<string, Zone>, address: Address,
 	const point = turf.point([coo.long, coo.lat]);
 
 	let zoneName: string | null = null;
-	for (const zoneGeodata of (zonesGeodata as FeatureCollection<MultiPolygon>).features) {
+	for (const zoneGeodata of zonesGeodata.features) {
 		if (turf.booleanContains({ type: 'Polygon', coordinates: zoneGeodata.geometry.coordinates[0] }, point)) {
 			zoneName = zoneGeodata.properties.libelle;
 			break;

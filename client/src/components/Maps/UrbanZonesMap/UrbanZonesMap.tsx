@@ -15,7 +15,7 @@ import {
 	lightingPoints,
 	bornesPoints,
 } from '../layers';
-import { zonesGeoJSON, buildingsGeoJSON, publicLightingGeoJSON, chargingStationsGeoJSON } from 'geodata';
+import { getZonesGeoJSON, getBuildingsGeoJSON, getPublicLightingGeoJSON, getChargingStationsGeoJSON } from 'geodata';
 import { getTotalConsumption, getTotalProduction } from 'scripts/api';
 import { changeRange } from 'scripts/utils';
 
@@ -208,6 +208,13 @@ export default class UrbanZonesMap extends React.Component<Props, State> {
 	async componentDidMount() {
 		await this.mapRef.current.ensureMapLoading();
 
+		const [zonesGeoJSON, buildingsGeoJSON, publicLightingGeoJSON, chargingStationsGeoJSON] = await Promise.all([
+			getZonesGeoJSON(),
+			getBuildingsGeoJSON(),
+			getPublicLightingGeoJSON(),
+			getChargingStationsGeoJSON(),
+		]);
+
 		// Add zones sources and layers
 		sources.push({ id: 'urban-zones', data: zonesGeoJSON });
 		layers.push({ id: 'urban-zones-data', data: zonesFill(zonesFillColor) });
@@ -275,10 +282,9 @@ export default class UrbanZonesMap extends React.Component<Props, State> {
 		await this.mapRef.current.ensureMapLoading();
 
 		if (this.props.highlightedZoneName) {
-			const featureId = zonesGeoJSON.features.findIndex(f => f.properties.libelle === this.props.highlightedZoneName);
+			const featureId = (await getZonesGeoJSON()).features.findIndex(f => f.properties.libelle === this.props.highlightedZoneName);
 			this.highlightZone(featureId);
-		}
-		else {
+		} else {
 			this.cancelZoneHighlighting();
 		}
 

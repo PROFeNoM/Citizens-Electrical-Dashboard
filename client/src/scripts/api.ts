@@ -63,8 +63,7 @@ export async function getMaxTimestamp(dataType: DataType): Promise<Date> {
 }
 
 async function apiCall(endpoint: string, t1?: number, t2?: number, profiles?: string[], zoneName?: string): Promise<any> {
-	const host = window.location.hostname === 'localhost' ? 'http://localhost:5000' : 'https://pfa.c-saccoccio.fr';
-	let url = `${host}/api/v1/${endpoint}?minDate=${t1}&maxDate=${t2}`;
+	let url = `${getApiRoot()}/${endpoint}?minDate=${t1}&maxDate=${t2}`;
 
 	if (profiles && profiles.length > 0 && profiles[0] !== ConsumerProfile.ALL) { // Use the fact that default is ALL
 		url += profiles.map((p, i) => `&profiles[${i}]=${p}`).join();
@@ -81,4 +80,9 @@ async function apiCall(endpoint: string, t1?: number, t2?: number, profiles?: st
 		console.error((err as Error).message);
 		return null;
 	}
+}
+
+export function getApiRoot() {
+	const host = window.location.hostname === 'localhost' ? 'http://localhost:5000' : 'https://pfa.c-saccoccio.fr';
+	return host + '/api/v1';
 }

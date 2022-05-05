@@ -88,9 +88,12 @@ app.get('/api/v1/:entity/max-timestamp', async (req, res) => {
 	res.send(result);
 });
 
+app.use('/api/v1/geodata', express.static(config.geodataDir));
+
 app.get('/api/*', (req, res) => {
 	res.status(404).send();
 })
+
 
 // FIXME every non API call will result in a 200 response, this isn't a good practice
 app.get('*', (req, res) => {

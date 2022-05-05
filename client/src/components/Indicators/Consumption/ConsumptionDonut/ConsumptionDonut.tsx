@@ -5,7 +5,7 @@ import { CanvasJSChart } from 'canvasjs-react-charts';
 
 import { ConsumerProfile } from 'constants/profiles';
 import { getTotalConsumption } from 'scripts/api';
-import { zonesGeoJSON } from 'geodata';
+import { getZonesGeoJSON } from 'geodata';
 
 interface Props {
 	t1: number;
@@ -36,7 +36,7 @@ export default class ConsumptionDonut extends React.Component<Props, State> {
 	async fetchData() {
 		const { t1, t2, urbanZone } = this.props;
 
-		const consumptions = await Promise.all(zonesGeoJSON.features.map(async f => ({
+		const consumptions = await Promise.all((await getZonesGeoJSON()).features.map(async f => ({
 			name: f.properties.libelle,
 			value: await getTotalConsumption(
 				t1,

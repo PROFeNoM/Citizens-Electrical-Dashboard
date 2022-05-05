@@ -4,7 +4,7 @@ import React from 'react';
 
 import { ProducerProfile } from 'constants/profiles';
 import { getTotalProduction } from 'scripts/api';
-import { zonesGeoJSON } from 'geodata';
+import { getZonesGeoJSON } from 'geodata';
 import { wattsToKilowatts } from 'scripts/utils';
 
 interface Props {
@@ -35,7 +35,7 @@ export default class LocalProductionInfo extends React.Component<Props, State> {
 	async fetchData() {
 		const { t1, t2, zoneName } = this.props;
 		// Retreive the number of production points using geodata zones
-		const zone = zonesGeoJSON.features.find(z => z.properties.libelle === zoneName).properties.PROD_F5;
+		const zone = (await getZonesGeoJSON()).features.find(z => z.properties.libelle === zoneName).properties.PROD_F5;
 		const totalProduction = await getTotalProduction(t1, t2, [ProducerProfile.SOLAR], zoneName);
 		//const bestDay = await getBestDay(t1, t2, [ProducerProfile.SOLAR], zoneName);
 		//const worstDay = await getWorstDay(t1, t2, [ProducerProfile.SOLAR], zoneName);

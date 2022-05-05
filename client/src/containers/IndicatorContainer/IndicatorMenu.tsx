@@ -5,7 +5,7 @@ import { Button, DatePicker, TreePicker } from 'rsuite';
 
 import { Indicator, IndicatorType, IndicatorClass, getIndicatorFromType, getAllIndicators } from 'constants/indicator';
 import { ConsumerProfile } from 'constants/profiles';
-import { zonesGeoJSON } from 'geodata';
+import { getZonesGeoJSON } from 'geodata';
 
 /**
  * Type of a tree representing a menu with depth 1
@@ -51,10 +51,6 @@ function capitalize(str: string): string {
     return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
-const selectOptionsZoneNames: { value: string, label: string }[] = zonesGeoJSON.features
-    .map((item) => ({ value: item.properties.libelle, label: capitalize(item.properties.libelle) }));
-selectOptionsZoneNames.push({ value: 'Quartier de la Bastide', label: 'Quartier de la Bastide' });
-
 interface Props {
     setIndicator: (indicator: Indicator) => void;
     setZoneName: (zoneName: string | null) => void;
@@ -65,6 +61,7 @@ interface Props {
 }
 
 interface State {
+    selectOptionsZoneNames: { value: string, label: string }[];
     zoneName: string | null;
     indicatorType: IndicatorType;
     buildingType: ConsumerProfile;
@@ -84,6 +81,7 @@ export default class IndicatorMenu extends React.Component<Props, State> {
         const today: Date = new Date();
 
         this.state = {
+            selectOptionsZoneNames: [],
             zoneName: null,
             indicatorType: IndicatorType.EnergyBalance,
             buildingType: ConsumerProfile.ALL,
@@ -92,6 +90,13 @@ export default class IndicatorMenu extends React.Component<Props, State> {
         };
 
         this.validateRequest = this.validateRequest.bind(this);
+    }
+
+    async componentDidMount() {
+        const selectOptionsZoneNames = (await getZonesGeoJSON()).features
+            .map((item) => ({ value: item.properties.libelle, label: capitalize(item.properties.libelle) }));
+        selectOptionsZoneNames.push({ value: 'Quartier de la Bastide', label: 'Quartier de la Bastide' });
+        this.setState({ selectOptionsZoneNames });
     }
 
     /**
@@ -120,7 +125,7 @@ export default class IndicatorMenu extends React.Component<Props, State> {
                     <TreePicker
                         className="indicator-menu-item tree-picker"
                         onChange={(value: string) => { this.setState({ zoneName: value }); }}
-                        data={selectOptionsZoneNames}
+                        data={this.state.selectOptionsZoneNames}
                         placeholder="Zone"
                         placement="bottomEnd"
                         defaultValue={'Quartier de la Bastide'}
