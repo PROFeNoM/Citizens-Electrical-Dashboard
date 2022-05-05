@@ -51,7 +51,7 @@ let zonesArea: Record<string, number> | null = null;
  * @param zoneName Urban zone for which the area should be computed
  */
 export async function getZoneArea(zoneName: string): Promise<number> {
-	if (zonesArea == null) {
+	if (zonesArea == null || !zonesArea[zoneName]) {
 		// Compute zones area in square meters
 		zonesArea = {};
 		for (const zone of (await getZonesGeoJSON()).features) {
