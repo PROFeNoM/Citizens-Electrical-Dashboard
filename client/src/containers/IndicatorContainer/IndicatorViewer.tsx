@@ -121,14 +121,14 @@ export default class IndicatorViewer extends React.Component<Props, {}> {
     }
 
     render() {
-        const { indicator } = this.props;
+        const { indicator, zoneName, sector, t1, t2 } = this.props;
 
         return (
             <div id="indicator-viewer">
                 <div id="indicator-name-wrapper">
                     <p>{indicator.name}</p>
                 </div>
-                <div id="indicator-content">
+                <div id="indicator-content" key={indicator+zoneName+sector+t1+t2}>
                     {this.renderIndicator(indicator)}
                 </div>
             </div>

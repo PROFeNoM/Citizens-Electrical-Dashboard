@@ -5,8 +5,8 @@ nav:
   - Introduction: 'index.md'
   - Serveur: 'serveur.md'
   - Client: 'client.md'
-  - Déploiement: 'deploy.md'
   - Prédictions: 'predictions.md'
+  - Infrastructure: 'infrastructure.md'
 markdown_extensions:
   - pymdownx.highlight:
       anchor_linenums: true

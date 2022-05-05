@@ -60,7 +60,7 @@ export async function apiReqCheckerParser(req: Request, res: Response, next: Nex
 			return;
 		}
 
-		const zone = await getManager().findOne(Zone, { where: { name: zoneName }});
+		const zone = await getManager().findOne(Zone, { where: { name: zoneName.normalize("NFD").replace(/[\u0300-\u036f]/g, "") }});
 		if (zone === undefined) {
 			res.status(400).send('the given zone is not known');
 			return;
