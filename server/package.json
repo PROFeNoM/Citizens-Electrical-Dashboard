@@ -1,6 +1,6 @@
 {
 	"name": "server",
-	"version": "1.0.0-alpha-14",
+	"version": "1.0.0-alpha-15",
 	"license": "GPL-3.0-only",
 	"scripts": {
 		"watch": "nodemon src/main.ts",
