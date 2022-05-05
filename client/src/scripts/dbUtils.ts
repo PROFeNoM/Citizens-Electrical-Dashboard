@@ -121,13 +121,19 @@ export function getZoneNbOfCollectionSites(zoneName: string, profile?: ConsumerP
  */
 export function getZoneNbOfProductionSites(zoneName: string, profile?: ProducerProfile): number {
 	const zone = getZone(zoneName);
-	const zoneProperties = zone.properties;
 
 	switch (profile) {
 		case ProducerProfile.SOLAR:
 		case ProducerProfile.ALL:
 		case undefined:
-			return zoneProperties.PROD_F5;
+			if (zone === undefined) {
+				return zonesGeoJSON.features.reduce((acc, zone) => {
+					return acc + zone.properties.PROD_F5;
+				}, 0);
+			}
+			else {
+				return zone.properties.PROD_F5;
+			}
 		default:
 			return 0;
 	}
