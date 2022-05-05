@@ -1,0 +1,30 @@
+main {
+    height: 100%;
+    color: var(--color-text);
+    padding-top: 2%;
+    padding-left: 20%;
+    padding-right: 20%;
+    height: 100%;
+    background-color: var(--color-primary);
+    min-height: calc(100vh -var(--header-height));
+} 
+
+h2 {
+    padding-bottom: 1%;
+}
+
+h3 {
+    padding-bottom: 1%;
+}
+
+p {
+    padding-bottom: 1%;
+}
+
+ul {
+    padding-bottom: 1%;
+}
+li {
+    padding-bottom: .5%;
+}
+
