@@ -4,8 +4,8 @@ import { getConnection } from 'typeorm';
 import { logger } from './logger';
 import { config } from './config';
 import { apiReqCheckerParser } from './validation';
-import {ProducerProfile, Production} from "./db/entities/Production";
-import {ConsumerProfile, Consumption} from "./db/entities/Consumption";
+import { Production } from './db/entities/Production';
+import { Consumption } from './db/entities/Consumption';
 
 const app = express();
 const wwwDir = resolve(config.devMode ? '../client/build' : 'www');
