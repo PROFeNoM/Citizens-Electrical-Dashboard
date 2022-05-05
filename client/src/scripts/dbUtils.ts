@@ -2,7 +2,7 @@ import * as turf from '@turf/turf';
 
 import { ConsumerProfile, ProducerProfile } from 'constants/profiles';
 import { getBuildingsGeoJSON, getZonesGeoJSON, getPublicLightingGeoJSON, getChargingStationsGeoJSON, ZoneFeatureProperties } from 'geodata';
-import { Feature, MultiPolygon } from 'geojson';
+import { Feature, MultiPolygon } from '@turf/turf';
 
 // FIXME client shouldn't have to compute that, client shouldn't have to compute anything
 /** Exactly like booleanContains of @turf/turf, but it works with MultiPolygon. */

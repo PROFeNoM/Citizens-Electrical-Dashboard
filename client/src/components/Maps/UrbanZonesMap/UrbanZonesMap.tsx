@@ -6,7 +6,7 @@ import { FillExtrusionLayer, FillLayer, LineLayer, CircleLayer } from 'react-map
 import { Indicator, IndicatorClass } from 'constants/indicator';
 import { ConsumerProfile, ProducerProfile } from 'constants/profiles';
 import BaseMap, { BaseMapProps } from '../BaseMap/BaseMap';
-import { FeatureCollection } from 'geojson';
+import { FeatureCollection } from '@turf/turf';
 import {
 	allBuildings3D, residentialBuildings3D,
 	zonesBorder, zonesFill,
