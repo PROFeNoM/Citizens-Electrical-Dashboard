@@ -17,7 +17,7 @@ interface Props {
 interface State {
 	area: number; // Area of the selected zone
 	nbOfBuildings: number; // Number of buildings in the selected zone
-	nbOfConsumers: number; // Number of consumers in the selected zone for the given sector
+	nbOfCollectionSites: number; // Number of consumers in the selected zone for the given sector
 	consumption: number; // Total consumption of the selected zone for the given sector and time period
 	production: number; // Total production of the selected zone for the given time period
 }
@@ -38,7 +38,7 @@ export default class EnergyBalance extends React.Component<Props, State> {
 		this.state = {
 			area: null,
 			nbOfBuildings: null,
-			nbOfConsumers: null,
+			nbOfCollectionSites: null,
 			consumption: null,
 			production: null
 		};
@@ -59,19 +59,19 @@ export default class EnergyBalance extends React.Component<Props, State> {
 			(await Promise.all(zoneNames.map(getZoneNbOfBuildings))).reduce((a, b) => a + b)
 			: await getZoneNbOfBuildings(zoneName);
 
-		const nbOfConsumers = zoneName === null ?
+		const nbOfCollectionSites = zoneName === null ?
 			(await Promise.all(zoneNames.map(zone => getZoneNbOfCollectionSites(zone, sector)))).reduce((a, b) => a + b)
 			: await getZoneNbOfCollectionSites(zoneName, sector);
 
 		this.setState({
 			area,
 			nbOfBuildings,
-			nbOfConsumers
+			nbOfCollectionSites
 		});
 
 		const [consumption, production] = await Promise.all([
 			getTotalConsumption(t1, t2, [sector], zoneName),
-			getTotalProduction(t1, t2, undefined, zoneName),
+			getTotalProduction(t1, t2, undefined, zoneName)
 		]);
 
 		this.setState({
@@ -112,7 +112,7 @@ export default class EnergyBalance extends React.Component<Props, State> {
 
 	render() {
 		const { sector } = this.props;
-		const { area, nbOfBuildings, nbOfConsumers, consumption, production } = this.state;
+		const { area, nbOfBuildings, nbOfCollectionSites, consumption, production } = this.state;
 		const formatter = new Intl.NumberFormat('fr-FR', { style: 'decimal', maximumFractionDigits: 2 });
 		const consumptionMegaWatts = consumption !== null ?
 			formatter.format(wattsToMegawatts(consumption))
@@ -150,7 +150,7 @@ export default class EnergyBalance extends React.Component<Props, State> {
 				<ul>
 					<li><span className="data">{Intl.NumberFormat('fr-FR', { style: 'decimal', maximumFractionDigits: 0 }).format(area)}</span> m²</li>
 					<li><span className="data">{nbOfBuildings ?? '...'}</span> bâtiment{nbOfBuildings > 1 ? 's' : ''} au total</li>
-					<li><span className="data">{nbOfConsumers ?? '...'}</span> point{nbOfConsumers > 1 ? 's' : ''} de consommation {sectorText}</li>
+					<li><span className="data">{nbOfCollectionSites ?? '...'}</span> point{nbOfCollectionSites > 1 ? 's' : ''} de consommation {sectorText}</li>
 					<li><span className="data">{consumptionMegaWatts ?? '...'}</span> MWh d'électricité consommée</li>
 					<li><span className="data">{productionMegaWatts ?? '...'}</span> MWh d'électricité produite</li>
 					<li><span className="data">{ratio ?? '...'}</span> % de ratio production/consommation</li>
