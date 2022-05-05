@@ -35,7 +35,6 @@ export default class LocalProductionInfo extends React.Component<Props, State> {
 			productionPoints,
 			totalProduction
 		});
-		console.log(`${zoneName} production points: ${productionPoints}`);
 	}
 
 	async componentDidMount() {
