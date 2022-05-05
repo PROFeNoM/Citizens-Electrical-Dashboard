@@ -263,7 +263,7 @@ export default class UrbanZonesMap extends React.Component<Props, State> {
 		sources.forEach(source => {
 			this.map.addSource(source.id, {
 				type: 'geojson',
-				data: source.data,
+				data: source.data as any,
 				generateId: true
 			});
 		});
