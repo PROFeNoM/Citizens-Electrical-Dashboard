@@ -88,10 +88,7 @@ export default class UrbanZonesMap extends React.Component<Props, State> {
 			);
 		});
 
-		this.setState((state) => ({
-			...state,
-			highlightedZone: id
-		}));
+		this.setState({ highlightedZone: id });
 	}
 
 	private cancelZoneHighlighting() {
@@ -106,10 +103,7 @@ export default class UrbanZonesMap extends React.Component<Props, State> {
 			);
 		});
 
-		this.setState((state) => ({
-			...state,
-			highlightedZone: null,
-		}));
+		this.setState({ highlightedZone: null });
 	}
 
 	private cursorStyle() {
@@ -212,7 +206,7 @@ export default class UrbanZonesMap extends React.Component<Props, State> {
 			getZonesGeoJSON(),
 			getBuildingsGeoJSON(),
 			getPublicLightingGeoJSON(),
-			getChargingStationsGeoJSON(),
+			getChargingStationsGeoJSON()
 		]);
 
 		// Add zones sources and layers

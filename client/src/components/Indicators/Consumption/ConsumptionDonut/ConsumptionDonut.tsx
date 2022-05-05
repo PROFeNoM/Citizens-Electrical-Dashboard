@@ -96,7 +96,7 @@ export default class ConsumptionDonut extends React.Component<Props, State> {
 
 	render() {
 		const { consumptionDistribution, urbanZoneProportion } = this.state;
-		const formatter = new Intl.NumberFormat('fr-FR', {
+		const formatter = new Intl.NumberFormat('en-US', {
 			style: 'decimal',
 			maximumFractionDigits: 1
 		});

@@ -1,30 +1,44 @@
-#legal-text-container {
-    height: 100%;
+#legal-text-wrapper {
+    font-size: medium;
+    text-align: justify;
     color: var(--color-text);
-    padding-top: 2%;
-    padding-left: 20%;
-    padding-right: 20%;
-    height: 100%;
     background-color: var(--color-primary);
-    min-height: calc(100vh -var(--header-height));
-} 
+    height: 100%;
+    min-height: calc(100vh - var(--header-height));
+    padding: 20px 20%;
+}
 
-#legal-text-container h2 {
+#legal-text-wrapper h2 {
+    margin: 20px 0;
+}
+
+#legal-text-wrapper h3 {
     padding-bottom: 1%;
 }
 
-#legal-text-container h3 {
+#legal-text-wrapper p {
     padding-bottom: 1%;
 }
 
-#legal-text-container p {
+#legal-text-wrapper ul {
     padding-bottom: 1%;
 }
 
-#legal-text-container ul {
-    padding-bottom: 1%;
-}
-#legal-text-container li {
+#legal-text-wrapper li {
     padding-bottom: .5%;
 }
 
+#legal-text-wrapper a {
+    color: var(--color-text);
+    text-decoration: underline;
+}
+
+#legal-text-wrapper a:hover {
+    color: var(--color-green);
+}
+
+@media (max-width: 900px) {
+    #legal-text-wrapper {
+        padding: 20px 10%;
+    }
+}

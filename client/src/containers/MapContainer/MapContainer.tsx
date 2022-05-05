@@ -25,10 +25,10 @@ export default class MapContainer extends React.Component<Props> {
             <div id="map-container">
                 <UrbanZonesMap
                     indicator={this.props.indicator}
+                    buildingType={this.props.buildingType}
                     highlightedZoneName={this.props.highlightedZoneName}
                     t1={this.props.t1.getTime()}
                     t2={this.props.t2.getTime()}
-                    buildingType={this.props.buildingType}
                 />
             </div>
         );
