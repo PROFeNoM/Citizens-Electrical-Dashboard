@@ -45,7 +45,7 @@ export default class TypicalProductionDay extends React.Component<Props, State> 
 		return meanCons.map((el) => {
 			return {
 				x: el.hour,
-				y: Math.round(el.mean / 1000),
+				y: Math.round(el.hour.getHours() <= 5 || el.hour.getHours() >= 23 ? 0 : el.mean),
 			};
 		});
 	}
@@ -61,7 +61,7 @@ export default class TypicalProductionDay extends React.Component<Props, State> 
 		return meanCons.map((el) => {
 			return {
 				x: el.hour,
-				y: Math.round(el.mean / 1000),
+				y: Math.round(el.hour.getHours() <= 5 || el.hour.getHours() >= 23 ? 0 : el.mean),
 			};
 		});
 	}
@@ -93,7 +93,7 @@ export default class TypicalProductionDay extends React.Component<Props, State> 
 			},
 			axisY: {
 				fontFamily: "Ubuntu",
-				title: "kWh",
+				title: "Wh",
 				titleFontWeight: "bold",
 			},
 			axisY2: {
@@ -108,7 +108,7 @@ export default class TypicalProductionDay extends React.Component<Props, State> 
 			data: [
 				{
 					type: "column",
-					name: "Production de La Bastide (kWh)",
+					name: "Production de La Bastide (Wh)",
 					axisYType: "primary",
 					xValueFormatString: "HH:mm",
 					dataPoints: this.state.districtConsumptionData,
@@ -117,7 +117,7 @@ export default class TypicalProductionDay extends React.Component<Props, State> 
 				},
 				{
 					type: "column",
-					name: "Production de la zone urbaine (kWh)",
+					name: "Production de la zone urbaine (Wh)",
 					axisYType: "primary",
 					xValueFormatString: "HH:mm",
 					dataPoints: this.state.urbanZoneConsumptionData,
