@@ -50,12 +50,12 @@ registerIndicator(IndicatorClass.General, IndicatorType.EnergyBalance, 'Bilan g�
 
 // Indicateurs de consommation
 registerIndicator(IndicatorClass.Consumption, IndicatorType.TotalConsumption, 'Consommation totale');
+registerIndicator(IndicatorClass.Consumption, IndicatorType.ConsumptionDonut, 'Répartition de la consommation');
 registerIndicator(IndicatorClass.Consumption, IndicatorType.TypicalConsumptionDay, 'Journée type de consommation');
-registerIndicator(IndicatorClass.Consumption, IndicatorType.ConsumptionDonut, 'Consommation par type de batiment');
 
 // Indicateurs de production
 registerIndicator(IndicatorClass.Production, IndicatorType.LocalProductionInfo, 'Production locale');
-registerIndicator(IndicatorClass.Production, IndicatorType.SolarDonut, 'Production solaire');
+registerIndicator(IndicatorClass.Production, IndicatorType.SolarDonut, 'Répartition de la production solaire');
 registerIndicator(IndicatorClass.Production, IndicatorType.TypicalProductionDay, 'Journée type de production');
 registerIndicator(IndicatorClass.Production, IndicatorType.WeeklyProduction, 'Production hebdomadaire');
 

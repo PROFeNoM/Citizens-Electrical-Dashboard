@@ -164,6 +164,7 @@ export default class IndicatorMenu extends React.Component<Props, State> {
                         placeholder="Date début"
                         defaultValue={this.state.t1}
                         cleanable={false}
+                        format={'dd/MM/yyyy'}
                     />
                 </div>
                 <div id="indicator-menu-end-date">
@@ -175,6 +176,7 @@ export default class IndicatorMenu extends React.Component<Props, State> {
                         placeholder="Date fin"
                         defaultValue={this.state.t2}
                         cleanable={false}
+                        format={'dd/MM/yyyy'}
                     />
                 </div>
                 <div id="indicator-menu-validate">
