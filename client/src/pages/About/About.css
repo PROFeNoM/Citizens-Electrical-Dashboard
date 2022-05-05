@@ -1,0 +1,30 @@
+#about-text-container {
+    height: 100%;
+    color: var(--color-text);
+    padding-top: 2%;
+    padding-left: 20%;
+    padding-right: 20%;
+    height: 100%;
+    background-color: var(--color-primary);
+    min-height: calc(100vh -var(--header-height));
+} 
+
+#about-text-container h2 {
+    padding-bottom: 1%;
+}
+
+#about-text-container h3 {
+    padding-bottom: 1%;
+}
+
+#about-text-container p {
+    padding-bottom: 1%;
+}
+
+#about-text-container ul {
+    padding-bottom: 1%;
+}
+#about-text-container li {
+    padding-bottom: .5%;
+}
+
