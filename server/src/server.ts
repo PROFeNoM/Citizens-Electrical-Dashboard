@@ -1,4 +1,5 @@
 import * as express from 'express';
+import * as compression from 'compression'
 import { resolve } from 'path';
 import { getConnection } from 'typeorm';
 import { logger } from './logger';
@@ -17,6 +18,7 @@ if (config.devMode) {
 // middleware
 app.use(express.json());
 app.use(express.static(wwwDir));
+app.use(compression());
 
 app.get('/api/v1/:entity/total', apiReqCheckerParser, async (req, res) => {
 	let query = await getConnection().createQueryBuilder()
