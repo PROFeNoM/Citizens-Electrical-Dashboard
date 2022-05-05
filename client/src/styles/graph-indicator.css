@@ -17,7 +17,7 @@
 .graph-legend-item {
     display: flex;
     flex-direction: row;
-    padding-top: 10px;
+    padding-top: 5px;
     padding-right: 10px;
 }
 

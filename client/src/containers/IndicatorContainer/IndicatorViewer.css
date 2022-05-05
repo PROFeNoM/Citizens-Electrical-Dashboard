@@ -12,9 +12,9 @@
     align-self: center;
 }
 
-#indicator-name-wrapper>* {
+#indicator-name-wrapper>p {
     color: var(--color-text);
-    font-size: x-large;
+    font-size: large;
     font-weight: bold;
     text-align: center;
     border: 3px solid var(--color-text);
@@ -23,7 +23,7 @@
 }
 
 #indicator-content {
-    padding: 20px 30px;
+    padding: 10px 30px;
 }
 
 #indicator-content>* {
