@@ -1,4 +1,4 @@
-main {
+#legal-text-container {
     height: 100%;
     color: var(--color-text);
     padding-top: 2%;
@@ -9,29 +9,22 @@ main {
     min-height: calc(100vh -var(--header-height));
 } 
 
-h2 {
+#legal-text-container h2 {
     padding-bottom: 1%;
 }
 
-h3 {
+#legal-text-container h3 {
     padding-bottom: 1%;
 }
 
-p {
+#legal-text-container p {
     padding-bottom: 1%;
 }
 
-ul {
+#legal-text-container ul {
     padding-bottom: 1%;
 }
-li {
+#legal-text-container li {
     padding-bottom: .5%;
 }
 
-
-/* @media (max-width: 800px) {
-    main {
-        grid-template-columns: unset;
-        grid-template-rows: 2fr 3fr;
-    }
-} */

@@ -10,6 +10,7 @@ function Legal() {
 				<Header title={"Mentions"}/>
 			</header>
 			<main>
+				<div id="legal-text-container">
 					<h2>Propriété intellectuelle</h2>
 
 					<p>
@@ -42,6 +43,7 @@ function Legal() {
 							<li>Saccoccio Clément (élève — ENSEIRB-MATMECA)</li>	
 							<li>Tilfani Aymen (élève — ENSEIRB-MATMECA)</li>	
 					</ul>
+				</div>
 			</main>
 		</>
 	);

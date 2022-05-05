@@ -1,4 +1,4 @@
-main {
+#about-text-container {
     height: 100%;
     color: var(--color-text);
     padding-top: 2%;
@@ -9,22 +9,22 @@ main {
     min-height: calc(100vh -var(--header-height));
 } 
 
-h2 {
+#about-text-container h2 {
     padding-bottom: 1%;
 }
 
-h3 {
+#about-text-container h3 {
     padding-bottom: 1%;
 }
 
-p {
+#about-text-container p {
     padding-bottom: 1%;
 }
 
-ul {
+#about-text-container ul {
     padding-bottom: 1%;
 }
-li {
+#about-text-container li {
     padding-bottom: .5%;
 }
 
