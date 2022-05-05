@@ -1,6 +1,6 @@
 import * as turf from '@turf/turf';
 
-import { ConsumerProfile } from 'constants/profiles';
+import { ConsumerProfile, ProducerProfile } from 'constants/profiles';
 import { getBuildingsGeoJSON, getZonesGeoJSON, getPublicLightingGeoJSON, getChargingStationsGeoJSON, ZoneFeatureProperties } from 'geodata';
 import { Feature, MultiPolygon } from 'geojson';
 
@@ -96,7 +96,7 @@ export async function getZoneChargingStationsData(zoneName: string) {
  * @param zoneName urban zone for which the feature section shall be returned
  */
 async function getZone(zoneName: string): Promise<Feature<MultiPolygon, ZoneFeatureProperties>> {
-	return (await getZonesGeoJSON()).features.filter(data => data.properties.libelle === zoneName)[0];
+	return (await getZonesGeoJSON()).features.find(data => data.properties.libelle === zoneName);
 }
 
 export async function getZonesNames(): Promise<string[]> {
@@ -132,5 +132,31 @@ export async function getZoneNbOfCollectionSites(zoneName: string, profile?: Con
 					getZoneNbOfCollectionSites(zoneName, ConsumerProfile.PUBLIC_LIGHTING),
 				])
 			).reduce((a, b) => a + b);
+	}
+}
+
+/**
+ * Return the number of production sites in an urban zone
+ * 
+ * @param zoneName Urban zone to search into
+ * @param profile Producing type searched, all if undefined
+ */
+export async function getZoneNbOfProductionSites(zoneName: string, profile?: ProducerProfile): Promise<number> {
+	const [zonesGeoJSON, zone] = await Promise.all([getZonesGeoJSON(), getZone(zoneName)]);
+
+	switch (profile) {
+		case ProducerProfile.SOLAR:
+		case ProducerProfile.ALL:
+		case undefined:
+			if (zone === undefined) {
+				return zonesGeoJSON.features.reduce((acc, zone) => {
+					return acc + zone.properties.PROD_F5;
+				}, 0);
+			}
+			else {
+				return zone.properties.PROD_F5;
+			}
+		default:
+			return 0;
 	}
 }

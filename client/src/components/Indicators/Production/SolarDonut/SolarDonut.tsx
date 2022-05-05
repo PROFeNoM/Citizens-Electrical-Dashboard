@@ -57,7 +57,7 @@ export default class SolarDonut extends React.Component<Props, State> {
 
 		this.setState({
 			productionDistribution: productionDistribution,
-			urbanZoneProportion: productions.find(z => z.name === urbanZone).value / totalProduction * 100,
+			urbanZoneProportion: urbanZone ? productions.find(z => z.name === urbanZone).value / totalProduction * 100 : 100,
 			renderMe: true
 		});
 	}

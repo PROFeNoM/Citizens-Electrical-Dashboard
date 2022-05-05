@@ -52,10 +52,15 @@ function capitalize(str: string): string {
 }
 
 interface Props {
+    indicator: Indicator;
     setIndicator: (indicator: Indicator) => void;
+    zoneName: string | null;
     setZoneName: (zoneName: string | null) => void;
+    buildingType: ConsumerProfile;
     setBuildingType: (buildingType: ConsumerProfile) => void;
+    t1: Date;
     setT1: (t1: Date) => void;
+    t2: Date;
     setT2: (t2: Date) => void;
     setHighlightedZone: (zoneName: string | null) => void;
 }
@@ -78,15 +83,13 @@ export default class IndicatorMenu extends React.Component<Props, State> {
     constructor(props: Props) {
         super(props);
 
-        const today: Date = new Date();
-
         this.state = {
             selectOptionsZoneNames: [],
-            zoneName: null,
-            indicatorType: IndicatorType.EnergyBalance,
-            buildingType: ConsumerProfile.ALL,
-            t1: new Date(today.getFullYear(), today.getMonth(), today.getDate() - 30),
-            t2: today
+            zoneName: this.props.zoneName,
+            indicatorType: this.props.indicator.type,
+            buildingType: this.props.buildingType,
+            t1: this.props.t1,
+            t2: this.props.t2
         };
 
         this.validateRequest = this.validateRequest.bind(this);
@@ -166,6 +169,7 @@ export default class IndicatorMenu extends React.Component<Props, State> {
                         placeholder="Date début"
                         defaultValue={this.state.t1}
                         cleanable={false}
+                        format={'dd/MM/yyyy'}
                     />
                 </div>
                 <div id="indicator-menu-end-date">
@@ -177,6 +181,7 @@ export default class IndicatorMenu extends React.Component<Props, State> {
                         placeholder="Date fin"
                         defaultValue={this.state.t2}
                         cleanable={false}
+                        format={'dd/MM/yyyy'}
                     />
                 </div>
                 <div id="indicator-menu-validate">
