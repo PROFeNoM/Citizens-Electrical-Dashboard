@@ -24,7 +24,7 @@
             "type": "Feature",
             "properties": {
                 "gid": 9.0,
-                "libelle": "quartier historique Nord Thiers",
+                "libelle": "Quartier historique Nord Thiers",
                 "RES1": 200,
                 "RES2": 0,
                 "PRO1": 10,
@@ -41,7 +41,7 @@
             "type": "Feature",
             "properties": {
                 "gid": 2.0,
-                "libelle": "coeur de Bastide",
+                "libelle": "Coeur de Bastide",
                 "RES1": 700,
                 "RES2": 0,
                 "PRO1": 50,
@@ -58,7 +58,7 @@
             "type": "Feature",
             "properties": {
                 "gid": 8.0,
-                "libelle": "sièges sociaux",
+                "libelle": "sieges sociaux",
                 "RES1": 0,
                 "RES2": 0,
                 "PRO1": 0,
@@ -75,7 +75,7 @@
             "type": "Feature",
             "properties": {
                 "gid": 7.0,
-                "libelle": "résidence autre quai",
+                "libelle": "residence autre quai",
                 "RES1": 0,
                 "RES2": 300,
                 "PRO1": 0,
@@ -92,7 +92,7 @@
             "type": "Feature",
             "properties": {
                 "gid": 6.0,
-                "libelle": "bâtiments publics",
+                "libelle": "batiments publics",
                 "RES1": 0,
                 "RES2": 0,
                 "PRO1": 3,
@@ -109,7 +109,7 @@
             "type": "Feature",
             "properties": {
                 "gid": 5.0,
-                "libelle": "bâtiments professionnels et résidentiels",
+                "libelle": "batiments professionnels et residentiels",
                 "RES1": 0,
                 "RES2": 300,
                 "PRO1": 0,
@@ -143,7 +143,7 @@
             "type": "Feature",
             "properties": {
                 "gid": 3.0,
-                "libelle": "quartier historique Sud avenue Thiers",
+                "libelle": "quartier historique sud avenue thiers",
                 "RES1": 1200,
                 "RES2": 800,
                 "PRO1": 50,

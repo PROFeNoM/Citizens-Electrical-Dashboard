@@ -104,9 +104,6 @@ export default class WeeklyProduction extends React.Component<Props, State> {
 	}
 
 	render() {
-		// Retrieve database's max timestamp of historical data
-		console.log(this.state.maxTimestamp);
-
 		const historicalDistrictProductionData = this.state.districtProductionData.filter((point) => {
 			return point.x.getTime() <= this.state.maxTimestamp.getTime();
 		});

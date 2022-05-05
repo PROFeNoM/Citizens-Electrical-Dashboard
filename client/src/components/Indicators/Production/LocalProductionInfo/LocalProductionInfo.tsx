@@ -35,16 +35,28 @@ export default class LocalProductionInfo extends React.Component<Props, State> {
 	async fetchData() {
 		const { t1, t2, zoneName } = this.props;
 		// Retreive the number of production points using geodata zones
-		const zone = zonesGeoJSON.features.find(z => z.properties.libelle === zoneName).properties.PROD_F5;
-		const totalProduction = await getTotalProduction(t1, t2, [ProducerProfile.SOLAR], zoneName);
-		//const bestDay = await getBestDay(t1, t2, [ProducerProfile.SOLAR], zoneName);
-		//const worstDay = await getWorstDay(t1, t2, [ProducerProfile.SOLAR], zoneName);
-		this.setState({
-			productionPoints: zone,
-			totalProduction: totalProduction,
-			//bestDay: bestDay,
-			//worstDay: worstDay
-		});
+		if (zoneName) {
+			const zone = zonesGeoJSON.features.find(z => z.properties.libelle === zoneName).properties.PROD_F5;
+			const totalProduction = await getTotalProduction(t1, t2, [ProducerProfile.SOLAR], zoneName);
+			//const bestDay = await getBestDay(t1, t2, [ProducerProfile.SOLAR], zoneName);
+			//const worstDay = await getWorstDay(t1, t2, [ProducerProfile.SOLAR], zoneName);
+			this.setState({
+				productionPoints: zone,
+				totalProduction: totalProduction,
+				//bestDay: bestDay,
+				//worstDay: worstDay
+			});
+		} else {
+			const zone = zonesGeoJSON.features.reduce((acc, z) => {
+				return acc + z.properties.PROD_F5;
+			}, 0);
+			const totalProduction = await getTotalProduction(t1, t2, [ProducerProfile.SOLAR]);
+			this.setState({
+				productionPoints: zone,
+				totalProduction: totalProduction
+			});
+		}
+
 	}
 
 	async componentDidMount() {
