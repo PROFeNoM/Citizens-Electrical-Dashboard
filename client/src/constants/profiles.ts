@@ -7,16 +7,16 @@ export enum ConsumerProfile {
 }
 
 export enum ProducerProfile {
+	ALL = 'ALL',
 	BIOENERGY = 'BIOENERGY',
 	EOLIAN = 'EOLIAN',
 	HYDRAULIC = 'HYDRAULIC',
 	NON_RENEWABLE_THERMAL = 'NON_RENEWABLE_THERMAL',
 	OTHER = 'OTHER',
-	SOLAR = 'SOLAR',
-	TOTAL = 'TOTAL',
+	SOLAR = 'SOLAR'
 }
 
 export enum DataType {
 	CONSUMPTION = 'CONSUMPTION',
-	PRODUCTION = 'PRODUCTION',
+	PRODUCTION = 'PRODUCTION'
 }
