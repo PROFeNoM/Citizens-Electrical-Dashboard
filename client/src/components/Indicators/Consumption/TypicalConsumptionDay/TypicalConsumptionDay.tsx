@@ -14,10 +14,10 @@ const tmpPoints = Array.from(Array(24).keys()).map((h) => {
 });
 
 interface Props {
+	zoneName: string;
+	buildingType: ConsumerProfile;
 	t1: number;
 	t2: number;
-	urbanZone: string;
-	buildingType: ConsumerProfile;
 	setHighlightedZone: (val: string | null) => void;
 }
 
@@ -42,13 +42,13 @@ export default class TypicalConsumptionDay extends React.Component<Props, State>
 			this.props.t1,
 			this.props.t2,
 			this.props.buildingType ? [this.props.buildingType] : undefined,
-			this.props.urbanZone
+			this.props.zoneName
 		);
 		const meanProd = await getHourlyMeanProduction(
 			this.props.t1,
 			this.props.t2,
 			undefined,
-			this.props.urbanZone
+			this.props.zoneName
 		);
 
 		return meanCons.map((el, index) => {
@@ -80,7 +80,7 @@ export default class TypicalConsumptionDay extends React.Component<Props, State>
 			this.props.t1,
 			this.props.t2,
 			this.props.buildingType ? [this.props.buildingType] : undefined,
-			this.props.urbanZone
+			this.props.zoneName
 		);
 
 		return meanCons.map((el) => {
@@ -91,7 +91,7 @@ export default class TypicalConsumptionDay extends React.Component<Props, State>
 		});
 	}
 
-	async fetchData(){
+	private async fetchData() {
 		const selfConsumptionData = await this.getSelfConsumptionData();
 		const districtConsumptionData = await this.getDistrictConsumptionData();
 		const urbanZoneConsumptionData = await this.getUrbanZoneConsumptionData();
@@ -103,12 +103,27 @@ export default class TypicalConsumptionDay extends React.Component<Props, State>
 	}
 
 	async componentDidMount() {
-		await this.fetchData();
+		try {
+			await this.fetchData();
+		} catch (e) {
+			console.error('Error while fetching data', e);
+		}
 	}
 
-	private onClick = () => {
-		console.log("CLicked on " + this.props.urbanZone);
-		this.props.setHighlightedZone(this.props.urbanZone);
+	private onClick() {
+		this.props.setHighlightedZone(this.props.zoneName);
+	}
+
+	async componentDidUpdate(prevProps: Props) {
+		if (prevProps.zoneName === this.props.zoneName && prevProps.buildingType === this.props.buildingType && prevProps.t1 === this.props.t1 && prevProps.t2 === this.props.t2) {
+			return;
+		}
+
+		try {
+			await this.fetchData();
+		} catch (e) {
+			console.error('Error while fetching data', e);
+		}
 	}
 
 	render() {

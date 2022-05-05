@@ -8,9 +8,9 @@ import { getTotalConsumption } from 'scripts/api';
 import { wattsToKilowatts } from 'scripts/utils';
 
 interface Props {
+	zoneName: string;
 	t1: number;
 	t2: number;
-	urbanZone: string;
 	setHighlightedZone: (val: string | null) => void;
 }
 
@@ -40,15 +40,15 @@ export default class TotalConsumption extends React.Component<Props, State> {
 
 	private async getUrbanZoneConsumptionData(): Promise<{ label: string, y: number }[]> {
 		return Promise.all([
-			{ label: "Total", y: Math.round(wattsToKilowatts(await getTotalConsumption(this.props.t1, this.props.t2, undefined, this.props.urbanZone))) },
-			{ label: "Residentiels", y: Math.round(wattsToKilowatts(await getTotalConsumption(this.props.t1, this.props.t2, [ConsumerProfile.RESIDENTIAL], this.props.urbanZone))) },
-			{ label: "Tertiaires", y: Math.round(wattsToKilowatts(await getTotalConsumption(this.props.t1, this.props.t2, [ConsumerProfile.TERTIARY], this.props.urbanZone))) },
-			{ label: "Professionnels", y: Math.round(wattsToKilowatts(await getTotalConsumption(this.props.t1, this.props.t2, [ConsumerProfile.PROFESSIONAL], this.props.urbanZone))) },
-			{ label: "Eclairage", y: Math.round(wattsToKilowatts(await getTotalConsumption(this.props.t1, this.props.t2, [ConsumerProfile.PUBLIC_LIGHTING], this.props.urbanZone))) },
+			{ label: "Total", y: Math.round(wattsToKilowatts(await getTotalConsumption(this.props.t1, this.props.t2, undefined, this.props.zoneName))) },
+			{ label: "Residentiels", y: Math.round(wattsToKilowatts(await getTotalConsumption(this.props.t1, this.props.t2, [ConsumerProfile.RESIDENTIAL], this.props.zoneName))) },
+			{ label: "Tertiaires", y: Math.round(wattsToKilowatts(await getTotalConsumption(this.props.t1, this.props.t2, [ConsumerProfile.TERTIARY], this.props.zoneName))) },
+			{ label: "Professionnels", y: Math.round(wattsToKilowatts(await getTotalConsumption(this.props.t1, this.props.t2, [ConsumerProfile.PROFESSIONAL], this.props.zoneName))) },
+			{ label: "Eclairage", y: Math.round(wattsToKilowatts(await getTotalConsumption(this.props.t1, this.props.t2, [ConsumerProfile.PUBLIC_LIGHTING], this.props.zoneName))) },
 		]);
 	}
 
-	async fetchData(): Promise<void> {
+	private async fetchData(): Promise<void> {
 		Promise.all([
 			this.getDistrictConsumptionData(),
 			this.getUrbanZoneConsumptionData()
@@ -69,12 +69,14 @@ export default class TotalConsumption extends React.Component<Props, State> {
 	}
 
 	async componentDidUpdate(prevProps: Props) {
-		if (prevProps.t1 !== this.props.t1 || prevProps.t2 !== this.props.t2 || prevProps.urbanZone !== this.props.urbanZone) {
-			try {
-				await this.fetchData();
-			} catch (e) {
-				console.error('Error while fetching data', e);
-			}
+		if (prevProps.zoneName === this.props.zoneName && prevProps.t1 === this.props.t1 && prevProps.t2 === this.props.t2) {
+			return;
+		}
+		
+		try {
+			await this.fetchData();
+		} catch (e) {
+			console.error('Error while fetching data', e);
 		}
 	}
 

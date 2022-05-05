@@ -27,7 +27,7 @@ export default class LocalProductionInfo extends React.Component<Props, State> {
 		};
 	}
 
-	async fetchData() {
+	private async fetchData() {
 		const { t1, t2, zoneName } = this.props;
 		const zoneNames = await getZonesNames();
 

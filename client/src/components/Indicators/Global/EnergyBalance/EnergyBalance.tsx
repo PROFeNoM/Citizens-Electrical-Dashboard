@@ -49,7 +49,7 @@ export default class EnergyBalance extends React.Component<Props, State> {
 	/**
 	 * Fetch the data for the current zone and update the state.
 	 */
-	async fetchData() {
+	private async fetchData() {
 		const { zoneName, sector, t1, t2 } = this.props;
 		const zoneNames = await getZonesNames();
 

@@ -8,10 +8,10 @@ import { getTotalConsumption } from 'scripts/api';
 import { getZonesGeoJSON } from 'geodata';
 
 interface Props {
+	zoneName: string;
+	buildingType: ConsumerProfile;
 	t1: number;
 	t2: number;
-	urbanZone: string;
-	buildingType: ConsumerProfile;
 	setHighlightedZone: (val: string | null) => void;
 }
 
@@ -33,8 +33,8 @@ export default class ConsumptionDonut extends React.Component<Props, State> {
 		this.onClick = this.onClick.bind(this);
 	}
 
-	async fetchData() {
-		const { t1, t2, urbanZone } = this.props;
+	private async fetchData() {
+		const { t1, t2, zoneName } = this.props;
 
 		const consumptions = await Promise.all((await getZonesGeoJSON()).features.map(async f => ({
 			name: f.properties.libelle,
@@ -46,41 +46,28 @@ export default class ConsumptionDonut extends React.Component<Props, State> {
 			)
 		})));
 
-
 		const totalConsumption = consumptions.reduce((acc, zone) => acc + zone.value, 0);
 
-		// Consumptions is zero for all zones during the selected time period
+		// Consumption is zero for all zones during the selected time period
 		if (totalConsumption === 0) {
-			this.setState(state => ({
-				...state,
+			this.setState({
 				consumptionDistribution: [],
 				urbanZoneProportion: 0
-			}));
+			});
 			return;
 		}
 
-		const consumptionDistribution = consumptions.map(p => ({
-			name: p.name,
-			y: p.value / totalConsumption * 100
-		}));
+		const consumptionDistribution = consumptions
+			.map(zone => ({
+				name: zone.name,
+				y: zone.value / totalConsumption * 100
+			}))
+			.filter(zone => zone.y > 0);
 
-		this.setState(state => ({
-			...state,
-			consumptionDistribution: consumptionDistribution
-		}));
-
-		if (urbanZone) {
-			this.setState(state => ({
-				...state,
-				urbanZoneProportion: consumptions.find(zone => zone.name === urbanZone).value / totalConsumption * 100
-			}));
-		} else {
-			this.setState(state => ({
-				...state,
-				urbanZoneProportion: 100
-			}));
-		}
-
+		this.setState({
+			consumptionDistribution,
+			urbanZoneProportion: zoneName ? consumptions.find(zone => zone.name === zoneName).value / totalConsumption * 100 : 100
+		});
 	}
 
 	private onClick(e: any) {
@@ -91,25 +78,31 @@ export default class ConsumptionDonut extends React.Component<Props, State> {
 		try {
 			await this.fetchData();
 		} catch (e) {
-			console.error('Error fetching data', e);
+			console.error('Error while fetching data', e);
 		}
 	}
 
 	async componentDidUpdate(prevProps: Props) {
-		if (prevProps.t1 !== this.props.t1 || prevProps.t2 !== this.props.t2 || prevProps.urbanZone !== this.props.urbanZone || prevProps.buildingType !== this.props.buildingType) {
-			try {
-				await this.fetchData();
-			} catch (e) {
-				console.error('Error fetching data', e);
-			}
+		if (prevProps.zoneName === this.props.zoneName && prevProps.buildingType === this.props.buildingType && prevProps.t1 === this.props.t1 && prevProps.t2 === this.props.t2) {
+			return;
+		}
+
+		try {
+			await this.fetchData();
+		} catch (e) {
+			console.error('Error while fetching data', e);
 		}
 	}
 
 	render() {
 		const { consumptionDistribution, urbanZoneProportion } = this.state;
+		const formatter = new Intl.NumberFormat('fr-FR', {
+			style: 'decimal',
+			maximumFractionDigits: 1
+		});
 		const text = consumptionDistribution === null
 			? 'Chargement...' : consumptionDistribution.length === 0
-			? 'Pas de données pour la période' : `${Math.round(urbanZoneProportion)}%`;
+				? 'Pas de données pour la période' : `${formatter.format(urbanZoneProportion)}%`;
 
 		const chartOptions = {
 			animationEnabled: false,
@@ -124,7 +117,7 @@ export default class ConsumptionDonut extends React.Component<Props, State> {
 				type: "doughnut",
 				showInLegend: false,
 				indexLabel: "{name} - {y}",
-				yValueFormatString: "#,###'%'",
+				yValueFormatString: "0.#'%'",
 				dataPoints: consumptionDistribution,
 				click: this.onClick
 			}]

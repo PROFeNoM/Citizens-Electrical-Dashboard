@@ -40,7 +40,7 @@ export default class IndicatorViewer extends React.Component<Props, {}> {
             case IndicatorType.TypicalConsumptionDay:
                 return (
                     <TypicalConsumptionDay
-                        urbanZone={zoneName}
+                        zoneName={zoneName}
                         buildingType={sector}
                         t1={t1.getTime()}
                         t2={t2.getTime()}
@@ -50,19 +50,19 @@ export default class IndicatorViewer extends React.Component<Props, {}> {
             case IndicatorType.TotalConsumption:
                 return (
                     <TotalConsumption
+                        zoneName={zoneName}
                         t1={t1.getTime()}
                         t2={t2.getTime()}
-                        urbanZone={zoneName}
                         setHighlightedZone={setHighlightedZone}
                     />
                 );
             case IndicatorType.ConsumptionDonut:
                 return (
                     <ConsumptionDonut
+                        zoneName={zoneName}
+                        buildingType={sector}
                         t1={t1.getTime()}
                         t2={t2.getTime()}
-                        urbanZone={zoneName}
-                        buildingType={sector}
                         setHighlightedZone={setHighlightedZone}
                     />
                 );
@@ -77,27 +77,27 @@ export default class IndicatorViewer extends React.Component<Props, {}> {
             case IndicatorType.TypicalProductionDay:
                 return (
                     <TypicalProductionDay
+                        zoneName={zoneName}
                         t1={t1.getTime()}
                         t2={t2.getTime()}
-                        urbanZone={zoneName}
                         setHighlightedZone={setHighlightedZone}
                     />
                 );
             case IndicatorType.SolarDonut:
                 return (
                     <SolarDonut
+                        zoneName={zoneName}
                         t1={t1.getTime()}
                         t2={t2.getTime()}
-                        urbanZone={zoneName}
                         setHighlightedZone={setHighlightedZone}
                     />
                 );
             case IndicatorType.WeeklyProduction:
                 return (
                     <WeeklyProduction
+                        zoneName={zoneName}
                         t1={t1.getTime()}
                         t2={t2.getTime()}
-                        urbanZone={zoneName}
                         setHighlightedZone={setHighlightedZone}
                     />
                 );
@@ -128,7 +128,7 @@ export default class IndicatorViewer extends React.Component<Props, {}> {
                 <div id="indicator-name-wrapper">
                     <p>{indicator.name}</p>
                 </div>
-                <div id="indicator-content" key={indicator+zoneName+sector+t1+t2}>
+                <div id="indicator-content" key={indicator + zoneName + sector + t1 + t2}>
                     {this.renderIndicator(indicator)}
                 </div>
             </div>

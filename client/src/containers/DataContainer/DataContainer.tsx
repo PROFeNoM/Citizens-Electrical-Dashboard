@@ -29,7 +29,7 @@ export default class DataContainer extends React.Component<{}, State> {
             indicator: getIndicatorFromType(IndicatorType.EnergyBalance),
             zoneName: null,
             buildingType: ConsumerProfile.ALL,
-            t1: new Date(today.getFullYear(), today.getMonth(), today.getDate() - 90), // 30 days ago
+            t1: new Date(today.getFullYear(), today.getMonth(), today.getDate() - 365), // 1 year ago
             t2: today,
             highlightedZoneName: null
         };

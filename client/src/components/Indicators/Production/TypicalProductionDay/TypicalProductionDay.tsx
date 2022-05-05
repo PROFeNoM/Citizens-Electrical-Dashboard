@@ -14,9 +14,9 @@ const tmpPoints = Array.from(Array(24).keys()).map((h) => {
 });
 
 interface Props {
+	zoneName: string;
 	t1: number;
 	t2: number;
-	urbanZone: string;
 	setHighlightedZone: (val: string | null) => void;
 }
 
@@ -55,7 +55,7 @@ export default class TypicalProductionDay extends React.Component<Props, State> 
 			this.props.t1,
 			this.props.t2,
 			[ProducerProfile.SOLAR],
-			this.props.urbanZone
+			this.props.zoneName
 		);
 
 		return meanCons.map((el) => {
@@ -66,7 +66,7 @@ export default class TypicalProductionDay extends React.Component<Props, State> 
 		});
 	}
 
-	async fetchData() {
+	private async fetchData() {
 		const districtConsumptionData = await this.getDistrictProductionData();
 		const urbanZoneConsumptionData = await this.getUrbanZoneProductionData();
 		this.setState({
@@ -75,12 +75,28 @@ export default class TypicalProductionDay extends React.Component<Props, State> 
 		});
 	}
 
-	async componentDidMount() {
-		await this.fetchData();
+	private onClick() {
+		this.props.setHighlightedZone(this.props.zoneName);
 	}
 
-	private onClick = () => {
-		this.props.setHighlightedZone(this.props.urbanZone);
+	async componentDidMount() {
+		try {
+			await this.fetchData();
+		} catch (e) {
+			console.error('Error while fetching data', e);
+		}
+	}
+
+	async componentDidUpdate(prevProps: Props) {
+		if (prevProps.zoneName === this.props.zoneName && prevProps.t1 === this.props.t1 && prevProps.t2 === this.props.t2) {
+			return;
+		}
+
+		try {
+			await this.fetchData();
+		} catch (e) {
+			console.error('Error while fetching data', e);
+		}
 	}
 
 	render() {

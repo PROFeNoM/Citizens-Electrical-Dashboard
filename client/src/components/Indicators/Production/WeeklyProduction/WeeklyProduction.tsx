@@ -7,9 +7,9 @@ import { ProducerProfile, DataType } from 'constants/profiles';
 import { getMaxTimestamp, getTotalProduction } from 'scripts/api';
 
 interface Props {
+	zoneName: string;
 	t1: number;
 	t2: number;
-	urbanZone: string;
 	setHighlightedZone: (val: string | null) => void;
 }
 
@@ -75,7 +75,7 @@ export default class WeeklyProduction extends React.Component<Props, State> {
 
 		// Determine the total production for each week
 		return await Promise.all(weeks.map(async (week) => {
-			const totalProduction = await getTotalProduction(week.start, week.end, [ProducerProfile.SOLAR], this.props.urbanZone);
+			const totalProduction = await getTotalProduction(week.start, week.end, [ProducerProfile.SOLAR], this.props.zoneName);
 			return {
 				x: new Date(week.start),
 				y: totalProduction,
@@ -83,7 +83,7 @@ export default class WeeklyProduction extends React.Component<Props, State> {
 		}));
 	}
 
-	async fetchData() {
+	private async fetchData() {
 		const districtProductionData = await this.getDistrictProductionData();
 		const urbanZoneProductionData = await this.getUrbanZoneProductionData();
 		const maxTimestamp = await getMaxTimestamp(DataType.PRODUCTION)
@@ -95,12 +95,24 @@ export default class WeeklyProduction extends React.Component<Props, State> {
 		});
 	}
 
+	private onClick() {
+		this.props.setHighlightedZone(this.props.zoneName);
+	}
+
 	async componentDidMount() {
 		await this.fetchData();
 	}
 
-	private onClick = () => {
-		this.props.setHighlightedZone(this.props.urbanZone);
+	async componentDidUpdate(prevProps: Props) {
+		if (prevProps.zoneName === this.props.zoneName && prevProps.t1 === this.props.t1 && prevProps.t2 === this.props.t2) {
+			return;
+		}
+
+		try {
+			await this.fetchData();
+		} catch (e) {
+			console.error('Error while fetching data', e);
+		}
 	}
 
 	render() {
@@ -144,14 +156,14 @@ export default class WeeklyProduction extends React.Component<Props, State> {
 				},
 				{
 					type: "column",
-					name: "Production de " + this.props.urbanZone + " (kWh)",
+					name: `Production de ${this.props.zoneName} (kWh)`,
 					dataPoints: historicalUrbanZoneProductionData,
 					color: "#e63b11",
 					click: this.onClick
 				},
 				{
 					type: "column",
-					name: "Prédiction de production de " + this.props.urbanZone + " (kWh)",
+					name: `Prédiction de production de ${this.props.zoneName} (kWh)`,
 					dataPoints: forecastedUrbanZoneProductionData,
 					color: "#e63b11",
 					click: this.onClick,
