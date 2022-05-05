@@ -5,7 +5,7 @@ import React from 'react';
 import { ProducerProfile } from 'constants/profiles';
 import { getTotalProduction } from 'scripts/api';
 import { wattsToKilowatts } from 'scripts/utils';
-import { getZoneNbOfProductionSites } from 'scripts/dbUtils';
+import { getZoneNbOfProductionSites, getZonesNames } from 'scripts/dbUtils';
 
 interface Props {
 	zoneName: string;
@@ -29,7 +29,11 @@ export default class LocalProductionInfo extends React.Component<Props, State> {
 
 	async fetchData() {
 		const { t1, t2, zoneName } = this.props;
-		const productionPoints = await getZoneNbOfProductionSites(zoneName, ProducerProfile.SOLAR);
+		const zoneNames = await getZonesNames();
+
+		const productionPoints = zoneName === null ?
+			(await Promise.all(zoneNames.map(zone => getZoneNbOfProductionSites(zone, ProducerProfile.SOLAR)))).reduce((a, b) => a + b)
+			: await getZoneNbOfProductionSites(zoneName, ProducerProfile.SOLAR);
 		const totalProduction = await getTotalProduction(t1, t2, [ProducerProfile.SOLAR], zoneName);
 		this.setState({
 			productionPoints,

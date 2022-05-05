@@ -107,9 +107,9 @@ export async function getZonesNames(): Promise<string[]> {
  * Return the number of sites in an urban zone
  * 
  * @param zoneName Urban zone to search into
- * @param profile Building type searched, all if undefined
+ * @param profile Building type searched
  */
-export async function getZoneNbOfCollectionSites(zoneName: string, profile?: ConsumerProfile): Promise<number> {
+export async function getZoneNbOfCollectionSites(zoneName: string, profile: ConsumerProfile): Promise<number> {
 	const zone = await getZone(zoneName);
 	const zoneProperties = zone.properties;
 
@@ -139,23 +139,15 @@ export async function getZoneNbOfCollectionSites(zoneName: string, profile?: Con
  * Return the number of production sites in an urban zone
  * 
  * @param zoneName Urban zone to search into
- * @param profile Producing type searched, all if undefined
+ * @param profile Producing type searched
  */
-export async function getZoneNbOfProductionSites(zoneName: string, profile?: ProducerProfile): Promise<number> {
-	const [zonesGeoJSON, zone] = await Promise.all([getZonesGeoJSON(), getZone(zoneName)]);
+export async function getZoneNbOfProductionSites(zoneName: string, profile: ProducerProfile): Promise<number> {
+	const zone = await getZone(zoneName);
 
 	switch (profile) {
 		case ProducerProfile.SOLAR:
 		case ProducerProfile.ALL:
-		case undefined:
-			if (zone === undefined) {
-				return zonesGeoJSON.features.reduce((acc, zone) => {
-					return acc + zone.properties.PROD_F5;
-				}, 0);
-			}
-			else {
-				return zone.properties.PROD_F5;
-			}
+			return zone.properties.PROD_F5;
 		default:
 			return 0;
 	}

@@ -2,8 +2,8 @@ import './EnergyBalance.css';
 
 import React from 'react';
 
-import { ConsumerProfile } from 'constants/profiles';
-import { getZonesNames, getZoneArea, getZoneNbOfBuildings, getZoneNbOfCollectionSites } from 'scripts/dbUtils';
+import { ConsumerProfile, ProducerProfile } from 'constants/profiles';
+import { getZonesNames, getZoneArea, getZoneNbOfBuildings, getZoneNbOfCollectionSites, getZoneNbOfProductionSites } from 'scripts/dbUtils';
 import { getTotalConsumption, getTotalProduction } from 'scripts/api';
 import { wattsToMegawatts } from 'scripts/utils';
 
@@ -17,7 +17,8 @@ interface Props {
 interface State {
 	area: number; // Area of the selected zone
 	nbOfBuildings: number; // Number of buildings in the selected zone
-	nbOfCollectionSites: number; // Number of consumers in the selected zone for the given sector
+	nbOfCollectionSites: number; // Number of consumption sites in the selected zone for the given sector
+	nbOfProductionSites: number; // Number of production sites in the selected zone
 	consumption: number; // Total consumption of the selected zone for the given sector and time period
 	production: number; // Total production of the selected zone for the given time period
 }
@@ -39,6 +40,7 @@ export default class EnergyBalance extends React.Component<Props, State> {
 			area: null,
 			nbOfBuildings: null,
 			nbOfCollectionSites: null,
+			nbOfProductionSites: null,
 			consumption: null,
 			production: null
 		};
@@ -63,10 +65,15 @@ export default class EnergyBalance extends React.Component<Props, State> {
 			(await Promise.all(zoneNames.map(zone => getZoneNbOfCollectionSites(zone, sector)))).reduce((a, b) => a + b)
 			: await getZoneNbOfCollectionSites(zoneName, sector);
 
+		const nbOfProductionSites = zoneName === null ?
+			(await Promise.all(zoneNames.map(zone => getZoneNbOfProductionSites(zone, ProducerProfile.SOLAR)))).reduce((a, b) => a + b)
+			: await getZoneNbOfProductionSites(zoneName, ProducerProfile.SOLAR);
+
 		this.setState({
 			area,
 			nbOfBuildings,
-			nbOfCollectionSites
+			nbOfCollectionSites,
+			nbOfProductionSites
 		});
 
 		const [consumption, production] = await Promise.all([
@@ -112,48 +119,58 @@ export default class EnergyBalance extends React.Component<Props, State> {
 
 	render() {
 		const { sector } = this.props;
-		const { area, nbOfBuildings, nbOfCollectionSites, consumption, production } = this.state;
-		const formatter = new Intl.NumberFormat('fr-FR', { style: 'decimal', maximumFractionDigits: 2 });
+		const { area, nbOfBuildings, nbOfCollectionSites, nbOfProductionSites, consumption, production } = this.state;
 		const consumptionMegaWatts = consumption !== null ?
-			formatter.format(wattsToMegawatts(consumption))
+			wattsToMegawatts(consumption)
 			: null;
 		const productionMegaWatts = production !== null ?
-			formatter.format(wattsToMegawatts(production))
+			wattsToMegawatts(production)
 			: null;
 		const ratio = consumption !== null && production !== null ?
 			consumption === 0 ?
 				0
-				: formatter.format(production / consumption * 100)
+				: production / consumption * 100
 			: null;
 
-		let sectorText: string;
+		let consumptionSectorText: string;
 		switch (sector) {
 			case ConsumerProfile.RESIDENTIAL:
-				sectorText = 'résidentiels';
+				consumptionSectorText = 'résidentiel';
 				break;
 			case ConsumerProfile.PROFESSIONAL:
-				sectorText = 'professionnels';
+				consumptionSectorText = 'professionnel';
 				break;
 			case ConsumerProfile.TERTIARY:
-				sectorText = 'tertiaires';
+				consumptionSectorText = 'tertiaire';
 				break;
 			case ConsumerProfile.PUBLIC_LIGHTING:
-				sectorText = 'd\'éclairage publique';
+				consumptionSectorText = 'd\'éclairage publique';
 				break;
 			case ConsumerProfile.ALL:
 			default:
-				sectorText = 'au total';
+				consumptionSectorText = 'au total';
 		}
 
+		const productionSectorText: string = 'solaire';
+
+		const intFormatter = Intl.NumberFormat('fr-FR', { style: 'decimal', maximumFractionDigits: 0 });
+		const floatFormatter = Intl.NumberFormat('fr-FR', { style: 'decimal', maximumFractionDigits: 2 });
+		function format(value: number | null, formatter: Intl.NumberFormat): string {
+			return value === null ?
+				'...'
+				: formatter.format(value);
+		}
+		
 		return (
 			<div id="energy-balance" className="text-indicator">
 				<ul>
-					<li><span className="data">{Intl.NumberFormat('fr-FR', { style: 'decimal', maximumFractionDigits: 0 }).format(area)}</span> m²</li>
-					<li><span className="data">{nbOfBuildings ?? '...'}</span> bâtiment{nbOfBuildings > 1 ? 's' : ''} au total</li>
-					<li><span className="data">{nbOfCollectionSites ?? '...'}</span> point{nbOfCollectionSites > 1 ? 's' : ''} de consommation {sectorText}</li>
-					<li><span className="data">{consumptionMegaWatts ?? '...'}</span> MWh d'électricité consommée</li>
-					<li><span className="data">{productionMegaWatts ?? '...'}</span> MWh d'électricité produite</li>
-					<li><span className="data">{ratio ?? '...'}</span> % de ratio production/consommation</li>
+					<li><span className="data">{format(area, intFormatter)}</span> m²</li>
+					<li><span className="data">{format(nbOfBuildings, intFormatter)}</span> bâtiment{nbOfBuildings > 1 ? 's' : ''} au total</li>
+					<li><span className="data">{format(nbOfCollectionSites, intFormatter)}</span> point{nbOfCollectionSites > 1 ? 's' : ''} de consommation {consumptionSectorText}</li>
+					<li><span className="data">{format(consumptionMegaWatts, floatFormatter)}</span> MWh d'électricité consommée</li>
+					<li><span className="data">{format(nbOfProductionSites, intFormatter)}</span> point{nbOfProductionSites > 1 ? 's' : ''} de production {productionSectorText}</li>
+					<li><span className="data">{format(productionMegaWatts, floatFormatter)}</span> MWh d'électricité produite</li>
+					<li><span className="data">{format(ratio, floatFormatter)}</span> % de ratio production/consommation</li>
 				</ul>
 			</div>
 		);
