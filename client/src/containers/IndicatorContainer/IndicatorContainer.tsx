@@ -32,10 +32,15 @@ export default class IndicatorContainer extends React.Component<Props, {}> {
             <div id="indicator-container">
                 <div id="indicator-menu-wrapper">
                     <IndicatorMenu
+                        indicator={this.props.indicator}
                         setIndicator={this.props.setIndicator}
+                        zoneName={this.props.zoneName}
                         setZoneName={this.props.setZoneName}
+                        buildingType={this.props.buildingType}
                         setBuildingType={this.props.setBuildingType}
+                        t1={this.props.t1}
                         setT1={this.props.setT1}
+                        t2={this.props.t2}
                         setT2={this.props.setT2}
                         setHighlightedZone={this.props.setHighlightedZone}
                     />

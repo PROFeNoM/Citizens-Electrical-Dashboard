@@ -6,12 +6,12 @@ import { ConsumerProfile } from 'constants/profiles';
 import { MapContainer, IndicatorContainer } from 'containers';
 
 interface State {
-    indicator: Indicator, // Indicator selected
-    zoneName: string | null, // Zone seletected for the indicators, null means the entire district
-    highlightedZoneName: string | null, // Zone that is currently highlighted on the map
-    buildingType: ConsumerProfile, // Type of building selected
-    t1: Date, // Starting date for indicators
-    t2: Date, // Ending date for indicators
+    indicator: Indicator; // Indicator selected
+    zoneName: string | null; // Zone seletected for the indicators, null means the entire district
+    highlightedZoneName: string | null; // Zone that is currently highlighted on the map
+    buildingType: ConsumerProfile; // Type of building selected
+    t1: Date; // Starting date for indicators
+    t2: Date; // Ending date for indicators
 }
 
 /**
@@ -22,13 +22,16 @@ interface State {
 export default class DataContainer extends React.Component<{}, State> {
     constructor(props: {}) {
         super(props);
+
+        const today: Date = new Date();
+
         this.state = {
             indicator: getIndicatorFromType(IndicatorType.EnergyBalance),
             zoneName: null,
             buildingType: ConsumerProfile.ALL,
-            t1: new Date('2021-12-01T00:30:00Z'),
-            t2: new Date('2021-12-31T00:30:00Z'),
-            highlightedZoneName: null,
+            t1: new Date(today.getFullYear(), today.getMonth(), today.getDate() - 30), // 30 days ago
+            t2: today,
+            highlightedZoneName: null
         };
     }
 
