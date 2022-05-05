@@ -21,16 +21,16 @@ interface Props {
 }
 
 interface State {
-	districtConsumptionData: { x: Date; y: number }[];
-	urbanZoneConsumptionData: { x: Date; y: number }[];
+	districtProductionData: { x: Date; y: number }[];
+	urbanZoneProductionData: { x: Date; y: number }[];
 }
 
 export default class TypicalProductionDay extends React.Component<Props, State> {
 	constructor(props: Props) {
 		super(props);
 		this.state = {
-			districtConsumptionData: tmpPoints,
-			urbanZoneConsumptionData: tmpPoints,
+			districtProductionData: tmpPoints,
+			urbanZoneProductionData: tmpPoints,
 		};
 	}
 
@@ -67,11 +67,11 @@ export default class TypicalProductionDay extends React.Component<Props, State> 
 	}
 
 	private async fetchData() {
-		const districtConsumptionData = await this.getDistrictProductionData();
-		const urbanZoneConsumptionData = await this.getUrbanZoneProductionData();
+		const districtProductionData = await this.getDistrictProductionData();
+		const urbanZoneProductionData = await this.getUrbanZoneProductionData();
 		this.setState({
-			districtConsumptionData: districtConsumptionData,
-			urbanZoneConsumptionData: urbanZoneConsumptionData,
+			districtProductionData: districtProductionData,
+			urbanZoneProductionData: urbanZoneProductionData,
 		});
 	}
 
@@ -100,6 +100,8 @@ export default class TypicalProductionDay extends React.Component<Props, State> 
 	}
 
 	render() {
+		const  { districtProductionData, urbanZoneProductionData } = this.state;
+
 		const chartOptions = {
 			exportEnabled: true,
 			animationEnabled: true,
@@ -127,7 +129,7 @@ export default class TypicalProductionDay extends React.Component<Props, State> 
 					name: "Production de La Bastide (Wh)",
 					axisYType: "primary",
 					xValueFormatString: "HH:mm",
-					dataPoints: this.state.districtConsumptionData,
+					dataPoints: districtProductionData,
 					color: "#688199",
 					click: this.onClick
 				},
@@ -136,12 +138,22 @@ export default class TypicalProductionDay extends React.Component<Props, State> 
 					name: "Production de la zone urbaine (Wh)",
 					axisYType: "primary",
 					xValueFormatString: "HH:mm",
-					dataPoints: this.state.urbanZoneConsumptionData,
+					dataPoints: urbanZoneProductionData,
 					color: "#e63b11",
 					click: this.onClick
 				},
 			],
+			subtitles: []
 		};
+
+		if (districtProductionData.reduce((acc, cur) => acc + cur.y, 0) === 0 && urbanZoneProductionData.reduce((acc, cur) => acc + cur.y, 0) === 0) {
+			chartOptions.subtitles = [{
+				text: 'Pas de données pour la période',
+				verticalAlign: 'center',
+				fontSize: 24,
+				fontFamily: 'Ubuntu'
+			}];
+		}
 
 		return (
 			<div id="typical-p-day" className="graph-indicator">

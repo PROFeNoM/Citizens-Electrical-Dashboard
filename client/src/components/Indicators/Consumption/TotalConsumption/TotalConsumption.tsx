@@ -72,7 +72,7 @@ export default class TotalConsumption extends React.Component<Props, State> {
 		if (prevProps.zoneName === this.props.zoneName && prevProps.t1 === this.props.t1 && prevProps.t2 === this.props.t2) {
 			return;
 		}
-		
+
 		try {
 			await this.fetchData();
 		} catch (e) {
@@ -100,20 +100,22 @@ export default class TotalConsumption extends React.Component<Props, State> {
 			toolTip: {
 				shared: true
 			},
-			data: [{
-				type: 'column',
-				name: 'Consommation de La Bastide (kWh)',
-				axisYType: 'primary',
-				dataPoints: districtConsumptionData,
-				color: '#688199'
-			},
-			{
-				type: 'column',
-				name: 'Consommation de la zone urbaine (kWh)',
-				axisYType: 'primary',
-				dataPoints: urbanZoneConsumptionData,
-				color: '#e63b11'
-			}],
+			data: [
+				{
+					type: 'column',
+					name: 'Consommation de La Bastide (kWh)',
+					axisYType: 'primary',
+					dataPoints: districtConsumptionData,
+					color: '#688199'
+				},
+				{
+					type: 'column',
+					name: 'Consommation de la zone urbaine (kWh)',
+					axisYType: 'primary',
+					dataPoints: urbanZoneConsumptionData,
+					color: '#e63b11'
+				}
+			],
 			subtitles: []
 		}
 

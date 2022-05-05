@@ -42,7 +42,6 @@ export default class LocalProductionInfo extends React.Component<Props, State> {
 	}
 
 	async componentDidMount() {
-		// TODO: check, often error here
 		try {
 			await this.fetchData();
 		}

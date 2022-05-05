@@ -22,7 +22,6 @@ interface Props {
 }
 
 interface State {
-	selfConsumptionData: { x: Date; y: number }[];
 	districtConsumptionData: { x: Date; y: number }[];
 	urbanZoneConsumptionData: { x: Date; y: number }[];
 }
@@ -31,9 +30,8 @@ export default class TypicalConsumptionDay extends React.Component<Props, State>
 	constructor(props: Props) {
 		super(props);
 		this.state = {
-			selfConsumptionData: tmpPoints,
 			districtConsumptionData: tmpPoints,
-			urbanZoneConsumptionData: tmpPoints,
+			urbanZoneConsumptionData: tmpPoints
 		};
 	}
 
@@ -92,11 +90,10 @@ export default class TypicalConsumptionDay extends React.Component<Props, State>
 	}
 
 	private async fetchData() {
-		const selfConsumptionData = await this.getSelfConsumptionData();
 		const districtConsumptionData = await this.getDistrictConsumptionData();
 		const urbanZoneConsumptionData = await this.getUrbanZoneConsumptionData();
+
 		this.setState({
-			selfConsumptionData: selfConsumptionData,
 			districtConsumptionData: districtConsumptionData,
 			urbanZoneConsumptionData: urbanZoneConsumptionData,
 		});
@@ -127,6 +124,8 @@ export default class TypicalConsumptionDay extends React.Component<Props, State>
 	}
 
 	render() {
+		const { districtConsumptionData, urbanZoneConsumptionData } = this.state;
+
 		const chartOptions = {
 			exportEnabled: true,
 			animationEnabled: true,
@@ -154,7 +153,7 @@ export default class TypicalConsumptionDay extends React.Component<Props, State>
 					name: "Consommation de La Bastide (kWh)",
 					axisYType: "primary",
 					xValueFormatString: "HH:mm",
-					dataPoints: this.state.districtConsumptionData,
+					dataPoints: districtConsumptionData,
 					color: "#688199",
 					click: this.onClick
 				},
@@ -163,12 +162,22 @@ export default class TypicalConsumptionDay extends React.Component<Props, State>
 					name: "Consommation de la zone urbaine (kWh)",
 					axisYType: "primary",
 					xValueFormatString: "HH:mm",
-					dataPoints: this.state.urbanZoneConsumptionData,
+					dataPoints: urbanZoneConsumptionData,
 					color: "#e63b11",
 					click: this.onClick
-				},
+				}
 			],
+			subtitles: []
 		};
+
+		if (districtConsumptionData.reduce((acc, cur) => acc + cur.y, 0) === 0 && urbanZoneConsumptionData.reduce((acc, cur) => acc + cur.y, 0) === 0) {
+			chartOptions.subtitles = [{
+				text: 'Pas de données pour la période',
+				verticalAlign: 'center',
+				fontSize: 24,
+				fontFamily: 'Ubuntu'
+			}];
+		}
 
 		return (
 			<div id="typical-c-day" className="graph-indicator">
