@@ -90,6 +90,8 @@ pnpm watch
 
 ## URL exposées & Points d'accès API
 
+### Existant
+
 Le serveur expose les fichiers statiques.
 En environnement de développement il s'agît des fichiers présents dans `client/build`.
 Un build du client est donc nécessaire pour avoir ces fichiers, mais en environnement de développement, il est préférable d'accéder au client via le serveur de développement React.
@@ -115,6 +117,15 @@ Exemple :
 ```url
 /api/v1/production/total?minDate=1609520655276&maxDate=1627747455279&profiles[0]=SOLAR&zone=Bastide%20Niel
 ```
+
+### Ajout d'un point d'accès API
+
+L'ajout d'un point d'accès API se fait dans le fichier [server/src/server.ts](https://gitlab.com/PROFeNoM/dashboard/-/blob/master/server/src/server.ts).
+
+La [documentation d'Express](https://expressjs.com/en/4x/api.html) explique comment procéder.
+
+Si le nouveau point d'accès fonctionne sur la même base que `total` et `hourly-mean` (si les paramètres sont les mêmes), le middleware `apiReqCheckerParser` doit être utilisé pour vérifier la requête et la "parser".
+Dans ce cas, les options "parsées" ainsi que la `DataTable` seront rajoutés dans l'objet de la requête par effet de bord.
 
 ##  Ajouter des données de prédictions à la base
 
