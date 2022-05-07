@@ -83,7 +83,7 @@ app.get('/api/v1/:entity/max-timestamp', async (req, res) => {
 	let query = await getConnection().createQueryBuilder()
 		.select('max(timestamp) AS maxTimestamp')
 		.from(entity, 'e')
-		.where('e.prediction = false'); // don't include past predictions
+		.where('NOT e.prediction'); // don't include predictions
 
 	const result = await query.getRawOne() as { maxTimestamp: Date };
 
