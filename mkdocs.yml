@@ -10,6 +10,7 @@ nav:
 markdown_extensions:
   - pymdownx.highlight:
       anchor_linenums: true
+  - pymdownx.caret
   - pymdownx.inlinehilite
   - pymdownx.snippets
   - pymdownx.superfences

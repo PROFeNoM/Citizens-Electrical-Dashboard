@@ -1,6 +1,6 @@
 # Serveur
 
-## Description
+## Description générale
 
 ### Technologies utilisées
 
@@ -21,12 +21,12 @@ Chaque ligne d'une `DataTable` stocke une donnée énergétique au pas de la dem
 
 - `timestamp` : l'horodatage – un index a été rajouté sur cette colonne pour gagner en efficacité, car toutes les requêtes se font sur un interval de temps donné
 - `profile` : une énumération PostgreSQL
-	- Dans le cas d'une consommation, une des valeurs suivantes :
+	- dans le cas d'une consommation, une des valeurs suivantes :
 		- `PUBLIC_LIGHTING`
 		- `PROFESSIONAL`
 		- `RESIDENTIAL `
 		- `TERTIARY`
-	- Dans le cas d'une production, une des valeurs suivantes :
+	- dans le cas d'une production, une des valeurs suivantes :
 		- `BIOENERGY`
 		- `EOLIAN`
 		- `HYDRAULIC`
@@ -44,6 +44,20 @@ Dans le cas de la Bastide, il s'agît de sous-quartiers (exemple : "quartier hi
 
 Il est à noter que, bien que non mentionnée, la table `typeorm_metadata` sert au fontionnement interne de [typeORM](https://typeorm.io/).
 
+### Données géospatiales
+
+En plus des larges quantités de données énergétiques stockées en base, le serveur manipule également des données géospatiales.
+Un exemple de ces données est disponible dans le répertoire [server/geodata](https://gitlab.com/PROFeNoM/dashboard/-/tree/master/server/geodata).
+
+En environnement de développement c'est le répertoire [server/geodata](https://gitlab.com/PROFeNoM/dashboard/-/tree/master/server/geodata) qui est utilisé, mais en environnement de production, ces données doivent être fournies et placées dans le répertoire `/etc/tec/geodata`.
+
+Les données géospatiales sont réparties dans les fichiers suivants :
+
+- `buildings.json` : la liste des bâtiments (leur catégorie, leur forme, leur position géographiques, etc...)
+- `charging-stations.json` : la liste de stations de recharge des véhicules électriques (avec leur emplacement géographique)
+- `public-lighting.json` : la liste de lampadaires (avec leur emplacement géographique)
+- `zones.json` : la liste des zones (avec la démarcation géographique de leur périmètre) come par exemple, les sous-quartiers de la Bastide
+
 ## Mise en place de l’environnement de développement
 
 Pré-requis :
@@ -60,7 +74,7 @@ cd dashboard/server
 pnpm install
 ```
 
-Quant à la base de donnée, on peut la lancer et la remplir de donnés factices (mock) comme ceci :
+Quant à la base de donnée, on peut la lancer et la remplir de données factices (mock), allant du 1^er^ juin au 31 décembre 2021, comme ceci :
 
 ```bash
 pnpm build
@@ -72,6 +86,34 @@ Enfin, pour lancer le serveur en mode "watch" (redémarrage à chaque modificati
 
 ```bash
 pnpm watch
+```
+
+## URL exposées & Points d'accès API
+
+Le serveur expose les fichiers statiques.
+En environnement de développement il s'agît des fichiers présents dans `client/build`.
+Un build du client est donc nécessaire pour avoir ces fichiers, mais en environnement de développement, il est préférable d'accéder au client via le serveur de développement React.
+
+Le serveur expose également les données géospatiale aux URL `/api/v1/geodata/{nom_du_fichier}`.
+
+Enfin, il est possible d'interroger la base de données grace aux URL de la forme :
+
+- `/api/v1/{data_table}/total` : obtenir la consommation ou production totale (en W/h)
+- `/api/v1/{data_table}/hourly-mean` : obtenir la consommation ou production moyenne (en W/h) pour chaque heure de la journée
+
+`data_table` peut valoir `consumption` ou `production` et différents paramètres peuvent être rajoutés (certains sont obligatoires) :
+
+| nom        | nécessité   | type                                                                          | description                                                  |
+|------------|-------------|-------------------------------------------------------------------------------|--------------------------------------------------------------|
+| `minDate`  | obligatoire | Unix epoch millis                                                             | début de l'interval à prendre en compte                      |
+| `maxDate`  | obligatoire | Unix epoch millis                                                             | fin de l'interval à prendre en compte                        |
+| `profiles` | optionnel   | liste de profils (voir le [schéma de la base](#schema-de-la-base-de-donnees)) | profils à prendre en compte (si aucun, tout est sélectionné) |
+| `zoneName` | optionnel   | string                                                                        | zone à prendre en compte (si absent, tout est sélectionné)   |
+
+Exemple :
+
+```url
+/api/v1/production/total?minDate=1609520655276&maxDate=1627747455279&profiles[0]=SOLAR&zone=Bastide%20Niel
 ```
 
 ##  Ajouter des données de prédictions à la base
