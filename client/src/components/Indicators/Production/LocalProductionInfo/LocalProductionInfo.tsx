@@ -70,7 +70,8 @@ export default class LocalProductionInfo extends React.Component<Props, State> {
 		const formatter = new Intl.NumberFormat('fr-FR', { style: 'decimal', maximumFractionDigits: 2 });
 
 		const totalProductionKilowatts = formatter.format(wattsToKilowatts(totalProduction));
-		const CO2avoided = formatter.format(totalProduction * 0.0025);
+		// Source of the formula: https://www.greenit.fr/2009/04/24/combien-de-co2-degage-un-1-kwh-electrique/
+		const kgsOfCO2avoided = formatter.format(wattsToKilowatts(totalProduction) * 0.1);
 
 		if (productionPoints === 0) {
 			return (
@@ -101,7 +102,7 @@ export default class LocalProductionInfo extends React.Component<Props, State> {
 					La production d'énergie eléctrique {productionPoints > 1 ? 'des ' : ''}{productionPoints > 1 ? <strong>{productionPoints} points</strong> : 'du point'} de production solaire {district ? 'du quartier' : 'de la zone'} <strong>{district ? 'Bastide' : this.props.zoneName}</strong> s'élève à <strong>{totalProductionKilowatts}&nbsp;kWh</strong>.
 				</p>
 				<p>
-					Cette production a permis d'éviter l'émission de <strong>{CO2avoided}&nbsp;kilotonnes</strong> de CO2 lors de cette période.
+					Cette production a permis d'éviter l'émission de <strong>{kgsOfCO2avoided}&nbsp;kg</strong> de CO2 lors de cette période.
 				</p>
 			</div>
 		);
