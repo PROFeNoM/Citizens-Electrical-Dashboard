@@ -37,6 +37,8 @@ Une dernière partie sera consacrée à l'infrastructure et au déploiement.
 Selon l'accord oral des clients, les sources du logiciel sont disponibles sous une licence open source au choix de l'équipe de développement.
 [L'ensemble des sources](https://gitlab.com/PROFeNoM/dashboard) du logiciel est donc licencié sous la [GNU General Public License 3](https://www.gnu.org/licenses/gpl-3.0.en.html).
 
+Concernant les données provenant de [data.enedis.fr](https://data.enedis.fr/pages/accueil/?id=init), elles sont sous [Licence Ouverte v2.0 (Etalab)](https://www.etalab.gouv.fr/wp-content/uploads/2017/04/ETALAB-Licence-Ouverte-v2.0.pdf).
+
 ### Partie prenantes
 
 Encadrant :
