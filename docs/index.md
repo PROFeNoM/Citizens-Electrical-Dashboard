@@ -21,7 +21,7 @@ Le second objectif est d'expliquer comment déployer le TEC vers un environnemen
 
 ## Structure générale
 
-Le projet se divise en trois blocs majeurs:
+Le projet se divise en trois blocs majeurs :
 
 - un client ([React](https://reactjs.org/));
 - un serveur web ([Node.js](https://nodejs.org/en/));
@@ -39,7 +39,7 @@ Selon l'accord oral des clients, les sources du logiciel sont disponibles sous u
 
 ### Partie prenantes
 
-Encadrant :
+Encadrant :
 
 - Herbreteau Frédéric (enseignant chercheur — ENSEIRB-MATMECA)
 
