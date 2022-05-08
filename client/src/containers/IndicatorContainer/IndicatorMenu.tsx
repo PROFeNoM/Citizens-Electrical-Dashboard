@@ -3,7 +3,7 @@ import './IndicatorMenu.css';
 import React from 'react';
 import { Button, DatePicker, TreePicker } from 'rsuite';
 
-import { Indicator, IndicatorType, IndicatorClass, getIndicatorFromType, getAllIndicators } from 'constants/indicator';
+import { Indicator, IndicatorType, IndicatorClass, getIndicatorFromType, getAllIndicators } from 'constants/indicators';
 import { ConsumerProfile } from 'constants/profiles';
 import { getZonesGeoJSON } from 'geodata';
 

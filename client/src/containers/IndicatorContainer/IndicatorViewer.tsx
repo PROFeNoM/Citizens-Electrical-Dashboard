@@ -2,7 +2,7 @@ import './IndicatorViewer.css';
 
 import React from 'react';
 
-import { Indicator, IndicatorType } from 'constants/indicator';
+import { Indicator, IndicatorType } from 'constants/indicators';
 import { ConsumerProfile } from 'constants/profiles';
 import {
     EnergyBalance,

@@ -22,8 +22,8 @@ export default class LocalProductionInfo extends React.Component<Props, State> {
 	constructor(props: Props) {
 		super(props);
 		this.state = {
-			productionPoints: 0,
-			totalProduction: 0
+			productionPoints: null,
+			totalProduction: null
 		};
 	}
 
@@ -73,6 +73,16 @@ export default class LocalProductionInfo extends React.Component<Props, State> {
 		// Source of the formula: https://www.greenit.fr/2009/04/24/combien-de-co2-degage-un-1-kwh-electrique/
 		const kgsOfCO2avoided = formatter.format(wattsToKilowatts(totalProduction) * 0.1);
 
+		if (productionPoints === null || totalProduction === null) {
+			return (
+				<div id="local-production-info" className="text-indicator">
+					<p>
+						Chargement...
+					</p>
+				</div>
+			);
+		}
+
 		if (productionPoints === 0) {
 			return (
 				<div id="local-production-info" className="text-indicator">
@@ -99,7 +109,7 @@ export default class LocalProductionInfo extends React.Component<Props, State> {
 		return (
 			<div id="local-production-info" className="text-indicator">
 				<p>
-					La production d'énergie électrique {productionPoints > 1 ? 'des ' : ''}{productionPoints > 1 ? <strong>{productionPoints} points</strong> : 'du point'} de production solaire {district ? 'du quartier' : 'de la zone'} <strong>{district ? 'Bastide' : this.props.zoneName}</strong> s'élève à <strong>{totalProductionKilowatts}&nbsp;kWh</strong>.
+					La production d'énergie électrique {productionPoints > 1 ? 'des ' : ''}{productionPoints > 1 ? <strong>{productionPoints} points</strong> : 'du point'} de production solaire {district ? 'du quartier' : 'de la zone'} <strong>{district ? 'Bastide' : this.props.zoneName}</strong> s'élève à <strong>{totalProductionKilowatts}&nbsp;kWh</strong> sur la période.
 				</p>
 				<p>
 					Cette production a permis d'éviter l'émission de <strong>{kgsOfCO2avoided}&nbsp;kg</strong> de CO2 lors de cette période.

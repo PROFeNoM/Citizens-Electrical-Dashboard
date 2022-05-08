@@ -1,7 +1,7 @@
 import './DataContainer.css';
 import React from 'react';
 
-import { Indicator, IndicatorType, getIndicatorFromType } from 'constants/indicator';
+import { Indicator, IndicatorType, getIndicatorFromType } from 'constants/indicators';
 import { ConsumerProfile } from 'constants/profiles';
 import { MapContainer, IndicatorContainer } from 'containers';
 

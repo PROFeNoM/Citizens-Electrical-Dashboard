@@ -2,7 +2,7 @@ import './IndicatorContainer.css';
 
 import React from 'react';
 
-import { Indicator } from 'constants/indicator';
+import { Indicator } from 'constants/indicators';
 import { ConsumerProfile } from 'constants/profiles';
 import IndicatorMenu from './IndicatorMenu';
 import IndicatorViewer from './IndicatorViewer';

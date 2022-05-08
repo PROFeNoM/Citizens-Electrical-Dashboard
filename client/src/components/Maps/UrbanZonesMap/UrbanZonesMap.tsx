@@ -3,7 +3,7 @@ import './UrbanZonesMap.css';
 import React from 'react';
 import { FillExtrusionLayer, FillLayer, LineLayer, CircleLayer } from 'react-map-gl';
 
-import { Indicator, IndicatorClass } from 'constants/indicator';
+import { Indicator, IndicatorClass } from 'constants/indicators';
 import { ConsumerProfile, ProducerProfile } from 'constants/profiles';
 import BaseMap, { BaseMapProps } from '../BaseMap/BaseMap';
 import { FeatureCollection } from '@turf/turf';

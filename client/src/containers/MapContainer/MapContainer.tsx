@@ -3,7 +3,7 @@ import './MapContainer.css';
 import React from 'react';
 
 import { ConsumerProfile } from 'constants/profiles';
-import { Indicator } from 'constants/indicator';
+import { Indicator } from 'constants/indicators';
 import { UrbanZonesMap } from 'components/Maps';
 
 interface Props {

@@ -49,7 +49,7 @@ export function getAllIndicators(): Indicator[] {
 registerIndicator(IndicatorClass.General, IndicatorType.EnergyBalance, 'Bilan général');
 
 // Indicateurs de consommation
-registerIndicator(IndicatorClass.Consumption, IndicatorType.TotalConsumption, 'Consommation totale');
+registerIndicator(IndicatorClass.Consumption, IndicatorType.TotalConsumption, 'Consommation par filière');
 registerIndicator(IndicatorClass.Consumption, IndicatorType.ConsumptionDonut, 'Répartition de la consommation');
 registerIndicator(IndicatorClass.Consumption, IndicatorType.TypicalConsumptionDay, 'Journée type de consommation');
 
