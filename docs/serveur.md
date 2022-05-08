@@ -42,7 +42,7 @@ Chaque ligne d'une `DataTable` stocke une donnée énergétique au pas de la dem
 La table `Zone` est là pour identifier différentes zones géographiques.
 Dans le cas de la Bastide, il s'agît de sous-quartiers (exemple : "quartier historique Nord Thiers").
 
-Il est à noter que, bien que non mentionnée, la table `typeorm_metadata` sert au fontionnement interne de [typeORM](https://typeorm.io/).
+Il est à noter que, bien que non mentionnée, la table `typeorm_metadata` sert au fonctionnement interne de [typeORM](https://typeorm.io/).
 
 ### Données géospatiales
 
@@ -92,13 +92,17 @@ pnpm watch
 
 ### Existant
 
+#### Données statiques
+
 Le serveur expose les fichiers statiques.
 En environnement de développement il s'agît des fichiers présents dans `client/build`.
 Un build du client est donc nécessaire pour avoir ces fichiers, mais en environnement de développement, il est préférable d'accéder au client via le serveur de développement React.
 
 Le serveur expose également les données géospatiale aux URL `/api/v1/geodata/{nom_du_fichier}`.
 
-Enfin, il est possible d'interroger la base de données grace aux URL de la forme :
+#### Données dynamiques agrégées
+
+Il est possible d'interroger la base de données grace aux URL de la forme :
 
 - `/api/v1/{data_table}/total` : obtenir la consommation ou production totale (en W/h)
 - `/api/v1/{data_table}/hourly-mean` : obtenir la consommation ou production moyenne (en W/h) pour chaque heure de la journée
@@ -117,6 +121,18 @@ Exemple :
 ```url
 /api/v1/production/total?minDate=1609520655276&maxDate=1627747455279&profiles[0]=SOLAR&zone=Bastide%20Niel
 ```
+
+#### Autre données dynamiques
+
+Le point d'accès `/api/v1/{data_table}/max-timestamp` permet de récupérer l'horodatage de la dernière donnée historique (qui n'est pas une prédiction).
+`data_table` peut valoir `consumption` ou `production`.
+
+Exemple :
+
+```url
+/api/v1/production/max-timestamp
+```
+
 
 ### Ajout d'un point d'accès API
 
