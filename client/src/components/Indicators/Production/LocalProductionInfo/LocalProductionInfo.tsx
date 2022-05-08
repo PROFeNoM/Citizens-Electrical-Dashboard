@@ -99,7 +99,7 @@ export default class LocalProductionInfo extends React.Component<Props, State> {
 		return (
 			<div id="local-production-info" className="text-indicator">
 				<p>
-					La production d'énergie eléctrique {productionPoints > 1 ? 'des ' : ''}{productionPoints > 1 ? <strong>{productionPoints} points</strong> : 'du point'} de production solaire {district ? 'du quartier' : 'de la zone'} <strong>{district ? 'Bastide' : this.props.zoneName}</strong> s'élève à <strong>{totalProductionKilowatts}&nbsp;kWh</strong>.
+					La production d'énergie électrique {productionPoints > 1 ? 'des ' : ''}{productionPoints > 1 ? <strong>{productionPoints} points</strong> : 'du point'} de production solaire {district ? 'du quartier' : 'de la zone'} <strong>{district ? 'Bastide' : this.props.zoneName}</strong> s'élève à <strong>{totalProductionKilowatts}&nbsp;kWh</strong>.
 				</p>
 				<p>
 					Cette production a permis d'éviter l'émission de <strong>{kgsOfCO2avoided}&nbsp;kg</strong> de CO2 lors de cette période.
