@@ -74,7 +74,7 @@ export async function getZoneChargingStationsData(zoneName: string) {
 		// Compute number of stations and charging points in each zone
 		const [zonesGeoJSON, chargingStationsGeoJSON] = await Promise.all([
 			getZonesGeoJSON(),
-			getChargingStationsGeoJSON(),
+			getChargingStationsGeoJSON()
 		]);
 		zonesStations = {};
 		for (const zone of zonesGeoJSON.features) {

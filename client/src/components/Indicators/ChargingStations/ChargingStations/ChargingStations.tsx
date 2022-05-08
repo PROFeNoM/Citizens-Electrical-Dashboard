@@ -2,20 +2,15 @@ import './ChargingStations.css';
 
 import React from 'react';
 
-import { getZonesNames, getZoneChargingStationsData } from 'scripts/dbUtils';
-
-interface Data {
-	nbOfStations: number; // Number of charging stations in the zone
-	nbOfChargingPoints: number; // Number of charging points in the zone
-}
+import { getZoneChargingStationsData, getZonesNames } from 'scripts/dbUtils';
 
 interface Props {
 	zoneName: string; // Name of the selected zone
 }
 
 interface State {
-	districtData: Data;
-	zonesData: { [name: string]: Data };
+	nbOfStations: number; // Number of charging stations in the zone
+	nbOfChargingPoints: number; // Number of charging points in the zone
 }
 
 export default class ChargingStationIndicator extends React.Component<Props, State> {
@@ -23,44 +18,69 @@ export default class ChargingStationIndicator extends React.Component<Props, Sta
 		super(props);
 
 		this.state = {
-			districtData: {
-				nbOfStations: 0,
-				nbOfChargingPoints: 0
-			},
-			zonesData: {},
+			nbOfStations: null,
+			nbOfChargingPoints: null
 		};
 	}
 
-	async componentDidMount() {
-		for (const zoneName of await getZonesNames()) {
-			const zoneChargingStationsData = await getZoneChargingStationsData(zoneName);
-			this.state.zonesData[zoneName] = {
-				nbOfStations: zoneChargingStationsData.nbOfStations,
-				nbOfChargingPoints: zoneChargingStationsData.nbOfChargingPoints,
-			};
+	private async fetchData(): Promise<void> {
+		const { zoneName } = this.props;
+		const zoneNames = await getZonesNames();
 
-			this.state.districtData.nbOfStations += this.state.zonesData[zoneName].nbOfStations;
-			this.state.districtData.nbOfChargingPoints += this.state.zonesData[zoneName].nbOfChargingPoints;
+		const { nbOfStations, nbOfChargingPoints } = zoneName === null ?
+			(await Promise.all(zoneNames.map(getZoneChargingStationsData))).reduce((a, b) => ({
+				nbOfStations: a.nbOfStations + b.nbOfStations,
+				nbOfChargingPoints: a.nbOfChargingPoints + b.nbOfChargingPoints
+			}))
+			: await getZoneChargingStationsData(zoneName);
+
+		this.setState({
+			nbOfStations,
+			nbOfChargingPoints
+		});
+	}
+
+	async componentDidMount(): Promise<void> {
+		try {
+			await this.fetchData();
+		} catch (e) {
+			console.error('Error while fetching data', e);
 		}
 	}
 
-	private get currentData(): Data {
-		return this.props.zoneName !== null
-			? this.state.zonesData[this.props.zoneName]
-			: this.state.districtData;
+	async componentDidUpdate(prevProps: Readonly<Props>): Promise<void> {
+		if (prevProps.zoneName === this.props.zoneName) {
+			return;
+		}
+
+		try {
+			await this.fetchData();
+		} catch (e) {
+			console.error('Error while fetching data', e);
+		}
 	}
 
 	render() {
-		const { nbOfStations, nbOfChargingPoints } = this.currentData;
+		const { nbOfStations, nbOfChargingPoints } = this.state;
 		const title = this.props.zoneName ?? 'Quartier de la Bastide';
 		const district: boolean = this.props.zoneName === null;
 
-		return (
+		if (nbOfStations === null || nbOfChargingPoints === null) {
+			return (
 				<div id="charging-stations-info" className="text-indicator">
-					<p>
-						{district ? 'Le quartier' : 'La zone'} <strong>{district ? 'Bastide' : `${title}`}</strong> compte <strong>{nbOfStations}&nbsp;station{nbOfStations > 1 ? 's' : ''}</strong> de recharge électrique pour <strong>{nbOfChargingPoints}&nbsp;borne{nbOfChargingPoints > 1 ? 's' : ''}</strong> au total.
-					</p>
-				</div>
+				<p>
+					Chargement...
+				</p>
+			</div>
+			);
+		}
+
+		return (
+			<div id="charging-stations-info" className="text-indicator">
+				<p>
+					{district ? 'Le quartier' : 'La zone'} <strong>{district ? 'Bastide' : `${title}`}</strong> compte <strong>{nbOfStations}&nbsp;station{nbOfStations > 1 ? 's' : ''}</strong> de recharge électrique pour <strong>{nbOfChargingPoints}&nbsp;borne{nbOfChargingPoints > 1 ? 's' : ''}</strong> au total.
+				</p>
+			</div>
 		);
 	}
 }
