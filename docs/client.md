@@ -1,5 +1,31 @@
 # Client
 
+## Technologies utilisées
+
+La partie client a été développée en [TypeScript](https://www.typescriptlang.org/) avec le framework [React](https://fr.reactjs.org/).
+Concernant la carte et les graphiques, ils ont été intégrés à la page grâces aux bibliothèques [Mapbox](https://www.mapbox.com/) et [CanvasJS](https://canvasjs.com/react-charts/).
+
+## Lancement de l'application pour le développement
+
+Pré-requis :
+
+- [Node.js](https://nodejs.org/en/)
+- [PNPM](https://pnpm.io/)
+
+Le téléchargement des sources et l'installations des dépendances se fait comme suit :
+
+```bash
+git clone https://gitlab.com/PROFeNoM/dashboard.git
+cd dashboard/client
+pnpm install
+```
+
+Enfin, pour lancer le client en mode "watch" (mise à jour de la page à chaque modification) :
+
+```bash
+pnpm start
+```
+
 ## Indicateurs implémentés
 
 Les indicateurs ont été implémentés sous forme de composants React. Ces derniers sont accessibles dans le dossier `client/src/components/indicators`, où ils y sont séparés selon leur thématique:

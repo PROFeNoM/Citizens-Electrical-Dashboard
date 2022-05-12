@@ -62,9 +62,10 @@ Les données géospatiales sont réparties dans les fichiers suivants :
 
 Pré-requis :
 
+- [Node.js](https://nodejs.org/en/)
+- [PNPM](https://pnpm.io/)
 - [Docker](https://www.docker.com/)
 - [Docker Compose](https://docs.docker.com/compose/)
-- [PNPM](https://pnpm.io/)
 
 Le téléchargement des sources et l'installations des dépendances se fait comme suit :
 
