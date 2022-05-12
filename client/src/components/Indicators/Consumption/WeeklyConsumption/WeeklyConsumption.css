@@ -1,0 +1,9 @@
+@import 'styles/graph-indicator.css';
+
+#weekly-consumption-legend-urban-zone-color {
+    background-color: #e63b11;
+}
+
+#weekly-consumption-legend-district-color {
+    background-color: #688199;
+}

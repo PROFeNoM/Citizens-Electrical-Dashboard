@@ -6,7 +6,7 @@ import { Indicator, IndicatorType } from 'constants/indicators';
 import { ConsumerProfile } from 'constants/profiles';
 import {
     EnergyBalance,
-    TypicalConsumptionDay, ConsumptionDonut, TotalConsumption,
+    TypicalConsumptionDay, ConsumptionDonut, TotalConsumption, WeeklyConsumption,
     LocalProductionInfo, TypicalProductionDay, SolarDonut, WeeklyProduction,
     ChargingStations
 } from 'components/Indicators';
@@ -37,16 +37,6 @@ export default class IndicatorViewer extends React.Component<Props, {}> {
         const { zoneName, sector, t1, t2, setHighlightedZone } = this.props;
 
         switch (indicator.type) {
-            case IndicatorType.TypicalConsumptionDay:
-                return (
-                    <TypicalConsumptionDay
-                        zoneName={zoneName}
-                        buildingType={sector}
-                        t1={t1.getTime()}
-                        t2={t2.getTime()}
-                        setHighlightedZone={setHighlightedZone}
-                    />
-                );
             case IndicatorType.TotalConsumption:
                 return (
                     <TotalConsumption
@@ -59,6 +49,26 @@ export default class IndicatorViewer extends React.Component<Props, {}> {
             case IndicatorType.ConsumptionDonut:
                 return (
                     <ConsumptionDonut
+                        zoneName={zoneName}
+                        buildingType={sector}
+                        t1={t1.getTime()}
+                        t2={t2.getTime()}
+                        setHighlightedZone={setHighlightedZone}
+                    />
+                );
+            case IndicatorType.WeeklyConsumption:
+                return (
+                    <WeeklyConsumption
+                        zoneName={zoneName}
+                        sector={sector}
+                        t1={t1.getTime()}
+                        t2={t2.getTime()}
+                        setHighlightedZone={setHighlightedZone}
+                    />
+                );
+            case IndicatorType.TypicalConsumptionDay:
+                return (
+                    <TypicalConsumptionDay
                         zoneName={zoneName}
                         buildingType={sector}
                         t1={t1.getTime()}
