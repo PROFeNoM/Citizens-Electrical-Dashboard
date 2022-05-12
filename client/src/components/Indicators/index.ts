@@ -1,4 +1,5 @@
 export { default as EnergyBalance } from './Global/EnergyBalance/EnergyBalance'
+export { default as ConsumptionInfo } from './Consumption/ConsumptionInfo/ConsumptionInfo'
 export { default as ConsumptionDonut } from './Consumption/ConsumptionDonut/ConsumptionDonut'
 export { default as TotalConsumption } from './Consumption/TotalConsumption/TotalConsumption'
 export { default as TypicalConsumptionDay } from './Consumption/TypicalConsumptionDay/TypicalConsumptionDay'

@@ -1,6 +1,7 @@
 export enum IndicatorType {
-	ConsumptionDonut,
 	EnergyBalance,
+	ConsumptionInfo,
+	ConsumptionDonut,
 	LocalProductionInfo,
 	SolarDonut,
 	TotalConsumption,
@@ -50,13 +51,14 @@ export function getAllIndicators(): Indicator[] {
 registerIndicator(IndicatorClass.General, IndicatorType.EnergyBalance, 'Bilan général');
 
 // Indicateurs de consommation
+registerIndicator(IndicatorClass.Consumption, IndicatorType.ConsumptionInfo, 'Bilan de consommation');
 registerIndicator(IndicatorClass.Consumption, IndicatorType.ConsumptionDonut, 'Répartition de la consommation');
 registerIndicator(IndicatorClass.Consumption, IndicatorType.WeeklyConsumption, 'Consommation hebdomadaire');
 registerIndicator(IndicatorClass.Consumption, IndicatorType.TotalConsumption, 'Consommation par filière');
 registerIndicator(IndicatorClass.Consumption, IndicatorType.TypicalConsumptionDay, 'Journée type de consommation');
 
 // Indicateurs de production
-registerIndicator(IndicatorClass.Production, IndicatorType.LocalProductionInfo, 'Production locale');
+registerIndicator(IndicatorClass.Production, IndicatorType.LocalProductionInfo, 'Bilan de production');
 registerIndicator(IndicatorClass.Production, IndicatorType.SolarDonut, 'Répartition de la production solaire');
 registerIndicator(IndicatorClass.Production, IndicatorType.WeeklyProduction, 'Production hebdomadaire');
 registerIndicator(IndicatorClass.Production, IndicatorType.TypicalProductionDay, 'Journée type de production');
