@@ -17,7 +17,6 @@ interface State {
 	districtProductionData: { x: Date, y: number }[];
 	urbanZoneProductionData: { x: Date, y: number }[];
 	maxTimestamp: Date;
-	renderMe: boolean;
 }
 
 export default class WeeklyProduction extends React.Component<Props, State> {
@@ -32,8 +31,7 @@ export default class WeeklyProduction extends React.Component<Props, State> {
 		this.state = {
 			districtProductionData: tmpPoints,
 			urbanZoneProductionData: tmpPoints,
-			maxTimestamp: new Date(),
-			renderMe: false,
+			maxTimestamp: new Date()
 		};
 	}
 
@@ -84,14 +82,16 @@ export default class WeeklyProduction extends React.Component<Props, State> {
 	}
 
 	private async fetchData() {
-		const districtProductionData = await this.getDistrictProductionData();
-		const urbanZoneProductionData = await this.getUrbanZoneProductionData();
-		const maxTimestamp = await getMaxTimestamp(DataType.PRODUCTION)
+		const [districtProductionData, urbanZoneProductionData, maxTimestamp] = await Promise.all([
+			this.getDistrictProductionData(),
+			this.getUrbanZoneProductionData(),
+			getMaxTimestamp(DataType.PRODUCTION)
+		]);
+
 		this.setState({
-			districtProductionData: districtProductionData,
-			urbanZoneProductionData: urbanZoneProductionData,
-			maxTimestamp: new Date(maxTimestamp),
-			renderMe: true,
+			districtProductionData,
+			urbanZoneProductionData,
+			maxTimestamp: new Date(maxTimestamp)
 		});
 	}
 
@@ -156,14 +156,14 @@ export default class WeeklyProduction extends React.Component<Props, State> {
 				},
 				{
 					type: "column",
-					name: `Production de ${this.props.zoneName} (kWh)`,
+					name: `Production de ${this.props.zoneName ?? 'La Bastide'} (kWh)`,
 					dataPoints: historicalUrbanZoneProductionData,
 					color: "#e63b11",
 					click: this.onClick
 				},
 				{
 					type: "column",
-					name: `Prédiction de production de ${this.props.zoneName} (kWh)`,
+					name: `Prédiction de production de ${this.props.zoneName ?? 'La Bastide'} (kWh)`,
 					dataPoints: forecastedUrbanZoneProductionData,
 					color: "#e63b11",
 					click: this.onClick,
