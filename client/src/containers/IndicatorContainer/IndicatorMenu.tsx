@@ -141,16 +141,15 @@ export default class IndicatorMenu extends React.Component<Props, State> {
                         className="indicator-menu-item tree-picker" data={indicatorTree}
                         onChange={(value: IndicatorType | IndicatorClass) => { if (typeof value === 'number') { this.setState({ indicatorType: value }); } }}
                         placeholder="Indicateur"
-                        placement="bottomEnd"
+                        placement="bottomStart"
                         defaultValue={IndicatorType.EnergyBalance}
                         cleanable={false}
                         defaultExpandAll={true}
                     />
                 </div>
                 <div id="indicator-menu-building-type">
-                    <p>Filière de consommation</p>
+                    <p><span className="full-text">Filière de consommation</span><span className="small-text">Filière de conso.</span></p>
                     <TreePicker
-                        id="indicator-menu-building-type"
                         className="indicator-menu-item tree-picker"
                         onChange={(value: ConsumerProfile) => { this.setState({ buildingType: value }); }}
                         data={selectOptionsBuildings}
@@ -163,10 +162,10 @@ export default class IndicatorMenu extends React.Component<Props, State> {
                 <div id="indicator-menu-start-date">
                     <p>Date de début</p>
                     <DatePicker
-                        id="indicator-menu-start-date"
                         className="indicator-menu-item date-picker"
                         onChange={(value) => { this.setState({ t1: value }); }}
                         placeholder="Date début"
+                        placement="bottomStart"
                         defaultValue={this.state.t1}
                         cleanable={false}
                         format={'dd/MM/yyyy'}
@@ -175,10 +174,10 @@ export default class IndicatorMenu extends React.Component<Props, State> {
                 <div id="indicator-menu-end-date">
                     <p>Date de fin</p>
                     <DatePicker
-                        id="indicator-menu-end-date"
                         className="indicator-menu-item date-picker"
                         onChange={(value) => { this.setState({ t2: value }); }}
                         placeholder="Date fin"
+                        placement="bottomEnd"
                         defaultValue={this.state.t2}
                         cleanable={false}
                         format={'dd/MM/yyyy'}

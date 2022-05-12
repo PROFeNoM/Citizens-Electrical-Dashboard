@@ -109,7 +109,7 @@ export default class ConsumptionDonut extends React.Component<Props, State> {
 			subtitles: [{
 				text: text,
 				verticalAlign: 'center',
-				fontSize: 24,
+				fontSize: 15,
 				fontFamily: 'Ubuntu',
 				dockInsidePlotArea: true
 			}],

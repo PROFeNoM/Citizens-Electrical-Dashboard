@@ -1,6 +1,5 @@
 #about-text-wrapper {
     font-size: medium;
-    text-align: justify;
     color: var(--color-text);
     background-color: var(--color-primary);
     height: 100%;
@@ -13,6 +12,7 @@
 }
 
 #about-text-wrapper p {
+    text-align: justify;
     padding-bottom: 1%;
 }
 

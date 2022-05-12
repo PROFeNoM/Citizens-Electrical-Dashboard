@@ -15,7 +15,7 @@
 	animation-duration: 2s;
 }
 
-#indicator-container {
+#indicator-container-wrapper {
 	opacity: 1;
 	animation-name: fadeInRight;
 	animation-iteration-count: 1;
@@ -26,6 +26,11 @@
 @media (max-width: 900px) {
 	#data-container {
 		grid-template-columns: 1fr;
-		grid-template-rows:  1fr 1fr;
+		grid-template-rows: 1fr auto;
+	}
+
+	#map-container-wrapper {
+		min-height: 100vh;
+		grid-row: 2;
 	}
 }

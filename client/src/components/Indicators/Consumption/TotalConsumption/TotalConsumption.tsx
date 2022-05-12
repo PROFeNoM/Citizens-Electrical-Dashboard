@@ -124,7 +124,7 @@ export default class TotalConsumption extends React.Component<Props, State> {
 			chartOptions.subtitles = [{
 				text: 'Pas de données pour la période',
 				verticalAlign: 'center',
-				fontSize: 24,
+				fontSize: 15,
 				fontFamily: 'Ubuntu'
 			}];
 		}
