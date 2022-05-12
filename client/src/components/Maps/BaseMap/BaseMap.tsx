@@ -14,7 +14,7 @@ export interface BaseMapProps {
 }
 
 const defaultProps: BaseMapProps = {
-	center: [-0.5564, 44.8431],
+	center: [-0.5566, 44.8431],
 	bounds: [[-0.5463, 44.8522], [-0.5665, 44.8382]],
 	zoom: 15.5,
 	pitch: 42,
@@ -65,7 +65,7 @@ export default class BaseMap extends React.Component<BaseMapProps, {}> {
 		this.map.fitBounds(this.props.bounds ?? defaultProps.bounds, {
 			center: this.props.center ?? defaultProps.center,
 			animate: animate,
-			padding: -80,
+			padding: -50,
 		});
 	}
 
