@@ -6,7 +6,7 @@ import { Indicator, IndicatorType } from 'constants/indicators';
 import { ConsumerProfile } from 'constants/profiles';
 import {
     EnergyBalance,
-    TypicalConsumptionDay, ConsumptionDonut, TotalConsumption, WeeklyConsumption,
+    ConsumptionInfo, ConsumptionDonut, TotalConsumption, WeeklyConsumption, TypicalConsumptionDay,
     LocalProductionInfo, TypicalProductionDay, SolarDonut, WeeklyProduction,
     ChargingStations
 } from 'components/Indicators';
@@ -37,6 +37,15 @@ export default class IndicatorViewer extends React.Component<Props, {}> {
         const { zoneName, sector, t1, t2, setHighlightedZone } = this.props;
 
         switch (indicator.type) {
+            case IndicatorType.ConsumptionInfo:
+                return (
+                <ConsumptionInfo
+                zoneName={zoneName}
+                sector={sector}
+                t1={t1.getTime()}
+                t2={t2.getTime()}
+                />)
+                ;
             case IndicatorType.TotalConsumption:
                 return (
                     <TotalConsumption
