@@ -49,7 +49,7 @@ export default class About extends React.Component<{}, {}> {
 							<li>Tilfani Aymen (élève — ENSEIRB-MATMECA)</li>
 						</ul>
 
-						<h3>Encadrant pédagogique</h3>
+						<h3>Responsable pédagogique</h3>
 
 						<ul>
 							<li>Herbreteau Frédéric (enseignant chercheur — ENSEIRB-MATMECA)</li>
