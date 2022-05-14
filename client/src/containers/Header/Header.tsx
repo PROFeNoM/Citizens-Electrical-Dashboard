@@ -4,7 +4,7 @@ import React from 'react';
 
 import logoEnedis from 'images/logoEnedis.png';
 import logoEnedisSmall from 'images/logoEnedisSmall.png';
-import { Hamburger } from 'components/Header';
+import { Hamburger } from 'components/header';
 
 interface Props {
 	title: string; // Title of the page (e.g. "Home")

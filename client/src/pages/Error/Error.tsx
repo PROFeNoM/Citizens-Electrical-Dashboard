@@ -18,7 +18,6 @@ export default class Error extends React.Component<{}, {}> {
 				<Header title={'Erreur'} />
 				<main>
 					<div id="error-text-wrapper">
-						<h2>Erreur</h2>
 						<p>
 							La page que vous recherchez n'existe pas.
 						</p>

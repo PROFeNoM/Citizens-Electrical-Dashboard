@@ -1,4 +1,4 @@
-# Citizen Electrical Dashboard — Server
+# Tableau Électrique Citoyen — Server
 
 ## Install the dependencies
 

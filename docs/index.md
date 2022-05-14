@@ -4,9 +4,9 @@
 
 Le Tableau Électrique Citoyen (TEC) est une preuve de concept sous forme de site web, permettant de suivre la consommation et la production électrique d'un quartier, ainsi que de prévoir, grâce au machine learning, les futures consommations et productions.
 
-Cette preuve de concept se focalise uniquement sur le quartier de la Bastide, à Bordeaux, et présente des données factices.
+Cette preuve de concept se focalise uniquement sur le quartier de La Bastide, à Bordeaux, et présente des données factices.
 
-## Context
+## Contexte
 
 Le TEC est un Projet au Fil de l'Année (PFA) développé par des élèves de l'école [ENSEIRB-MATMECA](https://enseirb-matmeca.bordeaux-inp.fr/fr) sur l'année scolaire 2021/2022.
 
@@ -41,16 +41,6 @@ Concernant les données provenant de [data.enedis.fr](https://data.enedis.fr/pag
 
 ### Partie prenantes
 
-Encadrant :
-
-- Herbreteau Frédéric (enseignant chercheur — ENSEIRB-MATMECA)
-
-Clients :
-
-- Demay Henry-Pierre (relation collectivités — Enedis)
-- Marty Olivier (responsable pôle PMIS — URISA/IESF Nouvelle-Aquitaine)
-- Mollard Yoan (ingénieur de recherche en robotique — ENSEIRB-MATMECA)
-
 Équipe de développement :
 
 - Agtaib Badre Iddine (élève — ENSEIRB-MATMECA)
@@ -60,3 +50,14 @@ Clients :
 - Mansouri Othmane (élève — ENSEIRB-MATMECA)
 - Saccoccio Clément (élève — ENSEIRB-MATMECA)
 - Tilfani Aymen (élève — ENSEIRB-MATMECA)
+
+Encadrant :
+
+- Herbreteau Frédéric (enseignant chercheur — ENSEIRB-MATMECA)
+
+Clients :
+
+- Demay Henry-Pierre (relation collectivités — Enedis)
+- Marty Olivier (responsable pôle PMIS — URISA/IESF Nouvelle-Aquitaine)
+- Mollard Yoan (ingénieur de recherche en robotique — ENSEIRB-MATMECA)
+- Younes-Chaouche Megdouda (professeure de technologie - collège Léonard Lenoir Bordeaux)
