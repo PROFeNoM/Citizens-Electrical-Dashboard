@@ -118,7 +118,7 @@ export default class ConsumptionInfo extends React.Component<Props, State> {
 					La consommation d'énergie électrique {consumptionPoints > 1 ? 'des ' : ''}{consumptionPoints > 1 ? <strong>{consumptionPoints} points</strong> : 'du point'} de consommation {district ? 'du quartier' : 'de la zone'} <strong>{district ? 'Bastide' : this.props.zoneName}</strong> s'élève à <strong>{totalConsumptionKilowatts}&nbsp;kWh</strong> sur la période.
 				</p>
 				<p>
-					Cette consommation représente l'équivalent de <strong>{kgsOfCO2}&nbsp;kg</strong> de CO2.
+					Cette consommation représente l'équivalent de <strong>{kgsOfCO2}&nbsp;kg</strong> de CO2 émis.
 				</p>
 			</div>
 		);

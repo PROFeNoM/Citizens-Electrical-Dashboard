@@ -116,7 +116,7 @@ export default class ProductionInfo extends React.Component<Props, State> {
 					La production d'énergie électrique {productionPoints > 1 ? 'des ' : ''}{productionPoints > 1 ? <strong>{productionPoints} points</strong> : 'du point'} de production solaire {district ? 'du quartier' : 'de la zone'} <strong>{district ? 'Bastide' : this.props.zoneName}</strong> s'élève à <strong>{totalProductionKilowatts}&nbsp;kWh</strong> sur la période.
 				</p>
 				<p>
-					Cette production a permis d'éviter l'émission de <strong>{kgsOfCO2avoided}&nbsp;kg</strong> de CO2 lors de cette période.
+					Cette production a permis d'éviter l'émission de <strong>{kgsOfCO2avoided}&nbsp;kg</strong> de CO2.
 				</p>
 			</div>
 		);

@@ -14,7 +14,7 @@ import { Header } from 'containers';
 export default class Error extends React.Component<{}, {}> {
 	render() {
 		return (
-			<>
+			<div id="error-container">
 				<Header title={'Erreur'} />
 				<main>
 					<div id="error-text-wrapper">
@@ -23,7 +23,7 @@ export default class Error extends React.Component<{}, {}> {
 						</p>
 					</div>
 				</main>
-			</>
+			</div>
 		);
 	}
 }

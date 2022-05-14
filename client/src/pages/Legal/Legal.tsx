@@ -15,7 +15,7 @@ import { Header } from 'containers';
 export default class Legal extends React.Component<{}, {}> {
 	render() {
 		return (
-			<>
+			<div id="legal-container">
 				<header>
 					<Header title={'Mentions légales'} />
 				</header>
@@ -28,7 +28,7 @@ export default class Legal extends React.Component<{}, {}> {
 						</p>
 					</div>
 				</main>
-			</>
+			</div>
 		);
 	}
 }

@@ -1,10 +1,18 @@
+#about-container {
+    background-color: var(--color-primary);
+    height: 100%;
+}
+
 #about-text-wrapper {
     font-size: medium;
     color: var(--color-text);
-    background-color: var(--color-primary);
     height: 100%;
     min-height: calc(100vh - var(--header-height));
     padding: 20px 20%;
+    animation-name: fadeInUp;
+	animation-iteration-count: 1;
+	animation-timing-function: ease-in;
+	animation-duration: 0.75s;
 }
 
 #about-text-wrapper h2 {
@@ -16,7 +24,6 @@
 }
 
 #about-text-wrapper p {
-    text-align: justify;
     padding-bottom: 1%;
 }
 

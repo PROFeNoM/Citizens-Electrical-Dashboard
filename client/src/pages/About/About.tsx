@@ -14,7 +14,7 @@ import { Header } from 'containers';
 export default class About extends React.Component<{}, {}> {
 	render() {
 		return (
-			<>
+			<div id="about-container">
 				<header>
 					<Header title='À propos' />
 				</header>
@@ -65,7 +65,7 @@ export default class About extends React.Component<{}, {}> {
 						</ul>
 					</div>
 				</main>
-			</>
+			</div>
 		);
 	}
 }
