@@ -11,6 +11,10 @@
     margin: 20px 0;
 }
 
+#about-text-wrapper h3 {
+    margin: 20px 0;
+}
+
 #about-text-wrapper p {
     text-align: justify;
     padding-bottom: 1%;
