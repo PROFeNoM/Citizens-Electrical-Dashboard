@@ -33,7 +33,6 @@ export async function getTotalProduction(t1: number, t2: number, profiles?: Prod
  */
 export async function getHourlyMeanConsumption(t1: number, t2: number, profiles?: ConsumerProfile[], zoneName?: string): Promise<{ hour: Date; mean: number }[]> {
 	const result = await apiCall('consumption/hourly-mean', t1, t2, profiles, zoneName) as { hour: number; mean: number }[];
-	// FIXME wtf
 	return result.map(({ hour, mean }) => ({
 		hour: new Date(Date.UTC(2022, 1, 1, hour, 0)),
 		mean: mean,
@@ -49,7 +48,6 @@ export async function getHourlyMeanConsumption(t1: number, t2: number, profiles?
  */
 export async function getHourlyMeanProduction(t1: number, t2: number, profiles?: ProducerProfile[], zoneName?: string): Promise<{ hour: Date; mean: number }[]> {
 	const result = await apiCall('production/hourly-mean', t1, t2, profiles, zoneName) as { hour: number; mean: number }[];
-	// FIXME wtf
 	return result.map(({ hour, mean }) => ({
 		hour: new Date(Date.UTC(2022, 1, 1, hour, 0)),
 		mean: mean,

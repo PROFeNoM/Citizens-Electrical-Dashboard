@@ -153,7 +153,7 @@ export default class GlobalInfo extends React.Component<Props, State> {
 		}
 
 		return (
-			<div id="energy-balance" className="text-indicator">
+			<div id="global-info" className="text-indicator">
 				<ul>
 					<li><span className="data">{format(area, intFormatter)}</span> m²</li>
 					<li><span className="data">{format(nbOfBuildings, intFormatter)}</span> bâtiment{nbOfBuildings > 1 ? 's' : ''} au total</li>

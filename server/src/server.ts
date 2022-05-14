@@ -97,7 +97,7 @@ app.get('/api/*', (req, res) => {
 })
 
 
-// FIXME every non API call will result in a 200 response, this isn't a good practice
+// Every non API call will result in a 200 response, this isn't a good practice
 app.get('*', (req, res) => {
 	res.sendFile(wwwDir + '/index.html');
 });

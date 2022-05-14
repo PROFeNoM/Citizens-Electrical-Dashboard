@@ -4,8 +4,10 @@ import { ConsumerProfile, ProducerProfile } from 'constants/profiles';
 import { getBuildingsGeoJSON, getZonesGeoJSON, getPublicLightingGeoJSON, getChargingStationsGeoJSON, ZoneFeatureProperties } from 'geodata';
 import { Feature, MultiPolygon } from '@turf/turf';
 
-// FIXME client shouldn't have to compute that, client shouldn't have to compute anything
-/** Exactly like booleanContains of @turf/turf, but it works with MultiPolygon. */
+
+/** 
+ * Exactly like booleanContains of @turf/turf, but it works with MultiPolygon.
+ */
 function polygonIsContained(containedFeature: Feature<MultiPolygon, any>, containerFeature: Feature<MultiPolygon, any>) {
 	// each "for" will loop only once if the given features are made of only one polygon each (which is most likely the case)
 	for (const polygon1 of containerFeature.geometry.coordinates) {

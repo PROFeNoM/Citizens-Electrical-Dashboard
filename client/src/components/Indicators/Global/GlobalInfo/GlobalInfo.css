@@ -1,14 +1,14 @@
 @import 'styles/text-indicator.css';
 
-#energy-balance ul {
+#global-info ul {
     margin-bottom: 0;
 }
 
-#energy-balance li {
+#global-info li {
     margin: .5em 0;
     list-style: none;
 }
 
-#energy-balance .data {
+#global-info .data {
     font-weight: bold;
 }
