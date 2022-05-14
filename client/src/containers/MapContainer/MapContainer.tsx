@@ -4,7 +4,7 @@ import React from 'react';
 
 import { ConsumerProfile } from 'constants/profiles';
 import { Indicator } from 'constants/indicators';
-import { UrbanZonesMap } from 'components/maps';
+import { UrbanZonesMap } from 'components/Maps';
 
 interface Props {
 	indicator: Indicator; // Selected indicator

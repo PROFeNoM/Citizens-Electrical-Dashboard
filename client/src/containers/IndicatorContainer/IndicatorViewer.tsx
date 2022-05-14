@@ -9,7 +9,7 @@ import {
     ConsumptionInfo, ConsumptionDonut, ProfileConsumption, WeeklyConsumption, TypicalConsumptionDay,
     ProductionInfo, TypicalProductionDay, ProductionDonut, WeeklyProduction,
     ChargingStations
-} from 'components/indicators';
+} from 'components/Indicators';
 
 interface Props {
     indicator: Indicator; // Selected indicator

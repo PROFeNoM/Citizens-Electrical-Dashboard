@@ -90,7 +90,7 @@ app.get('/api/v1/:entity/max-timestamp', async (req, res) => {
 	res.send(result);
 });
 
-app.use('/api/v1/geodata', express.static(config.geodataDir));
+app.use('/api/v1/geodata', express.static(config.geodataDirFromServer));
 
 app.get('/api/*', (req, res) => {
 	res.status(404).send();

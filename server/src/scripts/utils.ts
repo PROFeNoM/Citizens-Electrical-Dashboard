@@ -18,7 +18,7 @@ export const dataDir = 'raw-data'
 export const mockDataDir = dataDir + '/mock'
 export const mockSrcDataDir = dataDir + '/mock-src'
 
-const zonesGeodata = require(config.geodataDir + '/zones.json') as FeatureCollection<MultiPolygon>;
+const zonesGeodata = require(config.geodataDirFromUtils + '/zones.json') as FeatureCollection<MultiPolygon>;
 
 export function exists(path: PathLike): Promise<boolean> {
 	return new Promise((resolve, reject) => {

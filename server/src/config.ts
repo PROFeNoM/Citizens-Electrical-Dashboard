@@ -2,7 +2,8 @@ const devMode =  process.env.NODE_ENV !== 'production'
 
 export const config = {
 	devMode,
-	geodataDir: devMode ? 'geodata' : '/etc/tec/geodata',
+	geodataDirFromUtils: devMode ? '../../geodata' : '/etc/tec/geodata',
+	geodataDirFromServer: devMode ? 'geodata' : '/etc/tec/geodata',
 	webServer: {
 		port: devMode ? 5000 : 80,
 	},
