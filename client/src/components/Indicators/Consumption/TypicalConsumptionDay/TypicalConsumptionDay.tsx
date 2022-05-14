@@ -4,98 +4,83 @@ import React from 'react';
 import { CanvasJSChart } from 'canvasjs-react-charts';
 
 import { ConsumerProfile } from 'constants/profiles';
-import { getHourlyMeanConsumption, getHourlyMeanProduction } from 'scripts/api';
-
-const tmpPoints = Array.from(Array(24).keys()).map((h) => {
-	return {
-		x: new Date(Date.UTC(2022, 1, 1, h, 0)),
-		y: 42,
-	};
-});
+import { getHourlyMeanConsumption } from 'scripts/api';
+import { wattsToKilowatts } from 'scripts/utils';
 
 interface Props {
-	zoneName: string;
-	buildingType: ConsumerProfile;
-	t1: number;
-	t2: number;
-	setHighlightedZone: (val: string | null) => void;
+	zoneName: string; // Name of the current zone
+	consumerProfile: ConsumerProfile; // Current consumer profile
+	t1: number; // Start time of the current period (Unix milliseconds)
+	t2: number; // End time of the current period (Unix milliseconds)
 }
 
 interface State {
-	districtConsumptionData: { x: Date; y: number }[];
-	urbanZoneConsumptionData: { x: Date; y: number }[];
+	districtConsumptionData: { x: Date; y: number }[]; // Consumption data for the district
+	zoneConsumptionData: { x: Date; y: number }[]; // Consumption data for the zone
 }
 
+/**
+ * Graphical indicator (bar chart) that displays
+ * the consumption during an average day, in kWh.
+ */
 export default class TypicalConsumptionDay extends React.Component<Props, State> {
 	constructor(props: Props) {
 		super(props);
+
+		// Temporary points to display during loading
+		const tmpPoints = Array.from(Array(24).keys())
+			.map((h) => {
+				return {
+					x: new Date(Date.UTC(2022, 1, 1, h, 0)),
+					y: 42,
+				};
+			});
+
 		this.state = {
 			districtConsumptionData: tmpPoints,
-			urbanZoneConsumptionData: tmpPoints
+			zoneConsumptionData: tmpPoints
 		};
-	}
-
-	private async getSelfConsumptionData() {
-		const meanCons = await getHourlyMeanConsumption(
-			this.props.t1,
-			this.props.t2,
-			this.props.buildingType ? [this.props.buildingType] : undefined,
-			this.props.zoneName
-		);
-		const meanProd = await getHourlyMeanProduction(
-			this.props.t1,
-			this.props.t2,
-			undefined,
-			this.props.zoneName
-		);
-
-		return meanCons.map((el, index) => {
-			return {
-				x: el.hour,
-				y: Math.round((meanProd[index].mean / el.mean) * 100) / 100,
-			};
-		});
 	}
 
 	private async getDistrictConsumptionData() {
 		const meanCons = await getHourlyMeanConsumption(
 			this.props.t1,
 			this.props.t2,
-			this.props.buildingType ? [this.props.buildingType] : undefined,
-			undefined,
+			this.props.consumerProfile ? [this.props.consumerProfile] : undefined,
+			undefined
 		);
 
 		return meanCons.map((el) => {
 			return {
 				x: el.hour,
-				y: Math.round(el.mean / 1000),
+				y: Math.round(wattsToKilowatts(el.mean))
 			};
 		});
 	}
 
-	private async getUrbanZoneConsumptionData() {
+	private async getzoneConsumptionData() {
 		const meanCons = await getHourlyMeanConsumption(
 			this.props.t1,
 			this.props.t2,
-			this.props.buildingType ? [this.props.buildingType] : undefined,
+			this.props.consumerProfile ? [this.props.consumerProfile] : undefined,
 			this.props.zoneName
 		);
 
 		return meanCons.map((el) => {
 			return {
 				x: el.hour,
-				y: Math.round(el.mean / 1000),
+				y: Math.round(wattsToKilowatts(el.mean))
 			};
 		});
 	}
 
 	private async fetchData() {
 		const districtConsumptionData = await this.getDistrictConsumptionData();
-		const urbanZoneConsumptionData = await this.getUrbanZoneConsumptionData();
+		const zoneConsumptionData = await this.getzoneConsumptionData();
 
 		this.setState({
 			districtConsumptionData: districtConsumptionData,
-			urbanZoneConsumptionData: urbanZoneConsumptionData,
+			zoneConsumptionData: zoneConsumptionData
 		});
 	}
 
@@ -107,12 +92,8 @@ export default class TypicalConsumptionDay extends React.Component<Props, State>
 		}
 	}
 
-	private onClick() {
-		this.props.setHighlightedZone(this.props.zoneName);
-	}
-
 	async componentDidUpdate(prevProps: Props) {
-		if (prevProps.zoneName === this.props.zoneName && prevProps.buildingType === this.props.buildingType && prevProps.t1 === this.props.t1 && prevProps.t2 === this.props.t2) {
+		if (prevProps.zoneName === this.props.zoneName && prevProps.consumerProfile === this.props.consumerProfile && prevProps.t1 === this.props.t1 && prevProps.t2 === this.props.t2) {
 			return;
 		}
 
@@ -124,7 +105,7 @@ export default class TypicalConsumptionDay extends React.Component<Props, State>
 	}
 
 	render() {
-		const { districtConsumptionData, urbanZoneConsumptionData } = this.state;
+		const { districtConsumptionData, zoneConsumptionData } = this.state;
 
 		const chartOptions = {
 			exportEnabled: true,
@@ -154,23 +135,21 @@ export default class TypicalConsumptionDay extends React.Component<Props, State>
 					axisYType: "primary",
 					xValueFormatString: "HH:mm",
 					dataPoints: districtConsumptionData,
-					color: "#688199",
-					click: this.onClick
+					color: "#688199"
 				},
 				{
 					type: "column",
 					name: "Consommation de la zone urbaine (kWh)",
 					axisYType: "primary",
 					xValueFormatString: "HH:mm",
-					dataPoints: urbanZoneConsumptionData,
-					color: "#e63b11",
-					click: this.onClick
+					dataPoints: zoneConsumptionData,
+					color: "#e63b11"
 				}
 			],
 			subtitles: []
 		};
 
-		if (districtConsumptionData.reduce((acc, cur) => acc + cur.y, 0) === 0 && urbanZoneConsumptionData.reduce((acc, cur) => acc + cur.y, 0) === 0) {
+		if (districtConsumptionData.reduce((acc, cur) => acc + cur.y, 0) === 0 && zoneConsumptionData.reduce((acc, cur) => acc + cur.y, 0) === 0) {
 			chartOptions.subtitles = [{
 				text: 'Pas de données pour la période',
 				verticalAlign: 'center',

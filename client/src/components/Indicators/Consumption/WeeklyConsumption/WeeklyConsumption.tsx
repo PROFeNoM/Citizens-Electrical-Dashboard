@@ -5,42 +5,47 @@ import { CanvasJSChart } from 'canvasjs-react-charts';
 
 import { DataType, ConsumerProfile } from 'constants/profiles';
 import { getMaxTimestamp, getTotalConsumption } from 'scripts/api';
+import { wattsToKilowatts } from 'scripts/utils';
 
 interface Props {
-	zoneName: string;
-	sector: ConsumerProfile;
-	t1: number;
-	t2: number;
-	setHighlightedZone: (val: string | null) => void;
+	zoneName: string; // Name of the current zone
+	consumerProfile: ConsumerProfile; // Current consumer profile
+	t1: number; // Start time of the current period (Unix milliseconds)
+	t2: number; // End time of the current period (Unix milliseconds)
 }
 
 interface State {
-	districtConsumptionData: { x: Date, y: number }[];
-	urbanZoneConsumptionData: { x: Date, y: number }[];
-	maxTimestamp: Date;
+	districtConsumptionData: { x: Date, y: number }[]; // Consumption data for the district
+	zoneConsumptionData: { x: Date, y: number }[]; // Consumption data for the zone
+	maxTimestamp: Date; // Maximum timestamp of the data
 }
 
+
+/**
+ * Graphical indicator (bar chart) that displays
+ * the consumption of the district and the zone each week, in kWh.
+ * This indicator allows to see consumption forecasts.
+ **/
 export default class WeeklyConsumption extends React.Component<Props, State> {
 	constructor(props: Props) {
 		super(props);
+
+		// Temporary points to display during loading
 		const tmpPoints = this.getWeeks().map((week) => {
 			return {
 				x: new Date(week.start),
 				y: 42,
 			};
 		});
+
 		this.state = {
 			districtConsumptionData: tmpPoints,
-			urbanZoneConsumptionData: tmpPoints,
+			zoneConsumptionData: tmpPoints,
 			maxTimestamp: new Date()
 		};
 	}
 
-	/** 
-	 * Create a list of start and end week dates that span over the period from t1 to t2
-	 * t1 and t2 are given from props
-	 * t1 and t2 are in Unix milliseconds
-	**/
+	// Create a list of start and end week dates that span over the period from t1 to t2
 	private getWeeks() {
 		const { t1, t2 } = this.props;
 
@@ -57,61 +62,56 @@ export default class WeeklyConsumption extends React.Component<Props, State> {
 			});
 	}
 
-	/**
-	 * Create a list of start and end week dates that span over the period from t1 to t2
-	 * t1 and t2 are given from props
-	 * t1 and t2 are in Unix milliseconds
-	 **/
 	private async getDistrictConsumptionData() {
-		const { sector } = this.props;
-
-		const weeks = this.getWeeks();
-
-		// Determine the total Consumption for each week
-		return await Promise.all(weeks.map(async (week) => {
-			const totalConsumption = await getTotalConsumption(week.start, week.end, [sector]);
-			return {
-				x: new Date(week.start),
-				y: totalConsumption,
-			};
-		}));
-	}
-
-	private async getUrbanZoneConsumptionData() {
-		const { zoneName, sector } = this.props;
+		const { consumerProfile } = this.props;
 
 		const weeks = this.getWeeks();
 
 		// Determine the total consumption for each week
 		return await Promise.all(weeks.map(async (week) => {
-			const totalConsumption = await getTotalConsumption(week.start, week.end, [sector], zoneName);
+			const totalConsumption = await getTotalConsumption(week.start, week.end, [consumerProfile]);
 			return {
 				x: new Date(week.start),
-				y: totalConsumption,
+				y: Math.round(wattsToKilowatts(totalConsumption)),
+			};
+		}));
+	}
+
+	private async getZoneConsumptionData() {
+		const { zoneName, consumerProfile } = this.props;
+
+		const weeks = this.getWeeks();
+
+		// Determine the total consumption for each week
+		return await Promise.all(weeks.map(async (week) => {
+			const totalConsumption = await getTotalConsumption(week.start, week.end, [consumerProfile], zoneName);
+			return {
+				x: new Date(week.start),
+				y: Math.round(wattsToKilowatts(totalConsumption)),
 			};
 		}));
 	}
 
 	private async fetchData() {
-		const [districtConsumptionData, urbanZoneConsumptionData, maxTimestamp] = await Promise.all([
+		const [districtConsumptionData, zoneConsumptionData, maxTimestamp] = await Promise.all([
 			this.getDistrictConsumptionData(),
-			this.getUrbanZoneConsumptionData(),
+			this.getZoneConsumptionData(),
 			getMaxTimestamp(DataType.CONSUMPTION)
 		]);
 
 		this.setState({
 			districtConsumptionData,
-			urbanZoneConsumptionData,
+			zoneConsumptionData,
 			maxTimestamp: new Date(maxTimestamp),
 		});
 	}
 
-	private onClick() {
-		this.props.setHighlightedZone(this.props.zoneName);
-	}
-
 	async componentDidMount() {
-		await this.fetchData();
+		try {
+			await this.fetchData();
+		} catch (e) {
+			console.error('Error while fetching data', e);
+		}
 	}
 
 	async componentDidUpdate(prevProps: Props) {
@@ -131,7 +131,7 @@ export default class WeeklyConsumption extends React.Component<Props, State> {
 			return point.x.getTime() <= this.state.maxTimestamp.getTime();
 		});
 
-		const historicalUrbanZoneConsumptionData = this.state.urbanZoneConsumptionData.filter((point) => {
+		const historicalzoneConsumptionData = this.state.zoneConsumptionData.filter((point) => {
 			return point.x.getTime() <= this.state.maxTimestamp.getTime();
 		});
 
@@ -139,7 +139,7 @@ export default class WeeklyConsumption extends React.Component<Props, State> {
 			return point.x.getTime() > this.state.maxTimestamp.getTime();
 		});
 
-		const forecastedUrbanZoneConsumptionData = this.state.urbanZoneConsumptionData.filter((point) => {
+		const forecastedzoneConsumptionData = this.state.zoneConsumptionData.filter((point) => {
 			return point.x.getTime() > this.state.maxTimestamp.getTime();
 		});
 
@@ -162,22 +162,19 @@ export default class WeeklyConsumption extends React.Component<Props, State> {
 					type: "column",
 					name: "Consommation de La Bastide (kWh)",
 					dataPoints: historicalDistrictConsumptionData,
-					color: "#688199",
-					click: this.onClick
+					color: "#688199"
 				},
 				{
 					type: "column",
 					name: `Consommation de ${this.props.zoneName ?? 'La Bastide'} (kWh)`,
-					dataPoints: historicalUrbanZoneConsumptionData,
-					color: "#e63b11",
-					click: this.onClick
+					dataPoints: historicalzoneConsumptionData,
+					color: "#e63b11"
 				},
 				{
 					type: "column",
 					name: `Prédiction de consommation de ${this.props.zoneName ?? 'La Bastide'} (kWh)`,
-					dataPoints: forecastedUrbanZoneConsumptionData,
+					dataPoints: forecastedzoneConsumptionData,
 					color: "#e63b11",
-					click: this.onClick,
 					fillOpacity: .3,
 				},
 				{
@@ -185,8 +182,7 @@ export default class WeeklyConsumption extends React.Component<Props, State> {
 					name: "Prédiction de consommation de La Bastide (kWh)",
 					dataPoints: forecastedDistrictConsumptionData,
 					color: "#688199",
-					click: this.onClick,
-					fillOpacity: .3,
+					fillOpacity: .3
 				},
 			]
 		}

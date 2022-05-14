@@ -8,25 +8,28 @@ import { getTotalConsumption } from 'scripts/api';
 import { getZonesGeoJSON } from 'geodata';
 
 interface Props {
-	zoneName: string;
-	buildingType: ConsumerProfile;
-	t1: number;
-	t2: number;
-	setHighlightedZone: (val: string | null) => void;
+	zoneName: string; // Name of the current zone
+	buildingType: ConsumerProfile; // Current consumer profile
+	t1: number; // Start time of the current period (Unix milliseconds)
+	t2: number; // End time of the current period (Unix milliseconds)
+	setHighlightedZone: (val: string | null) => void; // Callback to set the highlighted zone on the map
 }
 
 interface State {
-	consumptionDistribution: { name: string, y: number }[];
-	urbanZoneProportion: number;
+	consumptionDistribution: { name: string, y: number }[]; // Distribution of the consumption in the zone
+	zoneProportion: number; // Proportion of the zone consumption compared to the total district (%)
 }
 
+/**
+ * Graphical indicator (donut chart) that displays the consumption distribution between all the zones.
+ */
 export default class ConsumptionDonut extends React.Component<Props, State> {
 	constructor(props: Props) {
 		super(props);
 
 		this.state = {
 			consumptionDistribution: null,
-			urbanZoneProportion: null
+			zoneProportion: null
 		};
 
 		this.fetchData = this.fetchData.bind(this);
@@ -36,15 +39,20 @@ export default class ConsumptionDonut extends React.Component<Props, State> {
 	private async fetchData() {
 		const { t1, t2, zoneName } = this.props;
 
-		const consumptions = await Promise.all((await getZonesGeoJSON()).features.map(async f => ({
-			name: f.properties.libelle,
-			value: await getTotalConsumption(
-				t1,
-				t2,
-				this.props.buildingType && this.props.buildingType !== ConsumerProfile.ALL ? [this.props.buildingType] : undefined,
-				f.properties.libelle
-			)
-		})));
+		const consumptions = await Promise.all(
+			(await getZonesGeoJSON()).features
+				.map(async f => (
+					{
+						name: f.properties.libelle,
+						value: await getTotalConsumption(
+							t1,
+							t2,
+							this.props.buildingType && this.props.buildingType !== ConsumerProfile.ALL ? [this.props.buildingType] : undefined,
+							f.properties.libelle
+						)
+					}
+				))
+		);
 
 		const totalConsumption = consumptions.reduce((acc, zone) => acc + zone.value, 0);
 
@@ -52,7 +60,7 @@ export default class ConsumptionDonut extends React.Component<Props, State> {
 		if (totalConsumption === 0) {
 			this.setState({
 				consumptionDistribution: [],
-				urbanZoneProportion: 0
+				zoneProportion: 0
 			});
 			return;
 		}
@@ -66,7 +74,7 @@ export default class ConsumptionDonut extends React.Component<Props, State> {
 
 		this.setState({
 			consumptionDistribution,
-			urbanZoneProportion: zoneName ? consumptions.find(zone => zone.name === zoneName).value / totalConsumption * 100 : 100
+			zoneProportion: zoneName ? consumptions.find(zone => zone.name === zoneName).value / totalConsumption * 100 : 100
 		});
 	}
 
@@ -95,14 +103,14 @@ export default class ConsumptionDonut extends React.Component<Props, State> {
 	}
 
 	render() {
-		const { consumptionDistribution, urbanZoneProportion } = this.state;
+		const { consumptionDistribution, zoneProportion } = this.state;
 		const formatter = new Intl.NumberFormat('en-US', {
 			style: 'decimal',
 			maximumFractionDigits: 1
 		});
 		const text = consumptionDistribution === null
 			? 'Chargement...' : consumptionDistribution.length === 0
-				? 'Pas de données pour la période' : `${formatter.format(urbanZoneProportion)}%`;
+				? 'Pas de données pour la période' : `${formatter.format(zoneProportion)}%`;
 
 		const chartOptions = {
 			animationEnabled: false,

@@ -7,7 +7,7 @@ import logoEnedisSmall from 'images/logoEnedisSmall.png';
 import { Hamburger } from 'components/Header';
 
 interface Props {
-	title: string;
+	title: string; // Title of the page (e.g. "Home")
 }
 
 export default class Header extends React.Component<Props, {}> {

@@ -1,13 +1,13 @@
 export enum IndicatorType {
-	EnergyBalance,
+	GlobalInfo,
 	ConsumptionInfo,
 	ConsumptionDonut,
-	LocalProductionInfo,
-	SolarDonut,
-	TotalConsumption,
+	ProfileConsumption,
 	TypicalConsumptionDay,
-	TypicalProductionDay,
 	WeeklyConsumption,
+	ProductionInfo,
+	ProductionDonut,
+	TypicalProductionDay,
 	WeeklyProduction,
 	ChargingStations
 };
@@ -47,21 +47,21 @@ export function getAllIndicators(): Indicator[] {
 	return Object.values(indicatorRegistry);
 }
 
-// Indicateurs globaux
-registerIndicator(IndicatorClass.General, IndicatorType.EnergyBalance, 'Bilan général');
+// Global indicators
+registerIndicator(IndicatorClass.General, IndicatorType.GlobalInfo, 'Bilan général');
 
-// Indicateurs de consommation
+// Consumption indicators
 registerIndicator(IndicatorClass.Consumption, IndicatorType.ConsumptionInfo, 'Bilan de consommation');
 registerIndicator(IndicatorClass.Consumption, IndicatorType.ConsumptionDonut, 'Répartition de la consommation');
 registerIndicator(IndicatorClass.Consumption, IndicatorType.WeeklyConsumption, 'Consommation hebdomadaire');
-registerIndicator(IndicatorClass.Consumption, IndicatorType.TotalConsumption, 'Consommation par filière');
+registerIndicator(IndicatorClass.Consumption, IndicatorType.ProfileConsumption, 'Consommation par filière');
 registerIndicator(IndicatorClass.Consumption, IndicatorType.TypicalConsumptionDay, 'Journée type de consommation');
 
-// Indicateurs de production
-registerIndicator(IndicatorClass.Production, IndicatorType.LocalProductionInfo, 'Bilan de production');
-registerIndicator(IndicatorClass.Production, IndicatorType.SolarDonut, 'Répartition de la production solaire');
+// Production indicators
+registerIndicator(IndicatorClass.Production, IndicatorType.ProductionInfo, 'Bilan de production');
+registerIndicator(IndicatorClass.Production, IndicatorType.ProductionDonut, 'Répartition de la production solaire');
 registerIndicator(IndicatorClass.Production, IndicatorType.WeeklyProduction, 'Production hebdomadaire');
 registerIndicator(IndicatorClass.Production, IndicatorType.TypicalProductionDay, 'Journée type de production');
 
-// Indicateurs de stations
+// Charging station indicators
 registerIndicator(IndicatorClass.Station, IndicatorType.ChargingStations, 'Répartition des stations');

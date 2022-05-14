@@ -5,40 +5,47 @@ import { CanvasJSChart } from 'canvasjs-react-charts';
 
 import { ProducerProfile, DataType } from 'constants/profiles';
 import { getMaxTimestamp, getTotalProduction } from 'scripts/api';
+import { wattsToKilowatts } from 'scripts/utils';
 
 interface Props {
-	zoneName: string;
-	t1: number;
-	t2: number;
-	setHighlightedZone: (val: string | null) => void;
+	zoneName: string; // The name of the current zone
+	t1: number; // Start time of the current period (Unix milliseconds)
+	t2: number; // End time of the current period (Unix milliseconds)
 }
 
 interface State {
-	districtProductionData: { x: Date, y: number }[];
-	urbanZoneProductionData: { x: Date, y: number }[];
+	districtProductionData: { x: Date, y: number }[]; // Production data for the district
+	zoneProductionData: { x: Date, y: number }[];
 	maxTimestamp: Date;
 }
 
+/**
+ * Graphical indicator (bar chart) that displays
+ * the production of the district and the zone each week, in kWh.
+ * This indicator allows to see production forecasts.
+ **/
 export default class WeeklyProduction extends React.Component<Props, State> {
 	constructor(props: Props) {
 		super(props);
+
+		// Temporary points to display during loading
 		const tmpPoints = this.getWeeks().map((week) => {
 			return {
 				x: new Date(week.start),
 				y: 42,
 			};
 		});
+
 		this.state = {
 			districtProductionData: tmpPoints,
-			urbanZoneProductionData: tmpPoints,
+			zoneProductionData: tmpPoints,
 			maxTimestamp: new Date()
 		};
 	}
 
+	
+ 	// Create a list of start and end week dates that span over the period from t1 to t2
 	private getWeeks() {
-		// Create a list of start and end week dates that span over the period from t1 to t2
-		// t1 and t2 are given from props
-		// t1 and t2 are in Unix milliseconds
 		const startDate = new Date(this.props.t1);
 		const endDate = new Date(this.props.t2);
 		return Array.from(Array(Math.ceil((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24 * 7))).keys())
@@ -47,15 +54,12 @@ export default class WeeklyProduction extends React.Component<Props, State> {
 				const end = new Date(start.getTime() + (7 * 24 * 60 * 60 * 1000));
 				return {
 					start: start.getTime(),
-					end: end.getTime(),
+					end: end.getTime()
 				};
 			});
 	}
 
 	private async getDistrictProductionData() {
-		// Create a list of start and end week dates that span over the period from t1 to t2
-		// t1 and t2 are given from props
-		// t1 and t2 are in Unix milliseconds
 		const weeks = this.getWeeks();
 
 		// Determine the total production for each week
@@ -63,12 +67,12 @@ export default class WeeklyProduction extends React.Component<Props, State> {
 			const totalProduction = await getTotalProduction(week.start, week.end, [ProducerProfile.SOLAR]);
 			return {
 				x: new Date(week.start),
-				y: totalProduction,
+				y: Math.round(wattsToKilowatts(totalProduction)),
 			};
 		}));
 	}
 
-	private async getUrbanZoneProductionData() {
+	private async getZoneProductionData() {
 		const weeks = this.getWeeks();
 
 		// Determine the total production for each week
@@ -76,31 +80,31 @@ export default class WeeklyProduction extends React.Component<Props, State> {
 			const totalProduction = await getTotalProduction(week.start, week.end, [ProducerProfile.SOLAR], this.props.zoneName);
 			return {
 				x: new Date(week.start),
-				y: totalProduction,
+				y: Math.round(wattsToKilowatts(totalProduction)),
 			};
 		}));
 	}
 
 	private async fetchData() {
-		const [districtProductionData, urbanZoneProductionData, maxTimestamp] = await Promise.all([
+		const [districtProductionData, zoneProductionData, maxTimestamp] = await Promise.all([
 			this.getDistrictProductionData(),
-			this.getUrbanZoneProductionData(),
+			this.getZoneProductionData(),
 			getMaxTimestamp(DataType.PRODUCTION)
 		]);
 
 		this.setState({
 			districtProductionData,
-			urbanZoneProductionData,
+			zoneProductionData,
 			maxTimestamp: new Date(maxTimestamp)
 		});
 	}
 
-	private onClick() {
-		this.props.setHighlightedZone(this.props.zoneName);
-	}
-
 	async componentDidMount() {
-		await this.fetchData();
+		try {
+			await this.fetchData();
+		} catch (e) {
+			console.error('Error while fetching data', e);
+		}
 	}
 
 	async componentDidUpdate(prevProps: Props) {
@@ -120,7 +124,7 @@ export default class WeeklyProduction extends React.Component<Props, State> {
 			return point.x.getTime() <= this.state.maxTimestamp.getTime();
 		});
 
-		const historicalUrbanZoneProductionData = this.state.urbanZoneProductionData.filter((point) => {
+		const historicalUrbanZoneProductionData = this.state.zoneProductionData.filter((point) => {
 			return point.x.getTime() <= this.state.maxTimestamp.getTime();
 		});
 
@@ -128,7 +132,7 @@ export default class WeeklyProduction extends React.Component<Props, State> {
 			return point.x.getTime() > this.state.maxTimestamp.getTime();
 		});
 
-		const forecastedUrbanZoneProductionData = this.state.urbanZoneProductionData.filter((point) => {
+		const forecastedUrbanZoneProductionData = this.state.zoneProductionData.filter((point) => {
 			return point.x.getTime() > this.state.maxTimestamp.getTime();
 		});
 
@@ -151,31 +155,27 @@ export default class WeeklyProduction extends React.Component<Props, State> {
 					type: "column",
 					name: "Production de La Bastide (kWh)",
 					dataPoints: historicalDistrictProductionData,
-					color: "#688199",
-					click: this.onClick
+					color: "#688199"
 				},
 				{
 					type: "column",
 					name: `Production de ${this.props.zoneName ?? 'La Bastide'} (kWh)`,
 					dataPoints: historicalUrbanZoneProductionData,
-					color: "#e63b11",
-					click: this.onClick
+					color: "#e63b11"
 				},
 				{
 					type: "column",
 					name: `Prédiction de production de ${this.props.zoneName ?? 'La Bastide'} (kWh)`,
 					dataPoints: forecastedUrbanZoneProductionData,
 					color: "#e63b11",
-					click: this.onClick,
-					fillOpacity: .3,
+					fillOpacity: .3
 				},
 				{
 					type: "column",
 					name: "Prédiction de production de La Bastide (kWh)",
 					dataPoints: forecastedDistrictProductionData,
 					color: "#688199",
-					click: this.onClick,
-					fillOpacity: .3,
+					fillOpacity: .3
 				},
 			]
 		}

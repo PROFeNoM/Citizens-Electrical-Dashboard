@@ -7,30 +7,30 @@ import { Indicator } from 'constants/indicators';
 import { UrbanZonesMap } from 'components/Maps';
 
 interface Props {
-    indicator: Indicator;
-    t1: Date;
-    t2: Date;
-    buildingType: ConsumerProfile;
-    highlightedZoneName: string | null;
+	indicator: Indicator; // Selected indicator
+	t1: Date; // Start time of the current period (Unix milliseconds)
+	t2: Date; // End time of the current period (Unix milliseconds)
+	consumerProfile: ConsumerProfile; // Selected consumer profile
+	highlightedZoneName: string | null; // Name of the highlighted zone
 }
 
 /**
- * Map container
+ * Component that contains the map.
  * 
- * Change the map to display based on the indicator class.
+ * @see UrbanZonesMap
  */
 export default class MapContainer extends React.Component<Props> {
-    render() {
-        return (
-            <div id="map-container">
-                <UrbanZonesMap
-                    indicator={this.props.indicator}
-                    buildingType={this.props.buildingType}
-                    highlightedZoneName={this.props.highlightedZoneName}
-                    t1={this.props.t1.getTime()}
-                    t2={this.props.t2.getTime()}
-                />
-            </div>
-        );
-    }
+	render() {
+		return (
+			<div id="map-container">
+				<UrbanZonesMap
+					indicator={this.props.indicator}
+					consumerProfile={this.props.consumerProfile}
+					highlightedZoneName={this.props.highlightedZoneName}
+					t1={this.props.t1.getTime()}
+					t2={this.props.t2.getTime()}
+				/>
+			</div>
+		);
+	}
 }

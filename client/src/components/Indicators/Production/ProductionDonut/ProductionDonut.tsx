@@ -1,4 +1,4 @@
-import './SolarDonut.css';
+import './ProductionDonut.css';
 
 import React from 'react';
 import { CanvasJSChart } from 'canvasjs-react-charts';
@@ -8,24 +8,27 @@ import { ProducerProfile } from 'constants/profiles';
 import { getTotalProduction } from 'scripts/api';
 
 interface Props {
-	zoneName: string;
-	t1: number;
-	t2: number;
-	setHighlightedZone: (val: string | null) => void;
+	zoneName: string; // The name of the current zone
+	t1: number; // Start time of the current period (Unix milliseconds)
+	t2: number; // End time of the current period (Unix milliseconds)
+	setHighlightedZone: (val: string | null) => void; // Callback to set the highlighted zone
 }
 
 interface State {
-	productionDistribution: { name: string, y: number }[];
-	urbanZoneProportion: number;
+	productionDistribution: { name: string, y: number }[]; // Distribution of the consumption in the zone
+	zoneProportion: number; // Proportion of the zone production compared to the total district (%)
 }
 
-export default class SolarDonut extends React.Component<Props, State> {
+/**
+ * Graphical indicator (donut chart) that displays the production distribution between all the zones.
+ */
+export default class ProductionDonut extends React.Component<Props, State> {
 	constructor(props: Props) {
 		super(props);
 
 		this.state = {
 			productionDistribution: [],
-			urbanZoneProportion: 0
+			zoneProportion: 0
 		};
 
 		this.onClick = this.onClick.bind(this);
@@ -51,7 +54,7 @@ export default class SolarDonut extends React.Component<Props, State> {
 		if (totalProduction === 0) {
 			this.setState({
 				productionDistribution: [],
-				urbanZoneProportion: 0
+				zoneProportion: 0
 			});
 			return;
 		}
@@ -65,7 +68,7 @@ export default class SolarDonut extends React.Component<Props, State> {
 
 		this.setState({
 			productionDistribution: productionDistribution,
-			urbanZoneProportion: zoneName ? productions.find(zone => zone.name === zoneName).value / totalProduction * 100 : 100
+			zoneProportion: zoneName ? productions.find(zone => zone.name === zoneName).value / totalProduction * 100 : 100
 		});
 	}
 
@@ -94,14 +97,14 @@ export default class SolarDonut extends React.Component<Props, State> {
 	}
 
 	render() {
-		const { productionDistribution, urbanZoneProportion } = this.state;
+		const { productionDistribution, zoneProportion } = this.state;
 		const formatter = new Intl.NumberFormat('en-US', {
 			style: 'decimal',
 			maximumFractionDigits: 1
 		});
 		const text = productionDistribution === null
 			? 'Chargement...' : productionDistribution.length === 0
-				? 'Pas de données pour la période' : `${formatter.format(urbanZoneProportion)}%`;
+				? 'Pas de données pour la période' : `${formatter.format(zoneProportion)}%`;
 
 		const chartOptions = {
 			exportEnabled: true,

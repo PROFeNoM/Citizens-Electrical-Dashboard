@@ -5,32 +5,39 @@ import { CanvasJSChart } from 'canvasjs-react-charts';
 
 import { ProducerProfile } from 'constants/profiles';
 import { getHourlyMeanProduction } from 'scripts/api';
-
-const tmpPoints = Array.from(Array(24).keys()).map((h) => {
-	return {
-		x: new Date(Date.UTC(2022, 1, 1, h, 0)),
-		y: 42,
-	};
-});
+import { wattsToKilowatts } from 'scripts/utils';
 
 interface Props {
-	zoneName: string;
-	t1: number;
-	t2: number;
-	setHighlightedZone: (val: string | null) => void;
+	zoneName: string; // The name of the current zone
+	t1: number; // Start time of the current period (Unix milliseconds)
+	t2: number; // End time of the current period (Unix milliseconds)
 }
 
 interface State {
-	districtProductionData: { x: Date; y: number }[];
-	urbanZoneProductionData: { x: Date; y: number }[];
+	districtProductionData: { x: Date; y: number }[]; // Production data for the district
+	zoneProductionData: { x: Date; y: number }[]; // Production data for the zone
 }
 
+/**
+ * Graphical indicator (bar chart) that displays
+ * the production during an average day, in kWh.
+ */
 export default class TypicalProductionDay extends React.Component<Props, State> {
 	constructor(props: Props) {
 		super(props);
+
+		// Temporary points to display during loading
+		const tmpPoints = Array.from(Array(24).keys())
+			.map((h) => {
+				return {
+					x: new Date(Date.UTC(2022, 1, 1, h, 0)),
+					y: 42,
+				};
+			});
+
 		this.state = {
 			districtProductionData: tmpPoints,
-			urbanZoneProductionData: tmpPoints,
+			zoneProductionData: tmpPoints
 		};
 	}
 
@@ -45,7 +52,7 @@ export default class TypicalProductionDay extends React.Component<Props, State> 
 		return meanCons.map((el) => {
 			return {
 				x: el.hour,
-				y: Math.round(el.hour.getHours() <= 5 || el.hour.getHours() >= 23 ? 0 : el.mean),
+				y: Math.round(wattsToKilowatts(el.hour.getHours() <= 5 || el.hour.getHours() >= 23 ? 0 : el.mean)),
 			};
 		});
 	}
@@ -61,22 +68,18 @@ export default class TypicalProductionDay extends React.Component<Props, State> 
 		return meanCons.map((el) => {
 			return {
 				x: el.hour,
-				y: Math.round(el.hour.getHours() <= 5 || el.hour.getHours() >= 23 ? 0 : el.mean),
+				y: Math.round(wattsToKilowatts(el.hour.getHours() <= 5 || el.hour.getHours() >= 23 ? 0 : el.mean)),
 			};
 		});
 	}
 
 	private async fetchData() {
 		const districtProductionData = await this.getDistrictProductionData();
-		const urbanZoneProductionData = await this.getUrbanZoneProductionData();
+		const zoneProductionData = await this.getUrbanZoneProductionData();
 		this.setState({
 			districtProductionData: districtProductionData,
-			urbanZoneProductionData: urbanZoneProductionData,
+			zoneProductionData: zoneProductionData,
 		});
-	}
-
-	private onClick() {
-		this.props.setHighlightedZone(this.props.zoneName);
 	}
 
 	async componentDidMount() {
@@ -100,7 +103,7 @@ export default class TypicalProductionDay extends React.Component<Props, State> 
 	}
 
 	render() {
-		const  { districtProductionData, urbanZoneProductionData } = this.state;
+		const { districtProductionData, zoneProductionData } = this.state;
 
 		const chartOptions = {
 			exportEnabled: true,
@@ -130,23 +133,21 @@ export default class TypicalProductionDay extends React.Component<Props, State> 
 					axisYType: "primary",
 					xValueFormatString: "HH:mm",
 					dataPoints: districtProductionData,
-					color: "#688199",
-					click: this.onClick
+					color: "#688199"
 				},
 				{
 					type: "column",
 					name: "Production de la zone urbaine (Wh)",
 					axisYType: "primary",
 					xValueFormatString: "HH:mm",
-					dataPoints: urbanZoneProductionData,
-					color: "#e63b11",
-					click: this.onClick
+					dataPoints: zoneProductionData,
+					color: "#e63b11"
 				},
 			],
 			subtitles: []
 		};
 
-		if (districtProductionData.reduce((acc, cur) => acc + cur.y, 0) === 0 && urbanZoneProductionData.reduce((acc, cur) => acc + cur.y, 0) === 0) {
+		if (districtProductionData.reduce((acc, cur) => acc + cur.y, 0) === 0 && zoneProductionData.reduce((acc, cur) => acc + cur.y, 0) === 0) {
 			chartOptions.subtitles = [{
 				text: 'Pas de données pour la période',
 				verticalAlign: 'center',

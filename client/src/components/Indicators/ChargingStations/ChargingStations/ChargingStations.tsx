@@ -5,7 +5,7 @@ import React from 'react';
 import { getZoneChargingStationsData, getZonesNames } from 'scripts/dbUtils';
 
 interface Props {
-	zoneName: string; // Name of the selected zone
+	zoneName: string; // Name of the current zone
 }
 
 interface State {
@@ -13,6 +13,10 @@ interface State {
 	nbOfChargingPoints: number; // Number of charging points in the zone
 }
 
+/**
+ * Textual indicator that displays the number of charging stations
+ * and charging points in the zone.
+ */
 export default class ChargingStationIndicator extends React.Component<Props, State> {
 	constructor(props: Props) {
 		super(props);
@@ -68,10 +72,20 @@ export default class ChargingStationIndicator extends React.Component<Props, Sta
 		if (nbOfStations === null || nbOfChargingPoints === null) {
 			return (
 				<div id="charging-stations-info" className="text-indicator">
-				<p>
-					Chargement...
-				</p>
-			</div>
+					<p>
+						Chargement...
+					</p>
+				</div>
+			);
+		}
+
+		if (nbOfStations === 0) {
+			return (
+				<div id="charging-stations-info" className="text-indicator">
+					<p>
+						Il n'y a pas de stations de recharge électrique dans {district ? 'le quartier' : 'la zone'} <strong>{district ? 'Bastide' : `${title}`}</strong>.
+					</p>
+				</div>
 			);
 		}
 

@@ -1,4 +1,4 @@
-import './LocalProductionInfo.css';
+import './ProductionInfo.css';
 
 import React from 'react';
 
@@ -8,17 +8,21 @@ import { wattsToKilowatts } from 'scripts/utils';
 import { getZoneNbOfProductionSites, getZonesNames } from 'scripts/dbUtils';
 
 interface Props {
-	zoneName: string;
-	t1: number;
-	t2: number;
+	zoneName: string; // Name of the current zone
+	t1: number; // Start time of the current period (Unix milliseconds)
+	t2: number; // End time of the current period (Unix milliseconds)
 }
 
 interface State {
-	productionPoints: number;
-	totalProduction: number;
+	productionPoints: number; // Production points for the zone
+	totalProduction: number; // Total production of the zone (kWh)
 }
 
-export default class LocalProductionInfo extends React.Component<Props, State> {
+/**
+ * Textual indicator that displays the number of production points in the zone,
+ * the total consumption in the zone in kWh and the equivalent in CO2.
+ */
+export default class ProductionInfo extends React.Component<Props, State> {
 	constructor(props: Props) {
 		super(props);
 		this.state = {

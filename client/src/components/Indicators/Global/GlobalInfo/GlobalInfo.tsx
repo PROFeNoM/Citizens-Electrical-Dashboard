@@ -1,4 +1,4 @@
-import './EnergyBalance.css';
+import './GlobalInfo.css';
 
 import React from 'react';
 
@@ -9,30 +9,32 @@ import { wattsToMegawatts } from 'scripts/utils';
 
 interface Props {
 	zoneName: string; // Name of the selected zone
-	sector: ConsumerProfile; // Selected sector
-	t1: number; // Start time
-	t2: number; // End time
+	consumerProfile: ConsumerProfile; // Selected consumerProfile
+	t1: number; // Start time of the current period (Unix milliseconds) // Start time
+	t2: number; // End time of the current period (Unix milliseconds) // End time
 }
 
 interface State {
 	area: number; // Area of the selected zone
 	nbOfBuildings: number; // Number of buildings in the selected zone
-	nbOfCollectionSites: number; // Number of consumption sites in the selected zone for the given sector
+	nbOfCollectionSites: number; // Number of consumption sites in the selected zone for the given consumer profile
 	nbOfProductionSites: number; // Number of production sites in the selected zone
-	consumption: number; // Total consumption of the selected zone for the given sector and time period
+	consumption: number; // Total consumption of the selected zone for the given consumer profile and time period
 	production: number; // Total production of the selected zone for the given time period
 }
 
 /**
  * Textual indicator that displays general informations about a zone.
- * - The area of the zone (m²)
- * - The number of buildings in the zone
- * - The number of consumptions points in the zone for the given sector
- * - The consumption of the zone in the given time for the given sector (MWh)
- * - The production of the zone in the given time (MWh)
- * - The ratio between the total consumption and the total production of the zone
+ * 
+ * Informations displayed :
+ * - Area of the zone (m²)
+ * - Number of buildings in the zone
+ * - Number of consumptions points in the zone for the given consumer profile
+ * - Consumption of the zone in the given time for the given consumer profile (MWh)
+ * - Production of the zone in the given time (MWh)
+ * - Ratio between the total consumption and the total production of the zone
  */
-export default class EnergyBalance extends React.Component<Props, State> {
+export default class GlobalInfo extends React.Component<Props, State> {
 	constructor(props: Props) {
 		super(props);
 
@@ -46,11 +48,8 @@ export default class EnergyBalance extends React.Component<Props, State> {
 		};
 	}
 
-	/**
-	 * Fetch the data for the current zone and update the state.
-	 */
 	private async fetchData() {
-		const { zoneName, sector, t1, t2 } = this.props;
+		const { zoneName, consumerProfile, t1, t2 } = this.props;
 		const zoneNames = await getZonesNames();
 
 		const area = zoneName === null ?
@@ -62,8 +61,8 @@ export default class EnergyBalance extends React.Component<Props, State> {
 			: await getZoneNbOfBuildings(zoneName);
 
 		const nbOfCollectionSites = zoneName === null ?
-			(await Promise.all(zoneNames.map(zone => getZoneNbOfCollectionSites(zone, sector)))).reduce((a, b) => a + b)
-			: await getZoneNbOfCollectionSites(zoneName, sector);
+			(await Promise.all(zoneNames.map(zone => getZoneNbOfCollectionSites(zone, consumerProfile)))).reduce((a, b) => a + b)
+			: await getZoneNbOfCollectionSites(zoneName, consumerProfile);
 
 		const nbOfProductionSites = zoneName === null ?
 			(await Promise.all(zoneNames.map(zone => getZoneNbOfProductionSites(zone, ProducerProfile.SOLAR)))).reduce((a, b) => a + b)
@@ -77,7 +76,7 @@ export default class EnergyBalance extends React.Component<Props, State> {
 		});
 
 		const [consumption, production] = await Promise.all([
-			getTotalConsumption(t1, t2, [sector], zoneName),
+			getTotalConsumption(t1, t2, [consumerProfile], zoneName),
 			getTotalProduction(t1, t2, undefined, zoneName)
 		]);
 
@@ -87,9 +86,6 @@ export default class EnergyBalance extends React.Component<Props, State> {
 		});
 	}
 
-	/**
-	 * Update the state initially when the component is mounted.
-	 */
 	async componentDidMount() {
 		try {
 			await this.fetchData();
@@ -99,13 +95,8 @@ export default class EnergyBalance extends React.Component<Props, State> {
 		}
 	}
 
-	/**
-	 * Update the state only if the props have changed.
-	 * 
-	 * @param prevProps Previous props
-	 */
 	async componentDidUpdate(prevProps: Props) {
-		if (prevProps.zoneName === this.props.zoneName && prevProps.sector === this.props.sector && prevProps.t1 === this.props.t1 && prevProps.t2 === this.props.t2) {
+		if (prevProps.zoneName === this.props.zoneName && prevProps.consumerProfile === this.props.consumerProfile && prevProps.t1 === this.props.t1 && prevProps.t2 === this.props.t2) {
 			return;
 		}
 
@@ -118,7 +109,7 @@ export default class EnergyBalance extends React.Component<Props, State> {
 	}
 
 	render() {
-		const { sector } = this.props;
+		const { consumerProfile } = this.props;
 		const { area, nbOfBuildings, nbOfCollectionSites, nbOfProductionSites, consumption, production } = this.state;
 		const consumptionMegaWatts = consumption !== null ?
 			wattsToMegawatts(consumption)
@@ -133,7 +124,7 @@ export default class EnergyBalance extends React.Component<Props, State> {
 			: null;
 
 		let consumptionSectorText: string;
-		switch (sector) {
+		switch (consumerProfile) {
 			case ConsumerProfile.RESIDENTIAL:
 				consumptionSectorText = 'résidentiel';
 				break;
@@ -160,7 +151,7 @@ export default class EnergyBalance extends React.Component<Props, State> {
 				'...'
 				: formatter.format(value);
 		}
-		
+
 		return (
 			<div id="energy-balance" className="text-indicator">
 				<ul>

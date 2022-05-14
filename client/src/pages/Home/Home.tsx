@@ -5,21 +5,23 @@ import React from 'react';
 import { Header, DataContainer } from 'containers';
 
 /**
- * Home page
+ * Page that contains the map and the indicators.
  * 
- * Contains the header and the main data container.
+ * @see About
+ * @see Error
+ * @see Legal
  */
-export default class Home extends React.Component<{}, {}>{
-    render() {
-        return (
-            <div id="home-container">
-                <header>
-                    <Header title='Tableau électrique citoyen' />
-                </header>
-                <main>
-                    <DataContainer />
-                </main>
-            </div>
-        );
-    }
+export default class Home extends React.Component<{}, {}> {
+	render() {
+		return (
+			<div id="home-container">
+				<header>
+					<Header title='Tableau électrique citoyen' />
+				</header>
+				<main>
+					<DataContainer />
+				</main>
+			</div>
+		);
+	}
 }

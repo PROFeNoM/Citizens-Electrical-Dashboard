@@ -1,4 +1,4 @@
-import './TotalConsumption.css';
+import './ProfileConsumption.css';
 
 import React from 'react';
 import { CanvasJSChart } from 'canvasjs-react-charts';
@@ -8,23 +8,26 @@ import { getTotalConsumption } from 'scripts/api';
 import { wattsToKilowatts } from 'scripts/utils';
 
 interface Props {
-	zoneName: string;
-	t1: number;
-	t2: number;
-	setHighlightedZone: (val: string | null) => void;
+	zoneName: string; // Name of the current zone
+	t1: number; // Start time of the current period (Unix milliseconds)
+	t2: number; // End time of the current period (Unix milliseconds)
 }
 
 interface State {
-	districtConsumptionData: { label: string, y: number }[],
-	urbanZoneConsumptionData: { label: string, y: number }[]
+	districtConsumptionData: { label: string, y: number }[]; // Consumption distribution of the district
+	zoneConsumptionData: { label: string, y: number }[]; // Consumption distribution of the zone
 }
 
-export default class TotalConsumption extends React.Component<Props, State> {
+/**
+ * Graphical indicator (bar chart) that displays
+ * the total consumption of the district and the zone by consumer profile, in kWh.
+ */
+export default class ProfileConsumption extends React.Component<Props, State> {
 	constructor(props: Props) {
 		super(props);
 		this.state = {
 			districtConsumptionData: [],
-			urbanZoneConsumptionData: []
+			zoneConsumptionData: []
 		};
 	}
 
@@ -38,7 +41,7 @@ export default class TotalConsumption extends React.Component<Props, State> {
 		]);
 	}
 
-	private async getUrbanZoneConsumptionData(): Promise<{ label: string, y: number }[]> {
+	private async getzoneConsumptionData(): Promise<{ label: string, y: number }[]> {
 		return Promise.all([
 			{ label: "Total", y: Math.round(wattsToKilowatts(await getTotalConsumption(this.props.t1, this.props.t2, undefined, this.props.zoneName))) },
 			{ label: "Residentiels", y: Math.round(wattsToKilowatts(await getTotalConsumption(this.props.t1, this.props.t2, [ConsumerProfile.RESIDENTIAL], this.props.zoneName))) },
@@ -51,11 +54,11 @@ export default class TotalConsumption extends React.Component<Props, State> {
 	private async fetchData(): Promise<void> {
 		Promise.all([
 			this.getDistrictConsumptionData(),
-			this.getUrbanZoneConsumptionData()
-		]).then(([districtConsumptionData, urbanZoneConsumptionData]) => {
+			this.getzoneConsumptionData()
+		]).then(([districtConsumptionData, zoneConsumptionData]) => {
 			this.setState({
 				districtConsumptionData,
-				urbanZoneConsumptionData
+				zoneConsumptionData
 			});
 		});
 	}
@@ -81,7 +84,7 @@ export default class TotalConsumption extends React.Component<Props, State> {
 	}
 
 	render() {
-		const { districtConsumptionData, urbanZoneConsumptionData } = this.state;
+		const { districtConsumptionData, zoneConsumptionData } = this.state;
 
 		const chartOptions = {
 			exportEnabled: true,
@@ -112,7 +115,7 @@ export default class TotalConsumption extends React.Component<Props, State> {
 					type: 'column',
 					name: 'Consommation de la zone urbaine (kWh)',
 					axisYType: 'primary',
-					dataPoints: urbanZoneConsumptionData,
+					dataPoints: zoneConsumptionData,
 					color: '#e63b11'
 				}
 			],

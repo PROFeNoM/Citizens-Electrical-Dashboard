@@ -1,31 +1,31 @@
 import './BaseMap.css';
 
 import React, { MutableRefObject } from 'react';
-
 import { LngLatBoundsLike, LngLatLike, Map } from 'mapbox-gl';
 
 const MAPBOX_TOKEN = 'pk.eyJ1IjoicHJvZmVub20iLCJhIjoiY2wwNDR3NnNoMGE2NTNpb2dxazg4NW1tdCJ9.hCeP49duNV1x-13qb2aMtA';
 
 export interface BaseMapProps {
-	center?: LngLatLike;
-	bounds?: LngLatBoundsLike;
-	zoom?: number;
-	pitch?: number;
+	center?: LngLatLike; // Center of the map (coordinates)
+	bounds?: LngLatBoundsLike; // Bounds of the map (coordinates)
+	zoom?: number; // Zoom level of the map
+	pitch?: number; // Pitch of the map
 }
 
 const defaultProps: BaseMapProps = {
 	center: [-0.5566, 44.8431],
 	bounds: [[-0.5463, 44.8522], [-0.5665, 44.8382]],
 	zoom: 15.5,
-	pitch: 42,
+	pitch: 42
 };
 
 /**
- * Base map
- * 
- * Map centered on the center of the Bastide neighborhood.
+ * Map centered on the center of the district.
+ * Use Mapbox GL JS to display the map.
  * Fit the bounds when the window is resized.
- * Interactivity is disabled.
+ * No interactivity possible.
+ * 
+ * @see UrbanZonesMap
  */
 export default class BaseMap extends React.Component<BaseMapProps, {}> {
 	private mapContainerRef: MutableRefObject<HTMLDivElement> = React.createRef();

@@ -8,17 +8,21 @@ import { wattsToKilowatts } from 'scripts/utils';
 import { getZoneNbOfCollectionSites, getZonesNames } from 'scripts/dbUtils';
 
 interface Props {
-	zoneName: string;
-	sector: ConsumerProfile;
-	t1: number;
-	t2: number;
+	zoneName: string; // Name of the current zone
+	consumerProfile: ConsumerProfile; // Current consumer profile
+	t1: number; // Start time of the current period (Unix milliseconds)
+	t2: number; // End time of the current period (Unix milliseconds)
 }
 
 interface State {
-	consumptionPoints: number;
-	totalConsumption: number;
+	consumptionPoints: number; // Number of consumption points in the zone
+	totalConsumption: number; // Total consumption of the zone (kWh)
 }
 
+/**
+ * Textual indicator that displays the number of consumption points in the zone,
+ * the total consumption in the zone in kWh and the equivalent in CO2.
+ */
 export default class ConsumptionInfo extends React.Component<Props, State> {
 	constructor(props: Props) {
 		super(props);
@@ -29,13 +33,13 @@ export default class ConsumptionInfo extends React.Component<Props, State> {
 	}
 
 	private async fetchData() {
-		const { zoneName, sector, t1, t2 } = this.props;
+		const { zoneName, consumerProfile, t1, t2 } = this.props;
 		const zoneNames = await getZonesNames();
 
 		const consumptionPoints = zoneName === null ?
-			(await Promise.all(zoneNames.map(zone => getZoneNbOfCollectionSites(zone, sector)))).reduce((a, b) => a + b)
-			: await getZoneNbOfCollectionSites(zoneName, sector);
-		const totalConsumption = await getTotalConsumption(t1, t2, [sector], zoneName);
+			(await Promise.all(zoneNames.map(zone => getZoneNbOfCollectionSites(zone, consumerProfile)))).reduce((a, b) => a + b)
+			: await getZoneNbOfCollectionSites(zoneName, consumerProfile);
+		const totalConsumption = await getTotalConsumption(t1, t2, [consumerProfile], zoneName);
 
 		this.setState({
 			consumptionPoints,

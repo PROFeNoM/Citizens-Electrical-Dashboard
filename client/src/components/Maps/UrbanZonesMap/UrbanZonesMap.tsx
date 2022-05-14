@@ -31,21 +31,30 @@ const sources: { id: string; data: FeatureCollection }[] = [];
 const layers: { id: string; data: FillExtrusionLayer | FillLayer | LineLayer | CircleLayer }[] = [];
 
 interface Props extends BaseMapProps {
-	indicator?: Indicator;
-	highlightedZoneName?: string;
-	t1: number;
-	t2: number;
-	buildingType: ConsumerProfile;
+	indicator?: Indicator; // The current indicator
+	consumerProfile: ConsumerProfile; // The current consumer profile
+	t1: number; // Start time of the current period (Unix milliseconds)
+	t2: number; // End time of the current period (Unix milliseconds)
+	highlightedZoneName?: string; // The name of the zone to highlight
 }
 
 interface State {
-	highlightedZone: string | number;
+	highlightedZone: string | number; // The name of the zone currently highlighted
 }
 
 /**
- * Urban zones map
+ * Map with different layers that display information about the urban areas.
  * 
- * Base map with a layer for the zones and a layer for the buildings.
+ * Layers :
+ * - zones (LineLayer)
+ * - consumption (LineLayer)
+ * - production (LineLayer)
+ * - buildings in 3D (FillExtrusionLayer)
+ * - residential buildings in 3D (FillExtrusionLayer)
+ * - public lighting (CircleLayer)
+ * - charging stations (CircleLayer)
+ * 
+ * @see BaseMap
  */
 export default class UrbanZonesMap extends React.Component<Props, State> {
 	private mapRef = React.createRef<BaseMap>();
@@ -115,7 +124,7 @@ export default class UrbanZonesMap extends React.Component<Props, State> {
 	 * Display or hide layers according to the current indicator.
 	 */
 	private updateLayers() {
-		const { indicator, buildingType } = this.props;
+		const { indicator, consumerProfile } = this.props;
 		const layersToShow: string[] = [];
 		layersToShow.push('3d-buildings');
 
@@ -135,7 +144,7 @@ export default class UrbanZonesMap extends React.Component<Props, State> {
 				break;
 		}
 
-		switch (buildingType) {
+		switch (consumerProfile) {
 			case ConsumerProfile.RESIDENTIAL:
 				layersToShow.push('3d-residential-buildings');
 				break;
